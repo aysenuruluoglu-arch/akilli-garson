@@ -1,0 +1,72 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <title>Akıllı Garson API Test</title>
+</head>
+<body style="font-family:Arial; padding:25px;">
+  <h2>Akıllı Garson - API Bağlantı Testi</h2>
+
+  <p>n8n Webhook Test URL:</p>
+  <input
+    id="url"
+    type="url"
+    placeholder="https://.../webhook-test/..."
+    style="width:100%;padding:12px;box-sizing:border-box;"
+  >
+
+  <p>
+    Bu test geçersiz Masa 999 için istek gönderir.
+    Yeni çağrı oluşturulmaz.
+  </p>
+
+  <button onclick="testAPI()"
+          style="padding:14px;">
+    Bağlantıyı Test Et
+  </button>
+
+  <pre id="result"
+       style="white-space:pre-wrap;overflow-wrap:anywhere;"></pre>
+
+  <script>
+    async function testAPI() {
+      const output = document.getElementById("result");
+      const url = document.getElementById("url").value.trim();
+
+      if (!url.startsWith("https://") ||
+          !url.includes("/webhook-test/")) {
+        output.textContent = "Geçerli n8n Test URL girin.";
+        return;
+      }
+
+      output.textContent = "İstek gönderiliyor...";
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            restaurant: "akilli-garson-demo",
+            masa: 999,
+            request_type: "waiter"
+          })
+        });
+
+        const text = await response.text();
+
+        output.textContent =
+          "HTTP: " + response.status + "\n" + text;
+
+      } catch (error) {
+        output.textContent =
+          "Bağlantı hatası: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
