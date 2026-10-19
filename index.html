@@ -4,43 +4,243 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport"
-        content="width=device-width, initial-scale=1.0">
-  <title>Akıllı Garson</title>
+        content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#13243a">
+  <title>Akıllı Garson | Masa Hizmeti</title>
+
   <style>
+    * { box-sizing: border-box; }
+
     body {
+      margin: 0;
+      min-height: 100vh;
       font-family: Arial, sans-serif;
-      background: #f5f6fa;
+      background: #f3f6fa;
+      color: #17263c;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 430px;
+      background: #fff;
+      border-radius: 24px;
+      padding: 30px 23px;
+      box-shadow: 0 10px 35px #14243b14;
       text-align: center;
-      padding: 60px 20px;
-      color: #222;
     }
-    .card {
-      background: white;
-      max-width: 400px;
-      margin: auto;
-      padding: 30px;
-      border-radius: 16px;
-      box-shadow: 0 4px 20px #00000012;
+
+    .logo {
+      font-weight: 800;
+      font-size: 24px;
+      letter-spacing: -.7px;
     }
+
+    .subtitle {
+      color: #8190a2;
+      font-size: 13px;
+      margin-top: 8px;
+    }
+
+    .table-card {
+      background: #eef3fa;
+      padding: 30px 15px;
+      border-radius: 19px;
+      margin: 30px 0 25px;
+    }
+
+    .welcome {
+      font-size: 11px;
+      letter-spacing: 2px;
+      color: #74869c;
+      font-weight: bold;
+    }
+
+    .table-number {
+      font-size: 42px;
+      font-weight: 800;
+      margin: 12px 0;
+    }
+
+    .description {
+      font-size: 14px;
+      color: #617187;
+    }
+
     button {
-      background: #2563eb;
-      color: white;
-      border: none;
-      border-radius: 10px;
-      padding: 15px 25px;
+      width: 100%;
+      padding: 19px;
+      border: 0;
+      border-radius: 13px;
       font-size: 16px;
+      font-weight: 700;
       cursor: pointer;
+      margin-bottom: 13px;
+    }
+
+    .primary {
+      background: #245bda;
+      color: #fff;
+    }
+
+    .secondary {
+      background: #edf2f9;
+      color: #213a60;
+    }
+
+    .cancel {
+      background: #fff1f1;
+      color: #b42328;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    #status {
+      margin-top: 10px;
+      padding: 16px;
+      border-radius: 12px;
+      font-size: 14px;
+      background: #edf8f1;
+      color: #207044;
+      display: none;
+    }
+
+    .footer {
+      margin-top: 23px;
+      color: #a0a9b7;
+      font-size: 11px;
+    }
+
+    .notice {
+      margin-top: 12px;
+      font-size: 12px;
+      color: #7a8796;
     }
   </style>
 </head>
+
 <body>
-  <div class="card">
-    <h1>Akıllı Garson</h1>
-    <p>NFC Garson Çağırma Sistemi</p>
-    <p>Uygulama kurulumu başarılı!</p>
-    <button onclick="alert('Test başarılı!')">
-      Sistemi Test Et
+  <main class="app">
+    <div class="logo">Akıllı Garson</div>
+    <div class="subtitle">Dijital masa hizmet sistemi</div>
+
+    <section class="table-card">
+      <div class="welcome">HOŞ GELDİNİZ</div>
+      <div class="table-number" id="tableTitle">
+        Masa
+      </div>
+      <div class="description">
+        Size nasıl yardımcı olabiliriz?
+      </div>
+    </section>
+
+    <div id="actions">
+      <button class="primary" id="waiterBtn">
+        🔔 Garson Çağır
+      </button>
+
+      <button class="secondary" id="billBtn">
+        🧾 Hesap İste
+      </button>
+    </div>
+
+    <div id="status" role="status" aria-live="polite"></div>
+
+    <button class="cancel"
+            id="cancelBtn"
+            style="display:none">
+      İsteği İptal Et
     </button>
-  </div>
+
+    <div class="notice" id="notice">
+      NFC veya QR ile masa hizmeti
+    </div>
+
+    <div class="footer">
+      Akıllı Garson • Demo
+    </div>
+  </main>
+
+  <script>
+    "use strict";
+
+    // Bu surum yalnizca yerel arayuz demosudur.
+    // Sunucuya veya garsonlara bildirim gondermez.
+
+    const params = new URLSearchParams(
+      window.location.search
+    );
+
+    const rawTable = params.get("masa");
+    const tableNumber = Number(rawTable);
+
+    const validTable =
+      rawTable !== null &&
+      /^[1-5]$/.test(rawTable) &&
+      Number.isInteger(tableNumber);
+
+    const title = document.getElementById("tableTitle");
+    const waiterBtn = document.getElementById("waiterBtn");
+    const billBtn = document.getElementById("billBtn");
+    const cancelBtn = document.getElementById("cancelBtn");
+    const statusBox = document.getElementById("status");
+    const notice = document.getElementById("notice");
+
+    let request = null;
+
+    if (validTable) {
+      title.textContent = "Masa " + tableNumber;
+    } else {
+      title.textContent = "Masa bulunamadı";
+      waiterBtn.disabled = true;
+      billBtn.disabled = true;
+      notice.textContent =
+        "Lütfen masanızdaki NFC veya QR kodunu okutun.";
+    }
+
+    function sendDemoRequest(type) {
+      if (!validTable || request !== null) return;
+
+      request = type;
+      waiterBtn.disabled = true;
+      billBtn.disabled = true;
+
+      statusBox.style.display = "block";
+      statusBox.textContent =
+        type === "waiter"
+          ? "🔔 Demo: Garson çağırma isteği oluşturuldu."
+          : "🧾 Demo: Hesap isteği oluşturuldu.";
+
+      cancelBtn.style.display = "block";
+
+      notice.textContent =
+        "Bu bir arayüz testidir. Garsona gerçek bildirim gitmedi.";
+    }
+
+    waiterBtn.addEventListener("click", () => {
+      sendDemoRequest("waiter");
+    });
+
+    billBtn.addEventListener("click", () => {
+      sendDemoRequest("bill");
+    });
+
+    cancelBtn.addEventListener("click", () => {
+      request = null;
+      waiterBtn.disabled = false;
+      billBtn.disabled = false;
+      statusBox.style.display = "none";
+      cancelBtn.style.display = "none";
+
+      notice.textContent =
+        "İstek yalnızca bu ekranda iptal edildi.";
+    });
+  </script>
 </body>
 </html>
