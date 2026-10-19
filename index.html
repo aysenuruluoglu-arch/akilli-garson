@@ -6,6 +6,8 @@
   <meta name="viewport"
         content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#13243a">
+  <meta name="referrer" content="no-referrer">
+
   <title>Akıllı Garson | Masa Hizmeti</title>
 
   <style>
@@ -111,6 +113,11 @@
       display: none;
     }
 
+    #status.error {
+      background: #fff1f1;
+      color: #b42328;
+    }
+
     .footer {
       margin-top: 23px;
       color: #a0a9b7;
@@ -127,20 +134,27 @@
 
 <body>
   <main class="app">
+
     <div class="logo">Akıllı Garson</div>
-    <div class="subtitle">Dijital masa hizmet sistemi</div>
+
+    <div class="subtitle">
+      Dijital masa hizmet sistemi
+    </div>
 
     <section class="table-card">
       <div class="welcome">HOŞ GELDİNİZ</div>
+
       <div class="table-number" id="tableTitle">
         Masa
       </div>
+
       <div class="description">
         Size nasıl yardımcı olabiliriz?
       </div>
     </section>
 
     <div id="actions">
+
       <button class="primary" id="waiterBtn">
         🔔 Garson Çağır
       </button>
@@ -148,9 +162,12 @@
       <button class="secondary" id="billBtn">
         🧾 Hesap İste
       </button>
+
     </div>
 
-    <div id="status" role="status" aria-live="polite"></div>
+    <div id="status"
+         role="status"
+         aria-live="polite"></div>
 
     <button class="cancel"
             id="cancelBtn"
@@ -165,82 +182,393 @@
     <div class="footer">
       Akıllı Garson • Demo
     </div>
+
   </main>
 
   <script>
     "use strict";
 
-    // Bu surum yalnizca yerel arayuz demosudur.
-    // Sunucuya veya garsonlara bildirim gondermez.
+    // API ADRESLERI
+    const API_BASE =
+      "https://2vcjhcky.rpcld.app/webhook";
 
+    const CREATE_URL =
+      API_BASE + "/akilli-garson-call";
+
+    const CANCEL_URL =
+      API_BASE + "/akilli-garson-cancel";
+
+    // NFC TOKENINI URL'DEN AL
     const params = new URLSearchParams(
       window.location.search
     );
 
-    const rawTable = params.get("masa");
-    const tableNumber = Number(rawTable);
+    const token = params.get("token") || "";
 
-    const validTable =
-      rawTable !== null &&
-      /^[1-5]$/.test(rawTable) &&
-      Number.isInteger(tableNumber);
+    const validToken =
+      /^[a-f0-9]{48}$/.test(token);
 
-    const title = document.getElementById("tableTitle");
-    const waiterBtn = document.getElementById("waiterBtn");
-    const billBtn = document.getElementById("billBtn");
-    const cancelBtn = document.getElementById("cancelBtn");
-    const statusBox = document.getElementById("status");
-    const notice = document.getElementById("notice");
+    // EKRAN ELEMANLARI
+    const title =
+      document.getElementById("tableTitle");
 
+    const waiterBtn =
+      document.getElementById("waiterBtn");
+
+    const billBtn =
+      document.getElementById("billBtn");
+
+    const cancelBtn =
+      document.getElementById("cancelBtn");
+
+    const statusBox =
+      document.getElementById("status");
+
+    const notice =
+      document.getElementById("notice");
+
+    let busy = false;
     let request = null;
 
-    if (validTable) {
-      title.textContent = "Masa " + tableNumber;
-    } else {
-      title.textContent = "Masa bulunamadı";
-      waiterBtn.disabled = true;
-      billBtn.disabled = true;
-      notice.textContent =
-        "Lütfen masanızdaki NFC veya QR kodunu okutun.";
+    // Her masa icin ayri oturum kaydi
+    const storageKey =
+      "akilli_garson_request_" + token;
+
+    function saveRequest(data) {
+      request = data;
+
+      try {
+        sessionStorage.setItem(
+          storageKey,
+          JSON.stringify(data)
+        );
+      } catch (error) {
+        console.warn(
+          "Oturum kaydedilemedi."
+        );
+      }
     }
 
-    function sendDemoRequest(type) {
-      if (!validTable || request !== null) return;
-
-      request = type;
-      waiterBtn.disabled = true;
-      billBtn.disabled = true;
-
-      statusBox.style.display = "block";
-      statusBox.textContent =
-        type === "waiter"
-          ? "🔔 Demo: Garson çağırma isteği oluşturuldu."
-          : "🧾 Demo: Hesap isteği oluşturuldu.";
-
-      cancelBtn.style.display = "block";
-
-      notice.textContent =
-        "Bu bir arayüz testidir. Garsona gerçek bildirim gitmedi.";
-    }
-
-    waiterBtn.addEventListener("click", () => {
-      sendDemoRequest("waiter");
-    });
-
-    billBtn.addEventListener("click", () => {
-      sendDemoRequest("bill");
-    });
-
-    cancelBtn.addEventListener("click", () => {
+    function clearRequest() {
       request = null;
-      waiterBtn.disabled = false;
-      billBtn.disabled = false;
-      statusBox.style.display = "none";
-      cancelBtn.style.display = "none";
+
+      try {
+        sessionStorage.removeItem(storageKey);
+      } catch (error) {
+        console.warn(
+          "Oturum temizlenemedi."
+        );
+      }
+    }
+
+    function restoreRequest() {
+      if (!validToken) return;
+
+      try {
+        const saved =
+          sessionStorage.getItem(storageKey);
+
+        if (!saved) return;
+
+        const data = JSON.parse(saved);
+
+        if (
+          data &&
+          data.call_id &&
+          /^[a-f0-9]{64}$/.test(
+            data.cancel_token || ""
+          )
+        ) {
+          request = data;
+        }
+      } catch (error) {
+        clearRequest();
+      }
+    }
+
+    function showStatus(message, isError = false) {
+      statusBox.textContent = message;
+      statusBox.style.display = "block";
+      statusBox.classList.toggle(
+        "error",
+        isError
+      );
+    }
+
+    function updateButtons() {
+      waiterBtn.disabled =
+        !validToken || busy || request !== null;
+
+      billBtn.disabled =
+        !validToken || busy || request !== null;
+
+      cancelBtn.style.display =
+        request !== null ? "block" : "none";
+
+      cancelBtn.disabled = busy;
+    }
+
+    // SUNUCUYA JSON GONDER
+    async function postJSON(url, body) {
+      const response = await fetch(url, {
+        method: "POST",
+        mode: "cors",
+        cache: "no-store",
+        credentials: "omit",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(body)
+      });
+
+      if (!response.ok) {
+        throw new Error(
+          "Sunucu hatası: " + response.status
+        );
+      }
+
+      return await response.json();
+    }
+
+    // CAGRI OLUSTUR
+    async function createRequest(type) {
+      if (!validToken || busy || request) {
+        return;
+      }
+
+      busy = true;
+      updateButtons();
+
+      showStatus("İsteğiniz gönderiliyor...");
+
+      try {
+        const data = await postJSON(
+          CREATE_URL,
+          {
+            token: token,
+            request_type: type
+          }
+        );
+
+        if (
+          data.success === true &&
+          data.result === "created" &&
+          data.call_id &&
+          /^[a-f0-9]{64}$/.test(
+            data.cancel_token || ""
+          )
+        ) {
+          saveRequest({
+            call_id: data.call_id,
+            cancel_token: data.cancel_token,
+            request_type: type,
+            table_number: data.table_number
+          });
+
+          title.textContent =
+            "Masa " + data.table_number;
+
+          showStatus(
+            type === "waiter"
+              ? "🔔 Garson çağrınız kaydedildi."
+              : "🧾 Hesap isteğiniz kaydedildi."
+          );
+
+          notice.textContent =
+            "İsteğiniz beklemede. " +
+            "Garsonların bildirim sistemi henüz " +
+            "demo aşamasındadır.";
+
+        } else if (data.result === "already_open") {
+
+          if (data.table_number) {
+            title.textContent =
+              "Masa " + data.table_number;
+          }
+
+          showStatus(
+            "Bu masa için zaten açık bir " +
+            "istek bulunuyor.",
+            true
+          );
+
+        } else if (data.result === "cooldown") {
+
+          showStatus(
+            "Lütfen 15 saniye bekleyip " +
+            "tekrar deneyin.",
+            true
+          );
+
+        } else {
+
+          showStatus(
+            data.message ||
+            "İstek oluşturulamadı.",
+            true
+          );
+        }
+
+      } catch (error) {
+        console.error(error);
+
+        showStatus(
+          "Bağlantı sırasında sorun oluştu. " +
+          "İstek kaydedilmiş olabilir; " +
+          "yeniden basmadan önce bekleyin.",
+          true
+        );
+
+      } finally {
+        busy = false;
+        updateButtons();
+      }
+    }
+
+    // CAGRI IPTAL ET
+    async function cancelRequest() {
+      if (!request || busy || !validToken) {
+        return;
+      }
+
+      busy = true;
+      updateButtons();
+
+      showStatus("İptal işlemi yapılıyor...");
+
+      try {
+        const data = await postJSON(
+          CANCEL_URL,
+          {
+            token: token,
+            call_id: request.call_id,
+            cancel_token: request.cancel_token
+          }
+        );
+
+        if (data.result === "cancelled") {
+
+          clearRequest();
+
+          showStatus(
+            "✅ İsteğiniz iptal edildi."
+          );
+
+          notice.textContent =
+            "Yeni bir istek oluşturmak için " +
+            "15 saniye bekleyin.";
+
+        } else if (
+          data.result === "already_cancelled"
+        ) {
+
+          clearRequest();
+
+          showStatus(
+            "Bu istek daha önce iptal edilmiş."
+          );
+
+        } else if (
+          data.result === "already_accepted"
+        ) {
+
+          clearRequest();
+
+          showStatus(
+            "Garson isteğinizi üstlendiği için " +
+            "artık iptal edemezsiniz."
+          );
+
+        } else if (
+          data.result === "already_completed"
+        ) {
+
+          clearRequest();
+
+          showStatus(
+            "İsteğiniz zaten tamamlanmış."
+          );
+
+        } else {
+
+          showStatus(
+            data.message ||
+            "İptal işlemi gerçekleştirilemedi.",
+            true
+          );
+        }
+
+      } catch (error) {
+        console.error(error);
+
+        showStatus(
+          "Bağlantı hatası oluştu. " +
+          "İptal durumunu doğrulayamadık.",
+          true
+        );
+
+      } finally {
+        busy = false;
+        updateButtons();
+      }
+    }
+
+    // SAYFA BASLANGICI
+    if (!validToken) {
+
+      title.textContent = "Masa bulunamadı";
 
       notice.textContent =
-        "İstek yalnızca bu ekranda iptal edildi.";
-    });
+        "Lütfen masanızdaki NFC veya " +
+        "QR kodunu okutun.";
+
+      showStatus(
+        "Geçerli bir masa bağlantısı bulunamadı.",
+        true
+      );
+
+    } else {
+
+      title.textContent = "Masa";
+
+      restoreRequest();
+
+      if (request) {
+
+        if (request.table_number) {
+          title.textContent =
+            "Masa " + request.table_number;
+        }
+
+        showStatus(
+          "Daha önce oluşturduğunuz istek " +
+          "bu tarayıcıda kayıtlı. " +
+          "Güncel durum henüz doğrulanmadı."
+        );
+
+        notice.textContent =
+          "İptal etmek için aşağıdaki " +
+          "butonu kullanabilirsiniz.";
+      }
+    }
+
+    updateButtons();
+
+    waiterBtn.addEventListener(
+      "click",
+      () => createRequest("waiter")
+    );
+
+    billBtn.addEventListener(
+      "click",
+      () => createRequest("bill")
+    );
+
+    cancelBtn.addEventListener(
+      "click",
+      cancelRequest
+    );
+
   </script>
 </body>
 </html>
