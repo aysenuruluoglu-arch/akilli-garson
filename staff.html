@@ -1,0 +1,1026 @@
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#13243a">
+  <meta name="referrer" content="no-referrer">
+
+  <title>Akıllı Garson | Personel Paneli</title>
+
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: #f3f6fa;
+      color: #17263c;
+      font-family: Arial, sans-serif;
+      padding: 20px 14px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #13243a;
+      color: white;
+      padding: 25px 22px;
+      border-radius: 22px;
+      margin-bottom: 18px;
+    }
+
+    .brand {
+      font-size: 23px;
+      font-weight: 800;
+      letter-spacing: -.5px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #b9c8da;
+      margin-top: 7px;
+    }
+
+    .card {
+      background: white;
+      padding: 23px;
+      border-radius: 20px;
+      box-shadow: 0 6px 25px #14243b0d;
+      margin-bottom: 15px;
+    }
+
+    h2 {
+      font-size: 19px;
+      margin: 0 0 18px;
+    }
+
+    .field {
+      margin-bottom: 16px;
+      text-align: left;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+
+    input {
+      width: 100%;
+      border: 1px solid #dbe3ee;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 16px;
+      background: #fff;
+      color: #17263c;
+    }
+
+    input:focus {
+      outline: 2px solid #245bda;
+      border-color: #245bda;
+    }
+
+    button {
+      border: none;
+      border-radius: 12px;
+      padding: 15px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      background: #245bda;
+      color: white;
+      width: 100%;
+    }
+
+    .secondary {
+      background: #edf2f9;
+      color: #213a60;
+    }
+
+    .complete {
+      background: #e7f6ed;
+      color: #17683b;
+      width: 100%;
+    }
+
+    .logout {
+      background: #30445e;
+      color: white;
+      padding: 10px 14px;
+      font-size: 12px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 17px;
+    }
+
+    .stat {
+      background: white;
+      padding: 21px 12px;
+      border-radius: 17px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      color: #8190a2;
+      margin-top: 5px;
+    }
+
+    .section-title {
+      font-size: 17px;
+      font-weight: 800;
+      margin: 22px 4px 14px;
+    }
+
+    .call-card {
+      background: white;
+      border-radius: 18px;
+      padding: 20px;
+      margin-bottom: 12px;
+      box-shadow: 0 5px 20px #14243b0b;
+    }
+
+    .call-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .table-number {
+      font-size: 23px;
+      font-weight: 800;
+    }
+
+    .badge {
+      border-radius: 30px;
+      padding: 7px 11px;
+      font-size: 11px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .pending {
+      background: #fff1d9;
+      color: #97610b;
+    }
+
+    .accepted {
+      background: #e8f0ff;
+      color: #245bda;
+    }
+
+    .call-type {
+      margin: 15px 0 7px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .call-meta {
+      font-size: 12px;
+      color: #8793a5;
+      margin-bottom: 15px;
+    }
+
+    .message {
+      padding: 14px;
+      border-radius: 12px;
+      background: #edf8f1;
+      color: #207044;
+      font-size: 13px;
+      margin: 12px 0;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      background: #fff1f1;
+      color: #b42328;
+    }
+
+    .empty {
+      padding: 28px 15px;
+      text-align: center;
+      background: white;
+      border-radius: 16px;
+      color: #8190a2;
+      font-size: 14px;
+    }
+
+    .refresh {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+
+    .refresh-info {
+      font-size: 12px;
+      color: #8190a2;
+    }
+
+    .notice {
+      font-size: 12px;
+      color: #8190a2;
+      text-align: center;
+      line-height: 1.6;
+      padding: 15px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="app">
+
+    <header class="header">
+      <div class="brand">Akıllı Garson</div>
+      <div class="subtitle">
+        Personel çağrı yönetim sistemi
+      </div>
+    </header>
+
+    <!-- GIRIS EKRANI -->
+
+    <section id="loginScreen" class="card">
+
+      <h2>Personel Girişi</h2>
+
+      <form id="loginForm">
+
+        <div class="field">
+          <label for="staffId">
+            Personel Numaranız
+          </label>
+
+          <input
+            id="staffId"
+            type="number"
+            min="1"
+            step="1"
+            inputmode="numeric"
+            placeholder="Örn: 1"
+            required>
+        </div>
+
+        <div class="field">
+          <label for="password">
+            Şifreniz
+          </label>
+
+          <input
+            id="password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="Şifrenizi girin"
+            required>
+        </div>
+
+        <button
+          class="primary"
+          type="submit"
+          id="loginBtn">
+          Giriş Yap
+        </button>
+
+      </form>
+
+      <div id="loginMessage"
+           class="message hidden"
+           role="status"
+           aria-live="polite"></div>
+
+    </section>
+
+    <!-- PERSONEL PANELI -->
+
+    <section id="dashboard" class="hidden">
+
+      <div class="card">
+
+        <div class="top-row">
+
+          <div>
+            <div style="font-weight:800;font-size:19px"
+                 id="staffName">
+              Garson
+            </div>
+
+            <div style="font-size:12px;color:#8190a2;margin-top:5px">
+              Aktif çağrı yönetimi
+            </div>
+          </div>
+
+          <button
+            class="logout"
+            id="logoutBtn">
+            Çıkış
+          </button>
+
+        </div>
+
+      </div>
+
+      <div class="stats">
+
+        <div class="stat">
+          <div class="stat-number"
+               id="pendingCount">0</div>
+          <div class="stat-label">
+            Bekleyen Çağrı
+          </div>
+        </div>
+
+        <div class="stat">
+          <div class="stat-number"
+               id="myCount">0</div>
+          <div class="stat-label">
+            Üstlendiğim
+          </div>
+        </div>
+
+      </div>
+
+      <div class="refresh">
+        <div class="refresh-info"
+             id="refreshInfo">
+          Çağrılar yükleniyor...
+        </div>
+
+        <button class="secondary"
+                id="refreshBtn">
+          ↻ Yenile
+        </button>
+      </div>
+
+      <div id="dashboardMessage"
+           class="message hidden"
+           role="status"
+           aria-live="polite"></div>
+
+      <div class="section-title">
+        🔔 Bekleyen Çağrılar
+      </div>
+
+      <div id="pendingList">
+        <div class="empty">
+          Çağrılar yükleniyor...
+        </div>
+      </div>
+
+      <div class="section-title">
+        ✅ Üstlendiğim Çağrılar
+      </div>
+
+      <div id="myCallsList">
+        <div class="empty">
+          Henüz üstlendiğiniz çağrı yok.
+        </div>
+      </div>
+
+      <div class="section-title">
+        👥 Diğer Garsonların Çağrıları
+      </div>
+
+      <div id="otherCallsList">
+        <div class="empty">
+          Başka garsonun üstlendiği çağrı yok.
+        </div>
+      </div>
+
+    </section>
+
+    <div class="notice">
+      Akıllı Garson • Demo
+      <div>
+        Telefon bildirimleri henüz aktif değildir.
+      </div>
+    </div>
+
+  </main>
+
+  <script>
+    "use strict";
+
+    // API ADRESLERI
+    const API_BASE =
+      "https://2vcjhcky.rpcld.app/webhook";
+
+    const API = {
+      login: API_BASE + "/akilli-garson-staff-login",
+      calls: API_BASE + "/akilli-garson-staff-calls",
+      accept: API_BASE + "/akilli-garson-staff-accept",
+      complete: API_BASE + "/akilli-garson-staff-complete"
+    };
+
+    const RESTAURANT = "akilli-garson-demo";
+
+    const SESSION_KEY =
+      "akilli_garson_staff_session";
+
+    // Arayuz her 10 saniyede bir yenilenir.
+    const REFRESH_MS = 10000;
+
+    const $ = id => document.getElementById(id);
+
+    let session = null;
+    let busy = false;
+    let loadingCalls = false;
+    let refreshTimer = null;
+
+    function showMessage(elementId, message, error = false) {
+      const element = $(elementId);
+      element.textContent = message;
+      element.classList.remove("hidden");
+      element.classList.toggle("error", error);
+    }
+
+    function hideMessage(elementId) {
+      $(elementId).classList.add("hidden");
+    }
+
+    function isSessionValid(data) {
+      return Boolean(
+        data &&
+        /^[a-f0-9]{64}$/.test(data.token || "") &&
+        data.staff &&
+        /^\d+$/.test(String(data.staff.id || "")) &&
+        data.expires_at &&
+        Date.parse(data.expires_at) > Date.now()
+      );
+    }
+
+    function saveSession(data) {
+      session = data;
+
+      try {
+        sessionStorage.setItem(
+          SESSION_KEY,
+          JSON.stringify(data)
+        );
+      } catch (error) {
+        console.warn("Oturum saklanamadi.");
+      }
+    }
+
+    function clearSession() {
+      session = null;
+
+      try {
+        sessionStorage.removeItem(SESSION_KEY);
+      } catch (error) {
+        console.warn("Oturum temizlenemedi.");
+      }
+    }
+
+    function restoreSession() {
+      try {
+        const raw = sessionStorage.getItem(SESSION_KEY);
+
+        if (!raw) return;
+
+        const saved = JSON.parse(raw);
+
+        if (isSessionValid(saved)) {
+          session = saved;
+        } else {
+          clearSession();
+        }
+      } catch (error) {
+        clearSession();
+      }
+    }
+
+    async function postJSON(url, body) {
+      const controller = new AbortController();
+
+      const timeout = setTimeout(
+        () => controller.abort(),
+        15000
+      );
+
+      try {
+        const response = await fetch(url, {
+          method: "POST",
+          mode: "cors",
+          cache: "no-store",
+          credentials: "omit",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify(body),
+          signal: controller.signal
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            "HTTP " + response.status
+          );
+        }
+
+        return await response.json();
+
+      } finally {
+        clearTimeout(timeout);
+      }
+    }
+
+    function stopRefreshing() {
+      if (refreshTimer) {
+        clearInterval(refreshTimer);
+        refreshTimer = null;
+      }
+    }
+
+    function startRefreshing() {
+      stopRefreshing();
+
+      refreshTimer = setInterval(() => {
+        if (
+          session &&
+          !document.hidden &&
+          !busy &&
+          !loadingCalls
+        ) {
+          loadCalls();
+        }
+      }, REFRESH_MS);
+    }
+
+    function showLogin() {
+      stopRefreshing();
+
+      $("dashboard").classList.add("hidden");
+      $("loginScreen").classList.remove("hidden");
+      $("password").value = "";
+    }
+
+    function showDashboard() {
+      $("loginScreen").classList.add("hidden");
+      $("dashboard").classList.remove("hidden");
+
+      $("staffName").textContent =
+        session.staff.name || "Garson";
+
+      startRefreshing();
+      loadCalls();
+    }
+
+    function expireSession() {
+      clearSession();
+      showLogin();
+
+      showMessage(
+        "loginMessage",
+        "Oturumunuz sona erdi. Lütfen tekrar giriş yapın.",
+        true
+      );
+    }
+
+    // PERSONEL GIRISI
+
+    $("loginForm").addEventListener(
+      "submit",
+      async event => {
+        event.preventDefault();
+
+        if (busy) return;
+
+        const staffId = $("staffId").value.trim();
+        const password = $("password").value;
+
+        if (!/^\d+$/.test(staffId) || !password) {
+          showMessage(
+            "loginMessage",
+            "Personel numarası ve şifre gerekli.",
+            true
+          );
+          return;
+        }
+
+        busy = true;
+        $("loginBtn").disabled = true;
+
+        showMessage(
+          "loginMessage",
+          "Giriş kontrol ediliyor..."
+        );
+
+        try {
+          const data = await postJSON(
+            API.login,
+            {
+              restaurant: RESTAURANT,
+              staff_id: staffId,
+              password: password
+            }
+          );
+
+          if (
+            data.success === true &&
+            data.result === "authenticated" &&
+            isSessionValid({
+              token: data.session_token,
+              staff: data.staff,
+              expires_at: data.expires_at
+            })
+          ) {
+            saveSession({
+              token: data.session_token,
+              staff: data.staff,
+              expires_at: data.expires_at
+            });
+
+            $("password").value = "";
+            hideMessage("loginMessage");
+            showDashboard();
+
+          } else {
+            showMessage(
+              "loginMessage",
+              data.message ||
+              "Giriş başarısız. Bilgilerinizi kontrol edin.",
+              true
+            );
+          }
+
+        } catch (error) {
+          showMessage(
+            "loginMessage",
+            "Sunucuya bağlanılamadı. " +
+            "Lütfen daha sonra tekrar deneyin.",
+            true
+          );
+
+        } finally {
+          busy = false;
+          $("loginBtn").disabled = false;
+        }
+      }
+    );
+
+    // CAGRI KARTI
+
+    function formatTime(value) {
+      const date = new Date(value);
+
+      if (Number.isNaN(date.getTime())) {
+        return "";
+      }
+
+      return date.toLocaleTimeString("tr-TR", {
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    function createEmpty(message) {
+      const div = document.createElement("div");
+      div.className = "empty";
+      div.textContent = message;
+      return div;
+    }
+
+    function createCallCard(call, type) {
+      const card = document.createElement("article");
+      card.className = "call-card";
+
+      const header = document.createElement("div");
+      header.className = "call-header";
+
+      const table = document.createElement("div");
+      table.className = "table-number";
+      table.textContent = "Masa " + call.table_number;
+
+      const badge = document.createElement("span");
+      badge.className =
+        "badge " +
+        (call.status === "pending"
+          ? "pending"
+          : "accepted");
+
+      badge.textContent =
+        call.status === "pending"
+          ? "Bekliyor"
+          : "Üstlenildi";
+
+      header.append(table, badge);
+
+      const label = document.createElement("div");
+      label.className = "call-type";
+
+      label.textContent =
+        call.request_type === "bill"
+          ? "🧾 Hesap İstiyor"
+          : "🔔 Garson Çağırıyor";
+
+      const meta = document.createElement("div");
+      meta.className = "call-meta";
+      meta.textContent =
+        "Çağrı #" + call.call_id +
+        " • " + formatTime(call.created_at);
+
+      card.append(header, label, meta);
+
+      if (type === "pending" || type === "mine") {
+        const btn = document.createElement("button");
+
+        btn.className =
+          type === "pending" ? "primary" : "complete";
+
+        btn.textContent =
+          type === "pending"
+            ? "Çağrıyı Üstlen"
+            : "✓ Tamamlandı";
+
+        btn.disabled = busy;
+
+        btn.addEventListener("click", () => {
+          handleCallAction(
+            type === "pending" ? "accept" : "complete",
+            call.call_id
+          );
+        });
+
+        card.append(btn);
+
+      } else {
+        const info = document.createElement("div");
+        info.className = "call-meta";
+        info.textContent =
+          "Başka bir personel tarafından üstlenildi.";
+
+        card.append(info);
+      }
+
+      return card;
+    }
+
+    function renderGroup(elementId, calls, type, emptyText) {
+      const container = $(elementId);
+      container.replaceChildren();
+
+      if (calls.length === 0) {
+        container.append(
+          createEmpty(emptyText)
+        );
+        return;
+      }
+
+      calls.forEach(call => {
+        container.append(
+          createCallCard(call, type)
+        );
+      });
+    }
+
+    function renderCalls(calls) {
+      const myId = String(session.staff.id);
+
+      const pending = calls.filter(
+        c => c.status === "pending"
+      );
+
+      const mine = calls.filter(
+        c =>
+          c.status === "accepted" &&
+          String(c.accepted_by) === myId
+      );
+
+      const others = calls.filter(
+        c =>
+          c.status === "accepted" &&
+          String(c.accepted_by) !== myId
+      );
+
+      $("pendingCount").textContent = pending.length;
+      $("myCount").textContent = mine.length;
+
+      renderGroup(
+        "pendingList",
+        pending,
+        "pending",
+        "Şu anda bekleyen çağrı yok."
+      );
+
+      renderGroup(
+        "myCallsList",
+        mine,
+        "mine",
+        "Henüz üstlendiğiniz çağrı yok."
+      );
+
+      renderGroup(
+        "otherCallsList",
+        others,
+        "other",
+        "Diğer garsonlarda açık çağrı yok."
+      );
+    }
+
+    // CAGRI LISTESI
+
+    async function loadCalls() {
+      if (!session || busy || loadingCalls) {
+        return;
+      }
+
+      if (!isSessionValid(session)) {
+        expireSession();
+        return;
+      }
+
+      loadingCalls = true;
+
+      try {
+        const data = await postJSON(
+          API.calls,
+          {
+            session_token: session.token
+          }
+        );
+
+        if (data.result === "unauthorized") {
+          expireSession();
+          return;
+        }
+
+        if (
+          data.success !== true ||
+          !Array.isArray(data.calls)
+        ) {
+          throw new Error("Gecersiz API yaniti");
+        }
+
+        renderCalls(data.calls);
+
+        $("refreshInfo").textContent =
+          "Son güncelleme: " +
+          new Date().toLocaleTimeString("tr-TR", {
+            hour: "2-digit",
+            minute: "2-digit",
+            second: "2-digit"
+          });
+
+        hideMessage("dashboardMessage");
+
+      } catch (error) {
+        showMessage(
+          "dashboardMessage",
+          "Çağrılar güncellenemedi. " +
+          "Bağlantınızı kontrol edin.",
+          true
+        );
+
+      } finally {
+        loadingCalls = false;
+      }
+    }
+
+    // USTLENME VE TAMAMLAMA
+
+    async function handleCallAction(action, callId) {
+      if (!session || busy) {
+        return;
+      }
+
+      if (!isSessionValid(session)) {
+        expireSession();
+        return;
+      }
+
+      busy = true;
+      $("refreshBtn").disabled = true;
+
+      showMessage(
+        "dashboardMessage",
+        action === "accept"
+          ? "Çağrı üstleniliyor..."
+          : "Çağrı tamamlanıyor..."
+      );
+
+      try {
+        const data = await postJSON(
+          action === "accept"
+            ? API.accept
+            : API.complete,
+          {
+            session_token: session.token,
+            call_id: callId
+          }
+        );
+
+        if (data.result === "unauthorized") {
+          expireSession();
+          return;
+        }
+
+        if (data.success === true) {
+          showMessage(
+            "dashboardMessage",
+            action === "accept"
+              ? "Çağrı üzerinize alındı."
+              : "Çağrı tamamlandı."
+          );
+
+        } else {
+          showMessage(
+            "dashboardMessage",
+            data.message ||
+            "İşlem gerçekleştirilemedi.",
+            true
+          );
+        }
+
+      } catch (error) {
+        showMessage(
+          "dashboardMessage",
+          "Bağlantı hatası. İşlem gerçekleşmiş " +
+          "olabilir; listeyi kontrol edin.",
+          true
+        );
+
+      } finally {
+        busy = false;
+        $("refreshBtn").disabled = false;
+        await loadCalls();
+      }
+    }
+
+    // MANUEL YENILEME
+
+    $("refreshBtn").addEventListener(
+      "click",
+      loadCalls
+    );
+
+    document.addEventListener(
+      "visibilitychange",
+      () => {
+        if (!document.hidden && session) {
+          loadCalls();
+        }
+      }
+    );
+
+    // CIKIS
+
+    $("logoutBtn").addEventListener(
+      "click",
+      () => {
+        clearSession();
+        $("staffId").value = "";
+        hideMessage("loginMessage");
+        showLogin();
+      }
+    );
+
+    // SAYFA BASLANGICI
+
+    restoreSession();
+
+    if (session) {
+      showDashboard();
+    } else {
+      showLogin();
+    }
+
+  </script>
+</body>
+</html>
