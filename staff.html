@@ -273,6 +273,8 @@
       </div>
     </header>
 
+    <!-- PERSONEL GIRISI -->
+
     <section id="loginScreen" class="card">
       <h2>Personel Girişi</h2>
 
@@ -282,21 +284,21 @@
           <label for="staffId">
             Personel Numaranız
           </label>
-
           <input
             id="staffId"
             type="number"
             min="1"
             step="1"
             inputmode="numeric"
-            placeholder="Örn: 1"
             autocomplete="username"
+            placeholder="Personel numarası"
             required>
         </div>
 
         <div class="field">
-          <label for="password">Şifreniz</label>
-
+          <label for="password">
+            Şifreniz
+          </label>
           <input
             id="password"
             type="password"
@@ -322,6 +324,8 @@
       </div>
     </section>
 
+    <!-- GARSON PANELI -->
+
     <section id="dashboard" class="hidden">
 
       <div class="card">
@@ -333,7 +337,6 @@
               id="staffName">
               Garson
             </div>
-
             <div
               style="font-size:12px;color:#8190a2;margin-top:5px">
               Aktif çağrı yönetimi
@@ -342,7 +345,8 @@
 
           <button
             class="logout"
-            id="logoutBtn">
+            id="logoutBtn"
+            type="button">
             Çıkış
           </button>
 
@@ -352,22 +356,16 @@
       <div class="stats">
 
         <div class="stat">
-          <div
-            class="stat-number"
-            id="pendingCount">
-            0
-          </div>
+          <div class="stat-number"
+               id="pendingCount">0</div>
           <div class="stat-label">
             Bekleyen Çağrı
           </div>
         </div>
 
         <div class="stat">
-          <div
-            class="stat-number"
-            id="myCount">
-            0
-          </div>
+          <div class="stat-number"
+               id="myCount">0</div>
           <div class="stat-label">
             Üstlendiğim
           </div>
@@ -377,15 +375,15 @@
 
       <div class="refresh">
 
-        <div
-          class="refresh-info"
-          id="refreshInfo">
+        <div class="refresh-info"
+             id="refreshInfo">
           Çağrılar yükleniyor...
         </div>
 
         <button
           class="secondary"
-          id="refreshBtn">
+          id="refreshBtn"
+          type="button">
           ↻ Yenile
         </button>
 
@@ -442,8 +440,8 @@
   <script>
     "use strict";
 
-    // GECICI TEST API ADRESI
-    // n8n webhook-test yalnizca dinleme acikken calisir.
+    // GECICI TEST ADRESI
+    // STAFF API yayimlanmadigi icin webhook-test kullaniyoruz.
 
     const API_BASE =
       "https://2vcjhcky.rpcld.app/webhook-test";
@@ -459,7 +457,10 @@
         API_BASE + "/akilli-garson-staff-accept",
 
       complete:
-        API_BASE + "/akilli-garson-staff-complete"
+        API_BASE + "/akilli-garson-staff-complete",
+
+      logout:
+        API_BASE + "/akilli-garson-staff-logout"
     };
 
     const RESTAURANT = "akilli-garson-demo";
@@ -476,17 +477,21 @@
     let loadingCalls = false;
     let refreshTimer = null;
 
-    function showMessage(id, message, error = false) {
-      const el = $(id);
+    // MESAJLAR
 
-      el.textContent = message;
-      el.classList.remove("hidden");
-      el.classList.toggle("error", error);
+    function showMessage(id, message, error = false) {
+      const element = $(id);
+
+      element.textContent = message;
+      element.classList.remove("hidden");
+      element.classList.toggle("error", error);
     }
 
     function hideMessage(id) {
       $(id).classList.add("hidden");
     }
+
+    // OTURUM YONETIMI
 
     function isSessionValid(data) {
       return Boolean(
@@ -542,6 +547,8 @@
       }
     }
 
+    // API ISTEGI
+
     async function postJSON(url, body) {
       const controller = new AbortController();
 
@@ -578,6 +585,8 @@
       }
     }
 
+    // OTOMATIK YENILEME
+
     function stopRefreshing() {
       if (refreshTimer) {
         clearInterval(refreshTimer);
@@ -599,6 +608,8 @@
         }
       }, REFRESH_MS);
     }
+
+    // EKRAN GECISLERI
 
     function showLogin() {
       stopRefreshing();
@@ -640,11 +651,8 @@
 
         if (busy) return;
 
-        const staffId =
-          $("staffId").value.trim();
-
-        const password =
-          $("password").value;
+        const staffId = $("staffId").value.trim();
+        const password = $("password").value;
 
         if (!/^\d+$/.test(staffId) || !password) {
           showMessage(
@@ -656,7 +664,6 @@
         }
 
         busy = true;
-
         $("loginBtn").disabled = true;
 
         showMessage(
@@ -688,7 +695,6 @@
             saveSession(candidate);
 
             $("password").value = "";
-
             hideMessage("loginMessage");
 
             showDashboard();
@@ -705,9 +711,8 @@
           showMessage(
             "loginMessage",
             "Sunucuya bağlanılamadı. " +
-            "Test için n8n'de Staff Login Webhook " +
-            "dinlemesini açın. Sorun sürerse " +
-            "CORS ve bağlantıyı kontrol edin.",
+            "Test webhook'unun dinlemesini ve " +
+            "CORS ayarlarını kontrol edin.",
             true
           );
 
@@ -718,7 +723,7 @@
       }
     );
 
-    // SAAT BILGISI
+    // SAAT GOSTERIMI
 
     function formatTime(value) {
       const date = new Date(value);
@@ -735,14 +740,12 @@
 
     function createEmpty(message) {
       const element = document.createElement("div");
-
       element.className = "empty";
       element.textContent = message;
-
       return element;
     }
 
-    // CAGRI KARTI
+    // CAGRI KARTLARI
 
     function createCallCard(call, type) {
       const card = document.createElement("article");
@@ -753,9 +756,7 @@
 
       const table = document.createElement("div");
       table.className = "table-number";
-
-      table.textContent =
-        "Masa " + call.table_number;
+      table.textContent = "Masa " + call.table_number;
 
       const badge = document.createElement("span");
 
@@ -806,9 +807,7 @@
 
         button.addEventListener("click", () => {
           handleCallAction(
-            type === "pending"
-              ? "accept"
-              : "complete",
+            type === "pending" ? "accept" : "complete",
             call.call_id
           );
         });
@@ -817,7 +816,6 @@
 
       } else {
         const info = document.createElement("div");
-
         info.className = "call-meta";
 
         info.textContent =
@@ -831,20 +829,15 @@
 
     function renderGroup(id, calls, type, emptyText) {
       const container = $(id);
-
       container.replaceChildren();
 
       if (!calls.length) {
-        container.append(
-          createEmpty(emptyText)
-        );
+        container.append(createEmpty(emptyText));
         return;
       }
 
       calls.forEach(call => {
-        container.append(
-          createCallCard(call, type)
-        );
+        container.append(createCallCard(call, type));
       });
     }
 
@@ -852,19 +845,19 @@
       const myId = String(session.staff.id);
 
       const pending = calls.filter(
-        call => call.status === "pending"
+        c => c.status === "pending"
       );
 
       const mine = calls.filter(
-        call =>
-          call.status === "accepted" &&
-          String(call.accepted_by) === myId
+        c =>
+          c.status === "accepted" &&
+          String(c.accepted_by) === myId
       );
 
       const others = calls.filter(
-        call =>
-          call.status === "accepted" &&
-          String(call.accepted_by) !== myId
+        c =>
+          c.status === "accepted" &&
+          String(c.accepted_by) !== myId
       );
 
       $("pendingCount").textContent =
@@ -895,7 +888,7 @@
       );
     }
 
-    // CAGRI LISTESINI SUNUCUDAN AL
+    // CAGRI LISTESI
 
     async function loadCalls() {
       if (!session || busy || loadingCalls) {
@@ -940,9 +933,8 @@
       } catch (error) {
         showMessage(
           "dashboardMessage",
-          "Çağrılar alınamadı. " +
-          "Test için Staff Calls Webhook " +
-          "dinlemesini açın.",
+          "Çağrılar alınamadı. Test için " +
+          "Staff Calls Webhook dinlemesini açın.",
           true
         );
 
@@ -951,7 +943,7 @@
       }
     }
 
-    // CAGRI USTLENME VE TAMAMLAMA
+    // USTLENME VE TAMAMLAMA
 
     async function handleCallAction(action, callId) {
       if (!session || busy) {
@@ -964,7 +956,6 @@
       }
 
       busy = true;
-
       $("refreshBtn").disabled = true;
 
       showMessage(
@@ -995,29 +986,26 @@
           data.message ||
           (data.success
             ? "İşlem başarılı."
-            : "İşlem başarısız."),
+            : "İşlem gerçekleştirilemedi."),
           !data.success
         );
 
       } catch (error) {
         showMessage(
           "dashboardMessage",
-          "Bağlantı hatası. " +
-          "İlgili test webhook'unun dinlemesini açın. " +
-          "İşlem gerçekleşmiş olabilir.",
+          "Bağlantı hatası. İşlem gerçekleşmiş olabilir. " +
+          "İlgili test webhook'unu kontrol edin.",
           true
         );
 
       } finally {
         busy = false;
-
         $("refreshBtn").disabled = false;
-
         await loadCalls();
       }
     }
 
-    // YENILEME
+    // YENILE BUTONU
 
     $("refreshBtn").addEventListener(
       "click",
@@ -1033,19 +1021,65 @@
       }
     );
 
-    // CIKIS
+    // SUNUCU TARAFINDA GUVENLI CIKIS
 
     $("logoutBtn").addEventListener(
       "click",
-      () => {
-        // Simdilik yalnizca tarayici oturumunu siler.
-        clearSession();
+      async () => {
+        if (!session || busy) return;
 
-        $("staffId").value = "";
+        busy = true;
 
-        hideMessage("loginMessage");
+        const logoutBtn = $("logoutBtn");
+        logoutBtn.disabled = true;
+        logoutBtn.textContent = "Çıkış yapılıyor...";
 
-        showLogin();
+        const token = session.token;
+        let serverLogoutConfirmed = false;
+
+        try {
+          const data = await postJSON(
+            API.logout,
+            {
+              session_token: token
+            }
+          );
+
+          serverLogoutConfirmed =
+            data.result === "logged_out" ||
+            data.result === "unauthorized";
+
+        } catch (error) {
+          console.warn(
+            "Sunucu oturum kapatma sonucu doğrulanamadı."
+          );
+
+        } finally {
+          clearSession();
+
+          $("staffId").value = "";
+          $("password").value = "";
+
+          showLogin();
+
+          if (serverLogoutConfirmed) {
+            showMessage(
+              "loginMessage",
+              "Çıkış yapıldı. Yeniden giriş yapabilirsiniz."
+            );
+          } else {
+            showMessage(
+              "loginMessage",
+              "Telefondan çıkış yapıldı ancak sunucudaki " +
+              "oturumun kapatıldığı doğrulanamadı.",
+              true
+            );
+          }
+
+          logoutBtn.disabled = false;
+          logoutBtn.textContent = "Çıkış";
+          busy = false;
+        }
       }
     );
 
