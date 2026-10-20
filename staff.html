@@ -3,11 +3,9 @@
 <html lang="tr">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport"
-        content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#13243a">
   <meta name="referrer" content="no-referrer">
-
   <title>Akıllı Garson | Personel Paneli</title>
 
   <style>
@@ -266,7 +264,6 @@
 </head>
 
 <body>
-
   <main class="app">
 
     <header class="header">
@@ -276,10 +273,7 @@
       </div>
     </header>
 
-    <!-- GIRIS EKRANI -->
-
     <section id="loginScreen" class="card">
-
       <h2>Personel Girişi</h2>
 
       <form id="loginForm">
@@ -296,13 +290,12 @@
             step="1"
             inputmode="numeric"
             placeholder="Örn: 1"
+            autocomplete="username"
             required>
         </div>
 
         <div class="field">
-          <label for="password">
-            Şifreniz
-          </label>
+          <label for="password">Şifreniz</label>
 
           <input
             id="password"
@@ -321,28 +314,28 @@
 
       </form>
 
-      <div id="loginMessage"
-           class="message hidden"
-           role="status"
-           aria-live="polite"></div>
-
+      <div
+        id="loginMessage"
+        class="message hidden"
+        role="status"
+        aria-live="polite">
+      </div>
     </section>
-
-    <!-- PERSONEL PANELI -->
 
     <section id="dashboard" class="hidden">
 
       <div class="card">
-
         <div class="top-row">
 
           <div>
-            <div style="font-weight:800;font-size:19px"
-                 id="staffName">
+            <div
+              style="font-weight:800;font-size:19px"
+              id="staffName">
               Garson
             </div>
 
-            <div style="font-size:12px;color:#8190a2;margin-top:5px">
+            <div
+              style="font-size:12px;color:#8190a2;margin-top:5px">
               Aktif çağrı yönetimi
             </div>
           </div>
@@ -354,22 +347,27 @@
           </button>
 
         </div>
-
       </div>
 
       <div class="stats">
 
         <div class="stat">
-          <div class="stat-number"
-               id="pendingCount">0</div>
+          <div
+            class="stat-number"
+            id="pendingCount">
+            0
+          </div>
           <div class="stat-label">
             Bekleyen Çağrı
           </div>
         </div>
 
         <div class="stat">
-          <div class="stat-number"
-               id="myCount">0</div>
+          <div
+            class="stat-number"
+            id="myCount">
+            0
+          </div>
           <div class="stat-label">
             Üstlendiğim
           </div>
@@ -378,21 +376,27 @@
       </div>
 
       <div class="refresh">
-        <div class="refresh-info"
-             id="refreshInfo">
+
+        <div
+          class="refresh-info"
+          id="refreshInfo">
           Çağrılar yükleniyor...
         </div>
 
-        <button class="secondary"
-                id="refreshBtn">
+        <button
+          class="secondary"
+          id="refreshBtn">
           ↻ Yenile
         </button>
+
       </div>
 
-      <div id="dashboardMessage"
-           class="message hidden"
-           role="status"
-           aria-live="polite"></div>
+      <div
+        id="dashboardMessage"
+        class="message hidden"
+        role="status"
+        aria-live="polite">
+      </div>
 
       <div class="section-title">
         🔔 Bekleyen Çağrılar
@@ -427,7 +431,7 @@
     </section>
 
     <div class="notice">
-      Akıllı Garson • Demo
+      Akıllı Garson • Geliştirme/Test Sürümü
       <div>
         Telefon bildirimleri henüz aktif değildir.
       </div>
@@ -438,15 +442,24 @@
   <script>
     "use strict";
 
-    // API ADRESLERI
+    // GECICI TEST API ADRESI
+    // n8n webhook-test yalnizca dinleme acikken calisir.
+
     const API_BASE =
-      "https://2vcjhcky.rpcld.app/webhook";
+      "https://2vcjhcky.rpcld.app/webhook-test";
 
     const API = {
-      login: API_BASE + "/akilli-garson-staff-login",
-      calls: API_BASE + "/akilli-garson-staff-calls",
-      accept: API_BASE + "/akilli-garson-staff-accept",
-      complete: API_BASE + "/akilli-garson-staff-complete"
+      login:
+        API_BASE + "/akilli-garson-staff-login",
+
+      calls:
+        API_BASE + "/akilli-garson-staff-calls",
+
+      accept:
+        API_BASE + "/akilli-garson-staff-accept",
+
+      complete:
+        API_BASE + "/akilli-garson-staff-complete"
     };
 
     const RESTAURANT = "akilli-garson-demo";
@@ -454,7 +467,6 @@
     const SESSION_KEY =
       "akilli_garson_staff_session";
 
-    // Arayuz her 10 saniyede bir yenilenir.
     const REFRESH_MS = 10000;
 
     const $ = id => document.getElementById(id);
@@ -464,15 +476,16 @@
     let loadingCalls = false;
     let refreshTimer = null;
 
-    function showMessage(elementId, message, error = false) {
-      const element = $(elementId);
-      element.textContent = message;
-      element.classList.remove("hidden");
-      element.classList.toggle("error", error);
+    function showMessage(id, message, error = false) {
+      const el = $(id);
+
+      el.textContent = message;
+      el.classList.remove("hidden");
+      el.classList.toggle("error", error);
     }
 
-    function hideMessage(elementId) {
-      $(elementId).classList.add("hidden");
+    function hideMessage(id) {
+      $(id).classList.add("hidden");
     }
 
     function isSessionValid(data) {
@@ -511,7 +524,8 @@
 
     function restoreSession() {
       try {
-        const raw = sessionStorage.getItem(SESSION_KEY);
+        const raw =
+          sessionStorage.getItem(SESSION_KEY);
 
         if (!raw) return;
 
@@ -522,6 +536,7 @@
         } else {
           clearSession();
         }
+
       } catch (error) {
         clearSession();
       }
@@ -541,9 +556,11 @@
           mode: "cors",
           cache: "no-store",
           credentials: "omit",
+
           headers: {
             "Content-Type": "application/json"
           },
+
           body: JSON.stringify(body),
           signal: controller.signal
         });
@@ -588,6 +605,7 @@
 
       $("dashboard").classList.add("hidden");
       $("loginScreen").classList.remove("hidden");
+
       $("password").value = "";
     }
 
@@ -622,8 +640,11 @@
 
         if (busy) return;
 
-        const staffId = $("staffId").value.trim();
-        const password = $("password").value;
+        const staffId =
+          $("staffId").value.trim();
+
+        const password =
+          $("password").value;
 
         if (!/^\d+$/.test(staffId) || !password) {
           showMessage(
@@ -635,6 +656,7 @@
         }
 
         busy = true;
+
         $("loginBtn").disabled = true;
 
         showMessage(
@@ -652,30 +674,29 @@
             }
           );
 
+          const candidate = {
+            token: data.session_token,
+            staff: data.staff,
+            expires_at: data.expires_at
+          };
+
           if (
             data.success === true &&
             data.result === "authenticated" &&
-            isSessionValid({
-              token: data.session_token,
-              staff: data.staff,
-              expires_at: data.expires_at
-            })
+            isSessionValid(candidate)
           ) {
-            saveSession({
-              token: data.session_token,
-              staff: data.staff,
-              expires_at: data.expires_at
-            });
+            saveSession(candidate);
 
             $("password").value = "";
+
             hideMessage("loginMessage");
+
             showDashboard();
 
           } else {
             showMessage(
               "loginMessage",
-              data.message ||
-              "Giriş başarısız. Bilgilerinizi kontrol edin.",
+              data.message || "Giriş başarısız.",
               true
             );
           }
@@ -684,7 +705,9 @@
           showMessage(
             "loginMessage",
             "Sunucuya bağlanılamadı. " +
-            "Lütfen daha sonra tekrar deneyin.",
+            "Test için n8n'de Staff Login Webhook " +
+            "dinlemesini açın. Sorun sürerse " +
+            "CORS ve bağlantıyı kontrol edin.",
             true
           );
 
@@ -695,7 +718,7 @@
       }
     );
 
-    // CAGRI KARTI
+    // SAAT BILGISI
 
     function formatTime(value) {
       const date = new Date(value);
@@ -711,11 +734,15 @@
     }
 
     function createEmpty(message) {
-      const div = document.createElement("div");
-      div.className = "empty";
-      div.textContent = message;
-      return div;
+      const element = document.createElement("div");
+
+      element.className = "empty";
+      element.textContent = message;
+
+      return element;
     }
+
+    // CAGRI KARTI
 
     function createCallCard(call, type) {
       const card = document.createElement("article");
@@ -726,9 +753,12 @@
 
       const table = document.createElement("div");
       table.className = "table-number";
-      table.textContent = "Masa " + call.table_number;
+
+      table.textContent =
+        "Masa " + call.table_number;
 
       const badge = document.createElement("span");
+
       badge.className =
         "badge " +
         (call.status === "pending"
@@ -752,6 +782,7 @@
 
       const meta = document.createElement("div");
       meta.className = "call-meta";
+
       meta.textContent =
         "Çağrı #" + call.call_id +
         " • " + formatTime(call.created_at);
@@ -759,30 +790,36 @@
       card.append(header, label, meta);
 
       if (type === "pending" || type === "mine") {
-        const btn = document.createElement("button");
+        const button = document.createElement("button");
 
-        btn.className =
-          type === "pending" ? "primary" : "complete";
+        button.className =
+          type === "pending"
+            ? "primary"
+            : "complete";
 
-        btn.textContent =
+        button.textContent =
           type === "pending"
             ? "Çağrıyı Üstlen"
             : "✓ Tamamlandı";
 
-        btn.disabled = busy;
+        button.disabled = busy;
 
-        btn.addEventListener("click", () => {
+        button.addEventListener("click", () => {
           handleCallAction(
-            type === "pending" ? "accept" : "complete",
+            type === "pending"
+              ? "accept"
+              : "complete",
             call.call_id
           );
         });
 
-        card.append(btn);
+        card.append(button);
 
       } else {
         const info = document.createElement("div");
+
         info.className = "call-meta";
+
         info.textContent =
           "Başka bir personel tarafından üstlenildi.";
 
@@ -792,11 +829,12 @@
       return card;
     }
 
-    function renderGroup(elementId, calls, type, emptyText) {
-      const container = $(elementId);
+    function renderGroup(id, calls, type, emptyText) {
+      const container = $(id);
+
       container.replaceChildren();
 
-      if (calls.length === 0) {
+      if (!calls.length) {
         container.append(
           createEmpty(emptyText)
         );
@@ -814,23 +852,26 @@
       const myId = String(session.staff.id);
 
       const pending = calls.filter(
-        c => c.status === "pending"
+        call => call.status === "pending"
       );
 
       const mine = calls.filter(
-        c =>
-          c.status === "accepted" &&
-          String(c.accepted_by) === myId
+        call =>
+          call.status === "accepted" &&
+          String(call.accepted_by) === myId
       );
 
       const others = calls.filter(
-        c =>
-          c.status === "accepted" &&
-          String(c.accepted_by) !== myId
+        call =>
+          call.status === "accepted" &&
+          String(call.accepted_by) !== myId
       );
 
-      $("pendingCount").textContent = pending.length;
-      $("myCount").textContent = mine.length;
+      $("pendingCount").textContent =
+        pending.length;
+
+      $("myCount").textContent =
+        mine.length;
 
       renderGroup(
         "pendingList",
@@ -854,7 +895,7 @@
       );
     }
 
-    // CAGRI LISTESI
+    // CAGRI LISTESINI SUNUCUDAN AL
 
     async function loadCalls() {
       if (!session || busy || loadingCalls) {
@@ -885,26 +926,23 @@
           data.success !== true ||
           !Array.isArray(data.calls)
         ) {
-          throw new Error("Gecersiz API yaniti");
+          throw new Error("Geçersiz API yanıtı");
         }
 
         renderCalls(data.calls);
 
         $("refreshInfo").textContent =
           "Son güncelleme: " +
-          new Date().toLocaleTimeString("tr-TR", {
-            hour: "2-digit",
-            minute: "2-digit",
-            second: "2-digit"
-          });
+          new Date().toLocaleTimeString("tr-TR");
 
         hideMessage("dashboardMessage");
 
       } catch (error) {
         showMessage(
           "dashboardMessage",
-          "Çağrılar güncellenemedi. " +
-          "Bağlantınızı kontrol edin.",
+          "Çağrılar alınamadı. " +
+          "Test için Staff Calls Webhook " +
+          "dinlemesini açın.",
           true
         );
 
@@ -913,7 +951,7 @@
       }
     }
 
-    // USTLENME VE TAMAMLAMA
+    // CAGRI USTLENME VE TAMAMLAMA
 
     async function handleCallAction(action, callId) {
       if (!session || busy) {
@@ -926,6 +964,7 @@
       }
 
       busy = true;
+
       $("refreshBtn").disabled = true;
 
       showMessage(
@@ -951,39 +990,34 @@
           return;
         }
 
-        if (data.success === true) {
-          showMessage(
-            "dashboardMessage",
-            action === "accept"
-              ? "Çağrı üzerinize alındı."
-              : "Çağrı tamamlandı."
-          );
-
-        } else {
-          showMessage(
-            "dashboardMessage",
-            data.message ||
-            "İşlem gerçekleştirilemedi.",
-            true
-          );
-        }
+        showMessage(
+          "dashboardMessage",
+          data.message ||
+          (data.success
+            ? "İşlem başarılı."
+            : "İşlem başarısız."),
+          !data.success
+        );
 
       } catch (error) {
         showMessage(
           "dashboardMessage",
-          "Bağlantı hatası. İşlem gerçekleşmiş " +
-          "olabilir; listeyi kontrol edin.",
+          "Bağlantı hatası. " +
+          "İlgili test webhook'unun dinlemesini açın. " +
+          "İşlem gerçekleşmiş olabilir.",
           true
         );
 
       } finally {
         busy = false;
+
         $("refreshBtn").disabled = false;
+
         await loadCalls();
       }
     }
 
-    // MANUEL YENILEME
+    // YENILEME
 
     $("refreshBtn").addEventListener(
       "click",
@@ -1004,9 +1038,13 @@
     $("logoutBtn").addEventListener(
       "click",
       () => {
+        // Simdilik yalnizca tarayici oturumunu siler.
         clearSession();
+
         $("staffId").value = "";
+
         hideMessage("loginMessage");
+
         showLogin();
       }
     );
