@@ -6,6 +6,9 @@
   <meta name="theme-color" content="#13243a">
   <meta name="referrer" content="no-referrer">
   <title>Akıllı Garson | Personel Paneli</title>
+  <link rel="manifest" href="./manifest.json">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Akıllı Garson">
   <style>
     * { box-sizing: border-box; }
     body { margin: 0; min-height: 100vh; padding: 20px 14px; background: #f3f6fa; color: #17263c; font-family: Arial, sans-serif; }
@@ -37,6 +40,8 @@
     .notification-description { color: #8190a2; font-size: 12px; line-height: 1.6; margin-bottom: 12px; }
     .sound-button { width: 100%; background: #e8f0ff; color: #245bda; }
     .sound-button.enabled { background: #e7f6ed; color: #17683b; }
+    .push-test-button { background: #edf2f9; color: #213a60; width: 100%; margin-top: 10px; }
+    .push-status { font-size: 12px; color: #8190a2; line-height: 1.5; margin-top: 9px; }
     .refresh { margin: 16px 0; }
     .section-title { font-size: 17px; font-weight: 800; margin: 22px 4px 14px; }
     .call-card { padding: 20px; margin-bottom: 12px; }
@@ -70,14 +75,14 @@
   <section id="dashboard" class="hidden">
     <div class="card"><div class="top-row"><div><div id="staffName" class="staff-name">Garson</div><div class="small-muted">Aktif çağrı yönetimi</div></div><button id="logoutBtn" class="logout" type="button">Çıkış</button></div></div>
     <div class="stats"><div class="stat"><div id="pendingCount" class="stat-number">0</div><div class="stat-label">Bekleyen Çağrı</div></div><div class="stat"><div id="myCount" class="stat-number">0</div><div class="stat-label">Üstlendiğim</div></div></div>
-    <div class="notification-panel"><div class="notification-title">🔔 Yeni Çağrı Bildirimleri</div><div class="notification-description">Panel açıkken yeni çağrı algılandığında sesli ve görsel uyarı alırsınız. Kilit ekranı bildirimi henüz desteklenmiyor.</div><button id="soundBtn" class="sound-button" type="button">🔇 Bildirim Sesini Aç</button></div>
+    <div class="notification-panel"><div class="notification-title">🔔 Yeni Çağrı Bildirimleri</div><div class="notification-description">Panel açıkken yeni çağrı algılandığında sesli ve görsel uyarı alırsınız. Kilit ekranı için uzaktan Web Push bağlantısı henüz kurulmadı.</div><button id="soundBtn" class="sound-button" type="button">🔇 Bildirim Sesini Aç</button><button id="pushTestBtn" class="push-test-button" type="button">📲 Telefon Bildirimini Test Et</button><div id="pushStatus" class="push-status" role="status" aria-live="polite">Bu test sadece cihazda yerel bildirim gösterir.</div></div>
     <div class="refresh"><div id="refreshInfo" class="refresh-info">Çağrılar yükleniyor...</div><button id="refreshBtn" class="secondary" type="button">↻ Yenile</button></div>
     <div id="dashboardMessage" class="message hidden" role="status" aria-live="polite"></div>
     <div class="section-title">🔔 Bekleyen Çağrılar</div><div id="pendingList"><div class="empty">Çağrılar yükleniyor...</div></div>
     <div class="section-title">✅ Üstlendiğim Çağrılar</div><div id="myCallsList"><div class="empty">Çağrılar yükleniyor...</div></div>
     <div class="section-title">👥 Diğer Garsonların Çağrıları</div><div id="otherCallsList"><div class="empty">Çağrılar yükleniyor...</div></div>
   </section>
-  <div class="notice">Akıllı Garson • Demo sürümü<br>Otomatik kontrol: 10 saniye • Panel açıkken çalışır.</div>
+  <div class="notice">Akıllı Garson • Demo sürümü<br>Otomatik kontrol: 10 saniye • Kilit ekranı için uzaktan bildirim henüz aktif değil.</div>
 </main>
 <script>
 'use strict';
@@ -402,6 +407,47 @@ $('logoutBtn').addEventListener('click', async () => {
     $('logoutBtn').disabled = false;
     $('logoutBtn').textContent = 'Çıkış';
     busy = false;
+  }
+});
+// PWA Service Worker: mevcut çağrı API'sinden bağımsızdır.
+let pushRegistrationPromise = null;
+function getPushRegistration() {
+  if (!('serviceWorker' in navigator)) {
+    return Promise.reject(new Error('Bu tarayıcı Service Worker desteklemiyor.'));
+  }
+  if (!pushRegistrationPromise) {
+    pushRegistrationPromise = navigator.serviceWorker.register('./service-worker.js')
+      .catch(error => { pushRegistrationPromise = null; throw error; });
+  }
+  return pushRegistrationPromise;
+}
+if ('serviceWorker' in navigator) {
+  getPushRegistration().catch(error => console.warn('Service Worker kaydı başarısız:', error));
+}
+$('pushTestBtn').addEventListener('click', async () => {
+  const button = $('pushTestBtn');
+  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
+    $('pushStatus').textContent = 'Bu tarayıcı cihaz bildirimini desteklemiyor.';
+    return;
+  }
+  button.disabled = true;
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission !== 'granted') {
+      $('pushStatus').textContent = 'Bildirim izni verilmedi. Telefonun uygulama izinlerini kontrol edin.';
+      return;
+    }
+    const registration = await getPushRegistration();
+    await registration.showNotification('🔔 Akıllı Garson', {
+      body: 'Test bildirimi başarılı! Bu, gerçek müşteri çağrısı değildir.',
+      tag: 'akilli-garson-local-test',
+      data: { url: location.origin + '/akilli-garson/staff.html' }
+    });
+    $('pushStatus').textContent = 'Test bildirimi gösterildi. Uzaktan Web Push henüz kurulu değil.';
+  } catch (error) {
+    $('pushStatus').textContent = 'Bildirim testi başarısız: ' + error.message;
+  } finally {
+    button.disabled = false;
   }
 });
 updateSoundButton();
