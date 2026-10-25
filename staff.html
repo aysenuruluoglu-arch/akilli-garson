@@ -2,465 +2,581 @@
 <!DOCTYPE html>
 <html lang="tr">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#13243a">
-  <meta name="referrer" content="no-referrer">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#13243a">
+<meta name="referrer" content="no-referrer">
 
-  <link rel="manifest" href="./manifest.json">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Akıllı Garson">
+<link rel="manifest" href="./manifest.json">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Akıllı Garson">
 
-  <title>Akıllı Garson | Personel Paneli</title>
+<title>Akıllı Garson | Personel Paneli</title>
 
-  <style>
-    * { box-sizing: border-box; }
+<!-- OneSignal Web SDK v16 -->
+<script
+  src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js"
+  defer>
+</script>
 
-    body {
-      margin: 0;
-      padding: 18px 13px;
-      background: #f3f6fa;
-      color: #17263c;
-      font-family: Arial, sans-serif;
-    }
+<style>
+* {
+  box-sizing: border-box;
+}
 
-    .app {
-      max-width: 480px;
-      margin: auto;
-    }
+body {
+  margin: 0;
+  background: #f3f6fa;
+  color: #17263c;
+  padding: 18px 13px;
+  font: 14px Arial, sans-serif;
+}
 
-    .header {
-      background: #13243a;
-      color: white;
-      border-radius: 20px;
-      padding: 25px 22px;
-      margin-bottom: 16px;
-    }
+.app {
+  max-width: 480px;
+  margin: auto;
+}
 
-    .brand {
-      font-size: 24px;
-      font-weight: 800;
-    }
+.header {
+  padding: 25px 22px;
+  background: #13243a;
+  color: white;
+  border-radius: 20px;
+  margin-bottom: 15px;
+}
 
-    .subtitle {
-      margin-top: 7px;
-      color: #b9c8da;
-      font-size: 13px;
-    }
+.brand {
+  font-size: 24px;
+  font-weight: 800;
+}
 
-    .card {
-      background: white;
-      border-radius: 17px;
-      padding: 20px;
-      margin-bottom: 15px;
-      box-shadow: 0 4px 16px #14243b0a;
-    }
+.subtitle {
+  margin-top: 7px;
+  font-size: 13px;
+  color: #b9c8da;
+}
 
-    h2 {
-      font-size: 18px;
-      margin: 0 0 15px;
-    }
+.card {
+  padding: 20px;
+  background: white;
+  border-radius: 17px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 16px #14243b0a;
+}
 
-    h3 {
-      font-size: 16px;
-      margin: 18px 0 12px;
-    }
+h2 {
+  font-size: 18px;
+  margin: 0 0 15px;
+}
 
-    label {
-      display: block;
-      margin: 15px 0 7px;
-      font-size: 13px;
-      font-weight: bold;
-    }
+h3 {
+  font-size: 16px;
+  margin: 20px 0 12px;
+}
 
-    input {
-      width: 100%;
-      padding: 14px;
-      font-size: 16px;
-      border: 1px solid #dbe3ee;
-      border-radius: 11px;
-    }
+label {
+  display: block;
+  margin: 15px 0 7px;
+  font-weight: bold;
+  font-size: 13px;
+}
 
-    button {
-      border: 0;
-      border-radius: 11px;
-      padding: 13px 15px;
-      font-size: 14px;
-      font-weight: bold;
-      cursor: pointer;
-    }
+input {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  border: 1px solid #dbe3ee;
+  border-radius: 11px;
+}
 
-    button:disabled {
-      opacity: .55;
-      cursor: not-allowed;
-    }
+button {
+  border: 0;
+  border-radius: 11px;
+  padding: 13px 15px;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
 
-    .primary {
-      width: 100%;
-      background: #245bda;
-      color: white;
-    }
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
 
-    .secondary {
-      background: #edf2f9;
-      color: #213a60;
-    }
+.primary {
+  width: 100%;
+  background: #245bda;
+  color: white;
+}
 
-    .success {
-      width: 100%;
-      background: #e1f4e8;
-      color: #166839;
-    }
+.secondary {
+  background: #edf2f9;
+  color: #213a60;
+}
 
-    .logout {
-      background: #30445e;
-      color: white;
-    }
+.success {
+  width: 100%;
+  background: #e1f4e8;
+  color: #166839;
+}
 
-    .top {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-    }
+.logout {
+  background: #30445e;
+  color: white;
+}
 
-    .name {
-      font-size: 18px;
-      font-weight: 800;
-    }
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+}
 
-    .muted {
-      font-size: 12px;
-      color: #8290a2;
-      line-height: 1.6;
-      margin-top: 5px;
-    }
+.name {
+  font-size: 18px;
+  font-weight: 800;
+}
 
-    .hidden {
-      display: none !important;
-    }
+.muted {
+  margin-top: 5px;
+  font-size: 12px;
+  color: #8290a2;
+  line-height: 1.6;
+}
 
-    .stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-      margin-bottom: 15px;
-    }
+.hidden {
+  display: none !important;
+}
 
-    .stat {
-      background: white;
-      padding: 20px;
-      border-radius: 16px;
-      text-align: center;
-    }
+.stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 15px;
+}
 
-    .stat-number {
-      font-size: 32px;
-      font-weight: 800;
-    }
+.stat {
+  background: white;
+  padding: 20px 10px;
+  border-radius: 16px;
+  text-align: center;
+}
 
-    .stat-label {
-      font-size: 12px;
-      margin-top: 5px;
-      color: #8290a2;
-    }
+.stat-number {
+  font-size: 32px;
+  font-weight: 800;
+}
 
-    .sound-button {
-      width: 100%;
-      background: #e8f0ff;
-      color: #245bda;
-      margin-top: 10px;
-    }
+.stat-label {
+  font-size: 12px;
+  margin-top: 5px;
+  color: #8290a2;
+}
 
-    .sound-button.enabled {
-      background: #e1f4e8;
-      color: #166839;
-    }
+.sound-button {
+  width: 100%;
+  margin-top: 12px;
+  background: #e8f0ff;
+  color: #245bda;
+}
 
-    .push-button {
-      width: 100%;
-      background: #245bda;
-      color: white;
-      margin-top: 12px;
-    }
+.sound-button.enabled {
+  background: #e1f4e8;
+  color: #166839;
+}
 
-    .refresh {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 15px 0;
-      gap: 12px;
-    }
+.push-button {
+  width: 100%;
+  margin-top: 12px;
+  background: #245bda;
+  color: white;
+}
 
-    .message {
-      padding: 13px;
-      background: #e7f6ed;
-      color: #17683b;
-      border-radius: 11px;
-      margin: 12px 0;
-      font-size: 13px;
-      line-height: 1.5;
-    }
+.push-button.enabled {
+  background: #e1f4e8;
+  color: #166839;
+}
 
-    .message.error {
-      background: #fff0f0;
-      color: #ae232a;
-    }
+.test-button {
+  width: 100%;
+  margin-top: 10px;
+  background: #edf2f9;
+  color: #213a60;
+}
 
-    .message.alert {
-      background: #fff4dd;
-      color: #925900;
-      border: 1px solid #f4d394;
-    }
+.refresh {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin: 15px 0;
+}
 
-    .call {
-      background: white;
-      padding: 19px;
-      border-radius: 17px;
-      margin-bottom: 12px;
-    }
+.message {
+  padding: 13px;
+  margin: 12px 0;
+  border-radius: 11px;
+  background: #e7f6ed;
+  color: #17683b;
+  font-size: 13px;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+}
 
-    .call.new {
-      border: 2px solid #f0ae37;
-    }
+.message.error {
+  background: #fff0f0;
+  color: #ae232a;
+}
 
-    .call-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
+.message.alert {
+  background: #fff4dd;
+  color: #925900;
+  border: 1px solid #f4d394;
+}
 
-    .table-number {
-      font-size: 22px;
-      font-weight: 800;
-    }
+.call {
+  padding: 19px;
+  background: white;
+  border-radius: 17px;
+  margin-bottom: 12px;
+}
 
-    .badge {
-      padding: 7px 10px;
-      border-radius: 20px;
-      font-size: 11px;
-      font-weight: bold;
-      background: #fff1d9;
-      color: #97610b;
-    }
+.call.new {
+  border: 2px solid #f0ae37;
+}
 
-    .badge.accepted {
-      background: #e8f0ff;
-      color: #245bda;
-    }
+.call-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+}
 
-    .call-type {
-      font-weight: bold;
-      margin: 14px 0 7px;
-    }
+.table-number {
+  font-size: 22px;
+  font-weight: 800;
+}
 
-    .call-meta {
-      font-size: 12px;
-      color: #8290a2;
-      margin-bottom: 14px;
-    }
+.badge {
+  padding: 7px 10px;
+  border-radius: 20px;
+  font-size: 11px;
+  font-weight: bold;
+  background: #fff1d9;
+  color: #97610b;
+}
 
-    .empty {
-      background: white;
-      padding: 22px;
-      border-radius: 14px;
-      text-align: center;
-      color: #8290a2;
-      font-size: 13px;
-    }
+.badge.accepted {
+  background: #e8f0ff;
+  color: #245bda;
+}
 
-    .footer {
-      text-align: center;
-      padding: 15px;
-      color: #8290a2;
-      font-size: 12px;
-    }
-  </style>
+.call-type {
+  margin: 14px 0 7px;
+  font-weight: bold;
+}
+
+.call-meta {
+  font-size: 12px;
+  color: #8290a2;
+  margin-bottom: 14px;
+}
+
+.empty {
+  background: white;
+  border-radius: 14px;
+  padding: 22px;
+  text-align: center;
+  font-size: 13px;
+  color: #8290a2;
+}
+
+.footer {
+  padding: 15px;
+  text-align: center;
+  color: #8290a2;
+  font-size: 12px;
+}
+</style>
 </head>
 
 <body>
+
 <main class="app">
 
-  <header class="header">
-    <div class="brand">Akıllı Garson</div>
-    <div class="subtitle">Personel Çağrı Yönetimi</div>
-  </header>
+<header class="header">
+  <div class="brand">Akıllı Garson</div>
+  <div class="subtitle">
+    Personel Çağrı Yönetimi
+  </div>
+</header>
 
-  <!-- GIRIS -->
+<!-- GIRIS -->
 
-  <section id="loginScreen" class="card">
-    <h2>Personel Girişi</h2>
+<section id="loginScreen" class="card">
 
-    <form id="loginForm">
+  <h2>Personel Girişi</h2>
 
-      <label for="staffId">Personel Numaranız</label>
-      <input
-        id="staffId"
-        type="number"
-        min="1"
-        step="1"
-        autocomplete="username"
-        required
-      >
+  <form id="loginForm">
 
-      <label for="password">Şifreniz</label>
-      <input
-        id="password"
-        type="password"
-        autocomplete="current-password"
-        required
-      >
+    <label for="staffId">
+      Personel Numaranız
+    </label>
 
-      <button
-        id="loginBtn"
-        class="primary"
-        type="submit"
-      >
-        Giriş Yap
-      </button>
-    </form>
+    <input
+      id="staffId"
+      type="number"
+      min="1"
+      step="1"
+      autocomplete="username"
+      required
+    >
 
-    <div id="loginMessage" class="message hidden"></div>
-  </section>
+    <label for="password">
+      Şifreniz
+    </label>
 
-  <!-- PANEL -->
+    <input
+      id="password"
+      type="password"
+      autocomplete="current-password"
+      required
+    >
 
-  <section id="dashboard" class="hidden">
+    <button
+      id="loginBtn"
+      class="primary"
+      type="submit"
+    >
+      Giriş Yap
+    </button>
 
-    <div class="card">
-      <div class="top">
-        <div>
-          <div id="staffName" class="name">Garson</div>
-          <div class="muted">Aktif çağrı yönetimi</div>
+  </form>
+
+  <div
+    id="loginMessage"
+    class="message hidden"
+    role="status"
+  ></div>
+
+</section>
+
+<!-- PERSONEL PANELI -->
+
+<section id="dashboard" class="hidden">
+
+  <div class="card">
+    <div class="top">
+
+      <div>
+        <div id="staffName" class="name">
+          Garson
         </div>
 
-        <button
-          id="logoutBtn"
-          class="logout"
-          type="button"
-        >
-          Çıkış
-        </button>
-      </div>
-    </div>
-
-    <div class="stats">
-      <div class="stat">
-        <div id="pendingCount" class="stat-number">0</div>
-        <div class="stat-label">Bekleyen Çağrı</div>
-      </div>
-
-      <div class="stat">
-        <div id="myCount" class="stat-number">0</div>
-        <div class="stat-label">Üstlendiğim</div>
-      </div>
-    </div>
-
-    <!-- SES -->
-
-    <div class="card">
-      <h2>🔔 Yeni Çağrı Bildirimleri</h2>
-
-      <div class="muted">
-        Panel açıkken yeni çağrı geldiğinde
-        sesli uyarı alabilirsiniz.
+        <div class="muted">
+          Aktif çağrı yönetimi
+        </div>
       </div>
 
       <button
-        id="soundBtn"
-        class="sound-button"
+        id="logoutBtn"
+        class="logout"
         type="button"
       >
-        🔊 Bildirim Sesini Aç
-      </button>
-    </div>
-
-    <!-- TELEFON BILDIRIMI -->
-
-    <div class="card">
-      <h2>📲 Telefon Bildirimleri</h2>
-
-      <div class="muted">
-        Bildirim izni vererek cihazınızda
-        deneme bildirimi görüntüleyebilirsiniz.
-      </div>
-
-      <button
-        id="pushTestBtn"
-        class="push-button"
-        type="button"
-      >
-        📲 Telefon Bildirimini Test Et
+        Çıkış
       </button>
 
-      <div id="pushMessage" class="message hidden"></div>
     </div>
-
-    <!-- YENILE -->
-
-    <div class="refresh">
-      <div id="refreshInfo" class="muted">
-        Çağrılar yükleniyor...
-      </div>
-
-      <button
-        id="refreshBtn"
-        class="secondary"
-        type="button"
-      >
-        ↻ Yenile
-      </button>
-    </div>
-
-    <div id="dashboardMessage" class="message hidden"></div>
-
-    <h3>🔔 Bekleyen Çağrılar</h3>
-    <div id="pendingList">
-      <div class="empty">Yükleniyor...</div>
-    </div>
-
-    <h3>✅ Üstlendiğim Çağrılar</h3>
-    <div id="myCallsList">
-      <div class="empty">Yükleniyor...</div>
-    </div>
-
-    <h3>👥 Diğer Garsonların Çağrıları</h3>
-    <div id="otherCallsList">
-      <div class="empty">Yükleniyor...</div>
-    </div>
-
-  </section>
-
-  <div class="footer">
-    Akıllı Garson • Personel Paneli
   </div>
+
+  <!-- ISTATISTIK -->
+
+  <div class="stats">
+
+    <div class="stat">
+      <div
+        id="pendingCount"
+        class="stat-number"
+      >
+        0
+      </div>
+
+      <div class="stat-label">
+        Bekleyen Çağrı
+      </div>
+    </div>
+
+    <div class="stat">
+      <div
+        id="myCount"
+        class="stat-number"
+      >
+        0
+      </div>
+
+      <div class="stat-label">
+        Üstlendiğim
+      </div>
+    </div>
+
+  </div>
+
+  <!-- SES BILDIRIMI -->
+
+  <div class="card">
+
+    <h2>🔔 Yeni Çağrı Bildirimleri</h2>
+
+    <div class="muted">
+      Panel açıkken yeni çağrı geldiğinde
+      sesli uyarı alabilirsiniz.
+    </div>
+
+    <button
+      id="soundBtn"
+      class="sound-button"
+      type="button"
+    >
+      🔊 Bildirim Sesini Aç
+    </button>
+
+  </div>
+
+  <!-- ONESIGNAL TELEFON BILDIRIMLERI -->
+
+  <div class="card">
+
+    <h2>📲 Telefon Bildirimleri</h2>
+
+    <div class="muted">
+      OneSignal bildirimlerini etkinleştirerek
+      telefonunuzun uzaktan bildirim almaya
+      hazır olmasını sağlayabilirsiniz.
+    </div>
+
+    <button
+      id="enablePushBtn"
+      class="push-button"
+      type="button"
+    >
+      📲 Telefon Bildirimlerini Etkinleştir
+    </button>
+
+    <button
+      id="localTestBtn"
+      class="test-button"
+      type="button"
+    >
+      🔔 Yerel Bildirimi Test Et
+    </button>
+
+    <div
+      id="pushMessage"
+      class="message hidden"
+      role="status"
+    ></div>
+
+    <div class="muted">
+      iPhone'da uygulamayı Safari üzerinden
+      ana ekrana ekleyerek açın.
+      Android'de Chrome kullanılabilir.
+    </div>
+
+  </div>
+
+  <!-- YENILE -->
+
+  <div class="refresh">
+
+    <div id="refreshInfo" class="muted">
+      Çağrılar yükleniyor...
+    </div>
+
+    <button
+      id="refreshBtn"
+      class="secondary"
+      type="button"
+    >
+      ↻ Yenile
+    </button>
+
+  </div>
+
+  <div
+    id="dashboardMessage"
+    class="message hidden"
+    role="status"
+  ></div>
+
+  <h3>🔔 Bekleyen Çağrılar</h3>
+
+  <div id="pendingList">
+    <div class="empty">
+      Çağrılar yükleniyor...
+    </div>
+  </div>
+
+  <h3>✅ Üstlendiğim Çağrılar</h3>
+
+  <div id="myCallsList">
+    <div class="empty">
+      Çağrılar yükleniyor...
+    </div>
+  </div>
+
+  <h3>👥 Diğer Garsonların Çağrıları</h3>
+
+  <div id="otherCallsList">
+    <div class="empty">
+      Çağrılar yükleniyor...
+    </div>
+  </div>
+
+</section>
+
+<div class="footer">
+  Akıllı Garson • Personel Paneli
+</div>
 
 </main>
 
 <script>
 "use strict";
 
-// =====================================
-// API
-// =====================================
+// ======================================
+// API AYARLARI
+// ======================================
 
 const BASE =
   "https://2vcjhcky.rpcld.app/webhook";
 
 const API = {
-  login: BASE + "/akilli-garson-staff-login",
-  calls: BASE + "/akilli-garson-staff-calls",
-  accept: BASE + "/akilli-garson-staff-accept",
-  complete: BASE + "/akilli-garson-staff-complete",
-  logout: BASE + "/akilli-garson-staff-logout"
+  login:
+    BASE + "/akilli-garson-staff-login",
+
+  calls:
+    BASE + "/akilli-garson-staff-calls",
+
+  accept:
+    BASE + "/akilli-garson-staff-accept",
+
+  complete:
+    BASE + "/akilli-garson-staff-complete",
+
+  logout:
+    BASE + "/akilli-garson-staff-logout"
 };
 
-const RESTAURANT = "akilli-garson-demo";
-const SESSION_KEY = "akilli_garson_staff_session";
+const RESTAURANT =
+  "akilli-garson-demo";
+
+const SESSION_KEY =
+  "akilli_garson_staff_session";
+
 const REFRESH_MS = 10000;
 
-const $ = id => document.getElementById(id);
+const $ = id =>
+  document.getElementById(id);
 
 let session = null;
 let busy = false;
@@ -471,26 +587,54 @@ let audioContext = null;
 let soundEnabled = false;
 
 let firstLoad = true;
+
 const knownCalls = new Set();
 const newCalls = new Set();
 
-// =====================================
+// ======================================
+// ONESIGNAL AYARLARI
+// ======================================
+
+// OneSignal uygulama kimliği.
+// Bu değer gizli API anahtarı değildir.
+
+const ONESIGNAL_APP_ID =
+  "fa3546e9-94a3-407a-9154-6b5aa7b856cf";
+
+// GitHub Pages alt klasöründe
+// bağımsız OneSignal worker.
+
+const ONESIGNAL_WORKER_PATH =
+  "/akilli-garson/onesignal/OneSignalSDKWorker.js";
+
+const ONESIGNAL_WORKER_SCOPE =
+  "/akilli-garson/onesignal/";
+
+let oneSignalInstance = null;
+let oneSignalReady = false;
+let oneSignalError = null;
+
+// ======================================
 // MESAJLAR
-// =====================================
+// ======================================
 
 function message(id, text, type = "") {
   const el = $(id);
+
   el.textContent = text;
-  el.className = "message " + type;
+
+  el.className =
+    "message " + type;
 }
 
 function hideMessage(id) {
-  $(id).className = "message hidden";
+  $(id).className =
+    "message hidden";
 }
 
-// =====================================
+// ======================================
 // OTURUM
-// =====================================
+// ======================================
 
 function validSession(s) {
   return Boolean(
@@ -506,6 +650,7 @@ function validSession(s) {
 
 function saveSession(s) {
   session = s;
+
   sessionStorage.setItem(
     SESSION_KEY,
     JSON.stringify(s)
@@ -514,33 +659,47 @@ function saveSession(s) {
 
 function clearSession() {
   session = null;
-  sessionStorage.removeItem(SESSION_KEY);
+
+  sessionStorage.removeItem(
+    SESSION_KEY
+  );
 }
 
 function showLogin() {
   stopPolling();
-  $("loginScreen").classList.remove("hidden");
-  $("dashboard").classList.add("hidden");
+
+  $("loginScreen")
+    .classList.remove("hidden");
+
+  $("dashboard")
+    .classList.add("hidden");
+
   $("password").value = "";
 }
 
 function showDashboard() {
-  $("loginScreen").classList.add("hidden");
-  $("dashboard").classList.remove("hidden");
+  $("loginScreen")
+    .classList.add("hidden");
+
+  $("dashboard")
+    .classList.remove("hidden");
 
   $("staffName").textContent =
     session.staff.name || "Garson";
 
   firstLoad = true;
+
   knownCalls.clear();
   newCalls.clear();
 
   $("pendingList").replaceChildren(
     emptyElement("Çağrılar yükleniyor...")
   );
+
   $("myCallsList").replaceChildren(
     emptyElement("Çağrılar yükleniyor...")
   );
+
   $("otherCallsList").replaceChildren(
     emptyElement("Çağrılar yükleniyor...")
   );
@@ -549,44 +708,56 @@ function showDashboard() {
 
   loadCalls();
   startPolling();
+
+  updatePushButton();
 }
 
 function expireSession() {
   clearSession();
   showLogin();
+
   message(
     "loginMessage",
-    "Oturum süresi doldu. Tekrar giriş yapın.",
+    "Oturum geçersiz veya süresi dolmuş.",
     "error"
   );
 }
 
-// =====================================
+// ======================================
 // HTTP
-// =====================================
+// ======================================
 
 async function postJSON(url, body) {
-  const controller = new AbortController();
+  const controller =
+    new AbortController();
+
   const timeout = setTimeout(
     () => controller.abort(),
     15000
   );
 
   try {
-    const response = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-store",
-      credentials: "omit",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body),
-      signal: controller.signal
-    });
+    const response = await fetch(
+      url,
+      {
+        method: "POST",
+        mode: "cors",
+        cache: "no-store",
+        credentials: "omit",
+
+        headers: {
+          "Content-Type": "application/json"
+        },
+
+        body: JSON.stringify(body),
+        signal: controller.signal
+      }
+    );
 
     if (!response.ok) {
-      throw new Error("HTTP " + response.status);
+      throw new Error(
+        "HTTP " + response.status
+      );
     }
 
     return await response.json();
@@ -596,14 +767,15 @@ async function postJSON(url, body) {
   }
 }
 
-// =====================================
-// GIRIS
-// =====================================
+// ======================================
+// PERSONEL GIRISI
+// ======================================
 
 $("loginForm").addEventListener(
   "submit",
   async event => {
     event.preventDefault();
+
     if (busy) return;
 
     busy = true;
@@ -614,8 +786,13 @@ $("loginForm").addEventListener(
         API.login,
         {
           restaurant: RESTAURANT,
-          staff_id: Number($("staffId").value),
-          password: $("password").value
+
+          staff_id: Number(
+            $("staffId").value
+          ),
+
+          password:
+            $("password").value
         }
       );
 
@@ -632,10 +809,12 @@ $("loginForm").addEventListener(
       ) {
         saveSession(candidate);
         showDashboard();
+
       } else {
         message(
           "loginMessage",
-          data.message || "Giriş başarısız.",
+          data.message ||
+          "Giriş başarısız.",
           "error"
         );
       }
@@ -654,19 +833,27 @@ $("loginForm").addEventListener(
   }
 );
 
-// =====================================
-// SES
-// =====================================
+// ======================================
+// SES BILDIRIMLERI
+// ======================================
 
 function playSound() {
-  if (!soundEnabled || !audioContext) return;
-  if (audioContext.state !== "running") return;
+  if (!soundEnabled || !audioContext) {
+    return;
+  }
+
+  if (audioContext.state !== "running") {
+    return;
+  }
 
   const now = audioContext.currentTime;
 
   [0, 0.28].forEach(offset => {
-    const osc = audioContext.createOscillator();
-    const gain = audioContext.createGain();
+    const osc =
+      audioContext.createOscillator();
+
+    const gain =
+      audioContext.createGain();
 
     osc.type = "sine";
     osc.frequency.value = 880;
@@ -687,10 +874,16 @@ function playSound() {
     );
 
     osc.connect(gain);
-    gain.connect(audioContext.destination);
+
+    gain.connect(
+      audioContext.destination
+    );
 
     osc.start(now + offset);
-    osc.stop(now + offset + 0.23);
+
+    osc.stop(
+      now + offset + 0.23
+    );
   });
 }
 
@@ -699,9 +892,13 @@ $("soundBtn").addEventListener(
   async () => {
     if (soundEnabled) {
       soundEnabled = false;
-      $("soundBtn").classList.remove("enabled");
+
+      $("soundBtn")
+        .classList.remove("enabled");
+
       $("soundBtn").textContent =
         "🔊 Bildirim Sesini Aç";
+
       return;
     }
 
@@ -711,7 +908,9 @@ $("soundBtn").addEventListener(
         window.webkitAudioContext;
 
       if (!AudioClass) {
-        throw new Error("Ses desteği yok.");
+        throw new Error(
+          "Ses desteği bulunamadı."
+        );
       }
 
       audioContext ||= new AudioClass();
@@ -722,10 +921,14 @@ $("soundBtn").addEventListener(
         audioContext.state === "running";
 
       if (!soundEnabled) {
-        throw new Error("Ses başlatılamadı.");
+        throw new Error(
+          "Ses başlatılamadı."
+        );
       }
 
-      $("soundBtn").classList.add("enabled");
+      $("soundBtn")
+        .classList.add("enabled");
+
       $("soundBtn").textContent =
         "🔊 Bildirim Sesi Açık";
 
@@ -734,16 +937,17 @@ $("soundBtn").addEventListener(
     } catch (error) {
       message(
         "dashboardMessage",
-        "Bildirim sesi açılamadı: " + error.message,
+        "Sesli bildirim açılamadı: " +
+        error.message,
         "error"
       );
     }
   }
 );
 
-// =====================================
-// YENI CAGRI TESPITI
-// =====================================
+// ======================================
+// YENI CAGRI ALGILAMA
+// ======================================
 
 function detectNewCalls(calls) {
   const pending = calls.filter(
@@ -752,7 +956,9 @@ function detectNewCalls(calls) {
 
   if (firstLoad) {
     pending.forEach(c => {
-      knownCalls.add(String(c.call_id));
+      knownCalls.add(
+        String(c.call_id)
+      );
     });
 
     firstLoad = false;
@@ -760,43 +966,55 @@ function detectNewCalls(calls) {
   }
 
   const arrivals = pending.filter(
-    c => !knownCalls.has(String(c.call_id))
+    c => !knownCalls.has(
+      String(c.call_id)
+    )
   );
 
   arrivals.forEach(c => {
-    const id = String(c.call_id);
+    const id =
+      String(c.call_id);
+
     knownCalls.add(id);
     newCalls.add(id);
   });
 
-  if (arrivals.length) {
-    playSound();
-
-    const tables = [
-      ...new Set(
-        arrivals.map(c => c.table_number)
-      )
-    ];
-
-    message(
-      "dashboardMessage",
-      "🔔 Yeni çağrı! Masa " + tables.join(", "),
-      "alert"
-    );
-
-    document.title =
-      "🔔 Yeni Çağrı | Akıllı Garson";
+  if (!arrivals.length) {
+    return;
   }
+
+  playSound();
+
+  const tables = [
+    ...new Set(
+      arrivals.map(
+        c => c.table_number
+      )
+    )
+  ];
+
+  message(
+    "dashboardMessage",
+    "🔔 Yeni çağrı! Masa " +
+    tables.join(", "),
+    "alert"
+  );
+
+  document.title =
+    "🔔 Yeni Çağrı | Akıllı Garson";
 }
 
-// =====================================
+// ======================================
 // CAGRI KARTLARI
-// =====================================
+// ======================================
 
 function emptyElement(text) {
-  const el = document.createElement("div");
+  const el =
+    document.createElement("div");
+
   el.className = "empty";
   el.textContent = text;
+
   return el;
 }
 
@@ -807,31 +1025,45 @@ function formatTime(value) {
     return "";
   }
 
-  return d.toLocaleTimeString("tr-TR", {
-    hour: "2-digit",
-    minute: "2-digit"
-  });
+  return d.toLocaleTimeString(
+    "tr-TR",
+    {
+      hour: "2-digit",
+      minute: "2-digit"
+    }
+  );
 }
 
 function createCallCard(call, kind) {
-  const card = document.createElement("div");
+  const card =
+    document.createElement("div");
 
   card.className =
     "call" +
     (
-      newCalls.has(String(call.call_id))
+      newCalls.has(
+        String(call.call_id)
+      )
         ? " new"
         : ""
     );
 
-  const header = document.createElement("div");
+  const header =
+    document.createElement("div");
+
   header.className = "call-header";
 
-  const table = document.createElement("div");
-  table.className = "table-number";
-  table.textContent = "Masa " + call.table_number;
+  const table =
+    document.createElement("div");
 
-  const badge = document.createElement("span");
+  table.className = "table-number";
+
+  table.textContent =
+    "Masa " + call.table_number;
+
+  const badge =
+    document.createElement("span");
+
   badge.className =
     "badge" +
     (
@@ -847,7 +1079,9 @@ function createCallCard(call, kind) {
 
   header.append(table, badge);
 
-  const type = document.createElement("div");
+  const type =
+    document.createElement("div");
+
   type.className = "call-type";
 
   type.textContent =
@@ -855,17 +1089,29 @@ function createCallCard(call, kind) {
       ? "🧾 Hesap İstiyor"
       : "🔔 Garson Çağırıyor";
 
-  const meta = document.createElement("div");
+  const meta =
+    document.createElement("div");
+
   meta.className = "call-meta";
 
   meta.textContent =
-    "Çağrı #" + call.call_id +
-    " • " + formatTime(call.created_at);
+    "Çağrı #" +
+    call.call_id +
+    " • " +
+    formatTime(call.created_at);
 
-  card.append(header, type, meta);
+  card.append(
+    header,
+    type,
+    meta
+  );
 
-  if (kind === "pending" || kind === "mine") {
-    const button = document.createElement("button");
+  if (
+    kind === "pending" ||
+    kind === "mine"
+  ) {
+    const button =
+      document.createElement("button");
 
     button.className =
       kind === "pending"
@@ -890,8 +1136,11 @@ function createCallCard(call, kind) {
     card.append(button);
 
   } else {
-    const text = document.createElement("div");
+    const text =
+      document.createElement("div");
+
     text.className = "muted";
+
     text.textContent =
       "Başka bir personel tarafından üstlenildi.";
 
@@ -908,10 +1157,14 @@ function renderGroup(
   emptyText
 ) {
   const container = $(id);
+
   container.replaceChildren();
 
   if (!calls.length) {
-    container.append(emptyElement(emptyText));
+    container.append(
+      emptyElement(emptyText)
+    );
+
     return;
   }
 
@@ -923,7 +1176,8 @@ function renderGroup(
 }
 
 function renderCalls(calls) {
-  const myId = String(session.staff.id);
+  const myId =
+    String(session.staff.id);
 
   const pending = calls.filter(
     c => c.status === "pending"
@@ -941,8 +1195,11 @@ function renderCalls(calls) {
       String(c.accepted_by) !== myId
   );
 
-  $("pendingCount").textContent = pending.length;
-  $("myCount").textContent = mine.length;
+  $("pendingCount").textContent =
+    pending.length;
+
+  $("myCount").textContent =
+    mine.length;
 
   renderGroup(
     "pendingList",
@@ -966,12 +1223,18 @@ function renderCalls(calls) {
   );
 }
 
-// =====================================
-// CAGRI LISTESINI GETIR
-// =====================================
+// ======================================
+// CAGRI LISTESI
+// ======================================
 
 async function loadCalls() {
-  if (!session || busy || loading) return;
+  if (
+    !session ||
+    busy ||
+    loading
+  ) {
+    return;
+  }
 
   if (!validSession(session)) {
     expireSession();
@@ -979,6 +1242,7 @@ async function loadCalls() {
   }
 
   loading = true;
+
   $("refreshBtn").disabled = true;
 
   const token = session.token;
@@ -986,14 +1250,21 @@ async function loadCalls() {
   try {
     const data = await postJSON(
       API.calls,
-      { session_token: token }
+      {
+        session_token: token
+      }
     );
 
-    if (!session || session.token !== token) {
+    if (
+      !session ||
+      session.token !== token
+    ) {
       return;
     }
 
-    if (data.result === "unauthorized") {
+    if (
+      data.result === "unauthorized"
+    ) {
       expireSession();
       return;
     }
@@ -1003,7 +1274,8 @@ async function loadCalls() {
       !Array.isArray(data.calls)
     ) {
       throw new Error(
-        data.message || "Liste alınamadı."
+        data.message ||
+        "Çağrılar alınamadı."
       );
     }
 
@@ -1012,14 +1284,17 @@ async function loadCalls() {
 
     $("refreshInfo").textContent =
       "Son güncelleme: " +
-      new Date().toLocaleTimeString("tr-TR");
+      new Date().toLocaleTimeString(
+        "tr-TR"
+      );
 
     if (
-      $("dashboardMessage").classList.contains(
-        "error"
-      )
+      $("dashboardMessage")
+        .classList.contains("error")
     ) {
-      hideMessage("dashboardMessage");
+      hideMessage(
+        "dashboardMessage"
+      );
     }
 
   } catch (error) {
@@ -1028,22 +1303,29 @@ async function loadCalls() {
 
     message(
       "dashboardMessage",
-      "Çağrılar alınamadı: " + error.message,
+      "Çağrılar alınamadı: " +
+      error.message,
       "error"
     );
 
   } finally {
     loading = false;
+
     $("refreshBtn").disabled = false;
   }
 }
 
-// =====================================
-// USTLEN / TAMAMLA
-// =====================================
+// ======================================
+// CAGRIYI USTLEN / TAMAMLA
+// ======================================
 
-async function callAction(action, callId) {
-  if (busy || !session) return;
+async function callAction(
+  action,
+  callId
+) {
+  if (busy || !session) {
+    return;
+  }
 
   if (!validSession(session)) {
     expireSession();
@@ -1051,6 +1333,7 @@ async function callAction(action, callId) {
   }
 
   busy = true;
+
   $("refreshBtn").disabled = true;
 
   const token = session.token;
@@ -1066,21 +1349,29 @@ async function callAction(action, callId) {
       }
     );
 
-    if (!session || session.token !== token) {
+    if (
+      !session ||
+      session.token !== token
+    ) {
       return;
     }
 
-    if (data.result === "unauthorized") {
+    if (
+      data.result === "unauthorized"
+    ) {
       expireSession();
       return;
     }
 
     if (data.success === true) {
-      newCalls.delete(String(callId));
+      newCalls.delete(
+        String(callId)
+      );
 
       message(
         "dashboardMessage",
-        data.message || "İşlem başarılı."
+        data.message ||
+        "İşlem başarılı."
       );
 
       document.title =
@@ -1089,7 +1380,8 @@ async function callAction(action, callId) {
     } else {
       message(
         "dashboardMessage",
-        data.message || "İşlem başarısız.",
+        data.message ||
+        "İşlem başarısız.",
         "error"
       );
     }
@@ -1104,6 +1396,7 @@ async function callAction(action, callId) {
 
   } finally {
     busy = false;
+
     $("refreshBtn").disabled = false;
 
     if (session) {
@@ -1112,9 +1405,9 @@ async function callAction(action, callId) {
   }
 }
 
-// =====================================
-// OTOMATIK YENILE
-// =====================================
+// ======================================
+// OTOMATIK YENILEME
+// ======================================
 
 function stopPolling() {
   if (timer) {
@@ -1126,16 +1419,19 @@ function stopPolling() {
 function startPolling() {
   stopPolling();
 
-  timer = setInterval(() => {
-    if (
-      session &&
-      !document.hidden &&
-      !busy &&
-      !loading
-    ) {
-      loadCalls();
-    }
-  }, REFRESH_MS);
+  timer = setInterval(
+    () => {
+      if (
+        session &&
+        !document.hidden &&
+        !busy &&
+        !loading
+      ) {
+        loadCalls();
+      }
+    },
+    REFRESH_MS
+  );
 }
 
 $("refreshBtn").addEventListener(
@@ -1157,75 +1453,276 @@ document.addEventListener(
   }
 );
 
-// =====================================
-// SERVICE WORKER
-// =====================================
+// ======================================
+// MEVCUT SERVICE WORKER
+// ======================================
 
-let swRegistrationPromise = null;
+// Bu worker yerel bildirim testleri icin
+// korunuyor. OneSignal farkli bir
+// klasor ve scope kullaniyor.
 
-function registerWorker() {
-  if (!("serviceWorker" in navigator)) {
+let localWorkerPromise = null;
+
+function registerLocalWorker() {
+  if (
+    !("serviceWorker" in navigator)
+  ) {
     return Promise.reject(
-      new Error("Service Worker desteklenmiyor.")
+      new Error(
+        "Service Worker desteklenmiyor."
+      )
     );
   }
 
-  if (!swRegistrationPromise) {
-    swRegistrationPromise =
+  if (!localWorkerPromise) {
+    localWorkerPromise =
       navigator.serviceWorker.register(
         "./service-worker.js"
       ).catch(error => {
-        swRegistrationPromise = null;
+        localWorkerPromise = null;
         throw error;
       });
   }
 
-  return swRegistrationPromise;
+  return localWorkerPromise;
 }
 
-if ("serviceWorker" in navigator) {
-  registerWorker().catch(error => {
-    console.warn("Service Worker:", error);
-  });
+if (
+  "serviceWorker" in navigator
+) {
+  registerLocalWorker().catch(
+    error => {
+      console.warn(
+        "Yerel worker:",
+        error.message
+      );
+    }
+  );
 }
 
-// =====================================
-// TELEFON BILDIRIM TESTI
-// =====================================
+// ======================================
+// ONESIGNAL BASLATMA
+// ======================================
 
-$("pushTestBtn").addEventListener(
+window.OneSignalDeferred =
+  window.OneSignalDeferred || [];
+
+window.OneSignalDeferred.push(
+  async function(OneSignal) {
+    try {
+      await OneSignal.init({
+        appId: ONESIGNAL_APP_ID,
+
+        serviceWorkerPath:
+          ONESIGNAL_WORKER_PATH,
+
+        serviceWorkerParam: {
+          scope:
+            ONESIGNAL_WORKER_SCOPE
+        },
+
+        notifyButton: {
+          enable: false
+        }
+      });
+
+      oneSignalInstance = OneSignal;
+      oneSignalReady = true;
+      oneSignalError = null;
+
+      updatePushButton();
+
+    } catch (error) {
+      oneSignalError = error;
+
+      console.error(
+        "OneSignal başlatılamadı:",
+        error
+      );
+
+      updatePushButton();
+    }
+  }
+);
+
+// ======================================
+// ONESIGNAL BUTONU DURUMU
+// ======================================
+
+function updatePushButton() {
+  const button =
+    $("enablePushBtn");
+
+  if (!button) return;
+
+  if (oneSignalError) {
+    button.textContent =
+      "📲 Bildirim Kurulumunu Tekrar Dene";
+
+    button.classList.remove(
+      "enabled"
+    );
+
+    return;
+  }
+
+  if (
+    !oneSignalReady ||
+    !oneSignalInstance
+  ) {
+    button.textContent =
+      "📲 Telefon Bildirimlerini Etkinleştir";
+
+    button.classList.remove(
+      "enabled"
+    );
+
+    return;
+  }
+
+  const subscribed =
+    oneSignalInstance.User
+      .PushSubscription.optedIn === true;
+
+  if (subscribed) {
+    button.textContent =
+      "✅ Telefon Bildirimleri Etkin";
+
+    button.classList.add(
+      "enabled"
+    );
+
+  } else {
+    button.textContent =
+      "📲 Telefon Bildirimlerini Etkinleştir";
+
+    button.classList.remove(
+      "enabled"
+    );
+  }
+}
+
+// ======================================
+// ONESIGNAL BILDIRIM IZNI
+// ======================================
+
+$("enablePushBtn").addEventListener(
   "click",
   async () => {
-    if (
-      !("Notification" in window) ||
-      !("serviceWorker" in navigator)
-    ) {
-      message(
-        "pushMessage",
-        "Bu tarayıcı bildirimleri desteklemiyor.",
-        "error"
-      );
-      return;
-    }
+    const button =
+      $("enablePushBtn");
 
-    $("pushTestBtn").disabled = true;
+    button.disabled = true;
 
     try {
-      // Bildirim izni, dogrudan buton
-      // tiklamasi uzerinden istenir.
+      if (!oneSignalReady) {
+        throw new Error(
+          oneSignalError
+            ? oneSignalError.message
+            : "OneSignal henüz hazır değil."
+        );
+      }
+
+      if (
+        !oneSignalInstance
+          .Notifications.isPushSupported()
+      ) {
+        throw new Error(
+          "Bu cihaz veya tarayıcı Web Push desteklemiyor. iPhone'da uygulamayı ana ekrandan açın."
+        );
+      }
+
+      const OneSignal =
+        oneSignalInstance;
+
+      if (
+        OneSignal.Notifications
+          .permissionNative !== "granted"
+      ) {
+        await OneSignal.Notifications
+          .requestPermission();
+      }
+
+      if (
+        OneSignal.Notifications
+          .permissionNative !== "granted"
+      ) {
+        throw new Error(
+          "Bildirim izni verilmedi."
+        );
+      }
+
+      await OneSignal.User
+        .PushSubscription.optIn();
+
+      updatePushButton();
+
+      const subscribed =
+        OneSignal.User
+          .PushSubscription.optedIn === true;
+
+      if (subscribed) {
+        message(
+          "pushMessage",
+          "✅ OneSignal bildirim aboneliği etkin. Sunucudan gerçek çağrı gönderimini sonraki aşamada bağlayacağız."
+        );
+
+      } else {
+        message(
+          "pushMessage",
+          "Bildirim izni verildi ancak OneSignal aboneliği henüz etkin görünmüyor.",
+          "error"
+        );
+      }
+
+    } catch (error) {
+      message(
+        "pushMessage",
+        "Telefon bildirimi açılamadı: " +
+        error.message,
+        "error"
+      );
+
+    } finally {
+      button.disabled = false;
+    }
+  }
+);
+
+// ======================================
+// YEREL BILDIRIM TESTI
+// ======================================
+
+$("localTestBtn").addEventListener(
+  "click",
+  async () => {
+    const button =
+      $("localTestBtn");
+
+    button.disabled = true;
+
+    try {
+      if (
+        !("Notification" in window) ||
+        !("serviceWorker" in navigator)
+      ) {
+        throw new Error(
+          "Bildirim desteği bulunamadı."
+        );
+      }
+
       const permission =
         await Notification.requestPermission();
 
-      if (permission !== "granted") {
-        message(
-          "pushMessage",
-          "Bildirim izni verilmedi.",
-          "error"
+      if (
+        permission !== "granted"
+      ) {
+        throw new Error(
+          "Bildirim izni verilmedi."
         );
-        return;
       }
 
-      await registerWorker();
+      await registerLocalWorker();
 
       const registration =
         await navigator.serviceWorker.ready;
@@ -1234,8 +1731,11 @@ $("pushTestBtn").addEventListener(
         "🔔 Akıllı Garson",
         {
           body:
-            "Telefon bildirim testi başarılı!",
-          tag: "akilli-garson-test",
+            "Yerel telefon bildirim testi başarılı!",
+
+          tag:
+            "akilli-garson-local-test",
+
           data: {
             url:
               location.origin +
@@ -1246,42 +1746,52 @@ $("pushTestBtn").addEventListener(
 
       message(
         "pushMessage",
-        "Test bildirimi oluşturuldu. Telefon bildirimlerini kontrol edin."
+        "✅ Yerel test bildirimi oluşturuldu. Bu test uzaktan Web Push gönderimini doğrulamaz."
       );
 
     } catch (error) {
       message(
         "pushMessage",
-        "Bildirim testi başarısız: " +
+        "Test bildirimi başarısız: " +
         error.message,
         "error"
       );
 
     } finally {
-      $("pushTestBtn").disabled = false;
+      button.disabled = false;
     }
   }
 );
 
-// =====================================
+// ======================================
 // CIKIS
-// =====================================
+// ======================================
 
 $("logoutBtn").addEventListener(
   "click",
   async () => {
-    if (busy || !session) return;
+    if (
+      busy ||
+      !session
+    ) {
+      return;
+    }
 
     busy = true;
+
     $("logoutBtn").disabled = true;
 
-    const token = session.token;
+    const token =
+      session.token;
+
     let confirmed = false;
 
     try {
       const data = await postJSON(
         API.logout,
-        { session_token: token }
+        {
+          session_token: token
+        }
       );
 
       confirmed =
@@ -1301,8 +1811,10 @@ $("logoutBtn").addEventListener(
         "loginMessage",
         confirmed
           ? "Çıkış yapıldı."
-          : "Cihazdaki oturum kapatıldı, sunucu çıkışı doğrulanamadı.",
-        confirmed ? "" : "error"
+          : "Cihaz oturumu kapatıldı, sunucu çıkışı doğrulanamadı.",
+        confirmed
+          ? ""
+          : "error"
       );
 
       $("logoutBtn").disabled = false;
@@ -1311,9 +1823,9 @@ $("logoutBtn").addEventListener(
   }
 );
 
-// =====================================
-// SAYFA ACILISI
-// =====================================
+// ======================================
+// SAYFA BASLANGICI
+// ======================================
 
 try {
   const saved = JSON.parse(
@@ -1325,6 +1837,7 @@ try {
   if (validSession(saved)) {
     session = saved;
     showDashboard();
+
   } else {
     clearSession();
     showLogin();
