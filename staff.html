@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -5,455 +6,1335 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#13243a">
   <meta name="referrer" content="no-referrer">
-  <title>Akıllı Garson | Personel Paneli</title>
+
   <link rel="manifest" href="./manifest.json">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="Akıllı Garson">
+
+  <title>Akıllı Garson | Personel Paneli</title>
+
   <style>
     * { box-sizing: border-box; }
-    body { margin: 0; min-height: 100vh; padding: 20px 14px; background: #f3f6fa; color: #17263c; font-family: Arial, sans-serif; }
-    .app { max-width: 460px; margin: auto; }
-    .header { padding: 25px 22px; background: #13243a; color: #fff; border-radius: 22px; margin-bottom: 18px; }
-    .brand { font-size: 23px; font-weight: 800; }
-    .subtitle { font-size: 13px; color: #b9c8da; margin-top: 7px; }
-    .card, .notification-panel, .call-card, .stat { background: #fff; border-radius: 18px; box-shadow: 0 5px 20px #14243b0b; }
-    .card { padding: 23px; margin-bottom: 15px; }
-    h2 { margin: 0 0 18px; font-size: 19px; }
-    .field { margin-bottom: 16px; }
-    label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 8px; }
-    input { width: 100%; padding: 15px; font-size: 16px; border: 1px solid #dbe3ee; border-radius: 12px; }
-    input:focus { outline: 2px solid #245bda; }
-    button { border: 0; border-radius: 12px; padding: 15px; font-size: 15px; font-weight: 700; cursor: pointer; }
-    button:disabled { opacity: .5; cursor: not-allowed; }
-    .primary { background: #245bda; color: white; width: 100%; }
-    .secondary { background: #edf2f9; color: #213a60; }
-    .complete { background: #e7f6ed; color: #17683b; width: 100%; }
-    .logout { background: #30445e; color: white; padding: 10px 14px; font-size: 12px; }
-    .top-row, .call-header, .refresh { display: flex; justify-content: space-between; align-items: center; gap: 12px; }
-    .staff-name { font-size: 19px; font-weight: 800; }
-    .small-muted, .stat-label, .call-meta, .refresh-info { color: #8190a2; font-size: 12px; line-height: 1.5; }
-    .stats { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 17px; }
-    .stat { padding: 21px 12px; text-align: center; }
-    .stat-number { font-size: 32px; font-weight: 800; }
-    .notification-panel { padding: 18px; margin-bottom: 17px; }
-    .notification-title { font-size: 15px; font-weight: 800; margin-bottom: 9px; }
-    .notification-description { color: #8190a2; font-size: 12px; line-height: 1.6; margin-bottom: 12px; }
-    .sound-button { width: 100%; background: #e8f0ff; color: #245bda; }
-    .sound-button.enabled { background: #e7f6ed; color: #17683b; }
-    .push-test-button { background: #edf2f9; color: #213a60; width: 100%; margin-top: 10px; }
-    .push-status { font-size: 12px; color: #8190a2; line-height: 1.5; margin-top: 9px; }
-    .refresh { margin: 16px 0; }
-    .section-title { font-size: 17px; font-weight: 800; margin: 22px 4px 14px; }
-    .call-card { padding: 20px; margin-bottom: 12px; }
-    .call-card.new-call { border: 2px solid #f0ae37; }
-    .table-number { font-size: 23px; font-weight: 800; }
-    .badge { padding: 7px 11px; border-radius: 30px; font-size: 11px; font-weight: 700; white-space: nowrap; }
-    .pending { background: #fff1d9; color: #97610b; }
-    .accepted { background: #e8f0ff; color: #245bda; }
-    .call-type { margin: 15px 0 7px; font-size: 15px; font-weight: 700; }
-    .call-meta { margin-bottom: 15px; }
-    .message { background: #edf8f1; color: #207044; padding: 14px; margin: 12px 0; border-radius: 12px; font-size: 13px; line-height: 1.5; }
-    .message.error { background: #fff1f1; color: #b42328; }
-    .message.alert { background: #fff4dd; color: #925900; border: 1px solid #f4d394; font-weight: 700; }
-    .empty { background: white; padding: 28px 15px; border-radius: 16px; color: #8190a2; text-align: center; font-size: 14px; }
-    .notice { text-align: center; padding: 15px; color: #8190a2; font-size: 12px; line-height: 1.6; }
-    .hidden { display: none !important; }
+
+    body {
+      margin: 0;
+      padding: 18px 13px;
+      background: #f3f6fa;
+      color: #17263c;
+      font-family: Arial, sans-serif;
+    }
+
+    .app {
+      max-width: 480px;
+      margin: auto;
+    }
+
+    .header {
+      background: #13243a;
+      color: white;
+      border-radius: 20px;
+      padding: 25px 22px;
+      margin-bottom: 16px;
+    }
+
+    .brand {
+      font-size: 24px;
+      font-weight: 800;
+    }
+
+    .subtitle {
+      margin-top: 7px;
+      color: #b9c8da;
+      font-size: 13px;
+    }
+
+    .card {
+      background: white;
+      border-radius: 17px;
+      padding: 20px;
+      margin-bottom: 15px;
+      box-shadow: 0 4px 16px #14243b0a;
+    }
+
+    h2 {
+      font-size: 18px;
+      margin: 0 0 15px;
+    }
+
+    h3 {
+      font-size: 16px;
+      margin: 18px 0 12px;
+    }
+
+    label {
+      display: block;
+      margin: 15px 0 7px;
+      font-size: 13px;
+      font-weight: bold;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      font-size: 16px;
+      border: 1px solid #dbe3ee;
+      border-radius: 11px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 11px;
+      padding: 13px 15px;
+      font-size: 14px;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:disabled {
+      opacity: .55;
+      cursor: not-allowed;
+    }
+
+    .primary {
+      width: 100%;
+      background: #245bda;
+      color: white;
+    }
+
+    .secondary {
+      background: #edf2f9;
+      color: #213a60;
+    }
+
+    .success {
+      width: 100%;
+      background: #e1f4e8;
+      color: #166839;
+    }
+
+    .logout {
+      background: #30445e;
+      color: white;
+    }
+
+    .top {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .name {
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .muted {
+      font-size: 12px;
+      color: #8290a2;
+      line-height: 1.6;
+      margin-top: 5px;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-bottom: 15px;
+    }
+
+    .stat {
+      background: white;
+      padding: 20px;
+      border-radius: 16px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 32px;
+      font-weight: 800;
+    }
+
+    .stat-label {
+      font-size: 12px;
+      margin-top: 5px;
+      color: #8290a2;
+    }
+
+    .sound-button {
+      width: 100%;
+      background: #e8f0ff;
+      color: #245bda;
+      margin-top: 10px;
+    }
+
+    .sound-button.enabled {
+      background: #e1f4e8;
+      color: #166839;
+    }
+
+    .push-button {
+      width: 100%;
+      background: #245bda;
+      color: white;
+      margin-top: 12px;
+    }
+
+    .refresh {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin: 15px 0;
+      gap: 12px;
+    }
+
+    .message {
+      padding: 13px;
+      background: #e7f6ed;
+      color: #17683b;
+      border-radius: 11px;
+      margin: 12px 0;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .message.error {
+      background: #fff0f0;
+      color: #ae232a;
+    }
+
+    .message.alert {
+      background: #fff4dd;
+      color: #925900;
+      border: 1px solid #f4d394;
+    }
+
+    .call {
+      background: white;
+      padding: 19px;
+      border-radius: 17px;
+      margin-bottom: 12px;
+    }
+
+    .call.new {
+      border: 2px solid #f0ae37;
+    }
+
+    .call-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .table-number {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .badge {
+      padding: 7px 10px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      background: #fff1d9;
+      color: #97610b;
+    }
+
+    .badge.accepted {
+      background: #e8f0ff;
+      color: #245bda;
+    }
+
+    .call-type {
+      font-weight: bold;
+      margin: 14px 0 7px;
+    }
+
+    .call-meta {
+      font-size: 12px;
+      color: #8290a2;
+      margin-bottom: 14px;
+    }
+
+    .empty {
+      background: white;
+      padding: 22px;
+      border-radius: 14px;
+      text-align: center;
+      color: #8290a2;
+      font-size: 13px;
+    }
+
+    .footer {
+      text-align: center;
+      padding: 15px;
+      color: #8290a2;
+      font-size: 12px;
+    }
   </style>
 </head>
+
 <body>
 <main class="app">
-  <header class="header"><div class="brand">Akıllı Garson</div><div class="subtitle">Personel çağrı yönetim sistemi</div></header>
+
+  <header class="header">
+    <div class="brand">Akıllı Garson</div>
+    <div class="subtitle">Personel Çağrı Yönetimi</div>
+  </header>
+
+  <!-- GIRIS -->
+
   <section id="loginScreen" class="card">
     <h2>Personel Girişi</h2>
+
     <form id="loginForm">
-      <div class="field"><label for="staffId">Personel Numaranız</label><input id="staffId" type="number" min="1" step="1" inputmode="numeric" autocomplete="username" placeholder="Personel numarası" required></div>
-      <div class="field"><label for="password">Şifreniz</label><input id="password" type="password" autocomplete="current-password" placeholder="Şifrenizi girin" required></div>
-      <button id="loginBtn" class="primary" type="submit">Giriş Yap</button>
+
+      <label for="staffId">Personel Numaranız</label>
+      <input
+        id="staffId"
+        type="number"
+        min="1"
+        step="1"
+        autocomplete="username"
+        required
+      >
+
+      <label for="password">Şifreniz</label>
+      <input
+        id="password"
+        type="password"
+        autocomplete="current-password"
+        required
+      >
+
+      <button
+        id="loginBtn"
+        class="primary"
+        type="submit"
+      >
+        Giriş Yap
+      </button>
     </form>
-    <div id="loginMessage" class="message hidden" role="status" aria-live="polite"></div>
+
+    <div id="loginMessage" class="message hidden"></div>
   </section>
+
+  <!-- PANEL -->
+
   <section id="dashboard" class="hidden">
-    <div class="card"><div class="top-row"><div><div id="staffName" class="staff-name">Garson</div><div class="small-muted">Aktif çağrı yönetimi</div></div><button id="logoutBtn" class="logout" type="button">Çıkış</button></div></div>
-    <div class="stats"><div class="stat"><div id="pendingCount" class="stat-number">0</div><div class="stat-label">Bekleyen Çağrı</div></div><div class="stat"><div id="myCount" class="stat-number">0</div><div class="stat-label">Üstlendiğim</div></div></div>
-    <div class="notification-panel"><div class="notification-title">🔔 Yeni Çağrı Bildirimleri</div><div class="notification-description">Panel açıkken yeni çağrı algılandığında sesli ve görsel uyarı alırsınız. Kilit ekranı için uzaktan Web Push bağlantısı henüz kurulmadı.</div><button id="soundBtn" class="sound-button" type="button">🔇 Bildirim Sesini Aç</button><button id="pushTestBtn" class="push-test-button" type="button">📲 Telefon Bildirimini Test Et</button><div id="pushStatus" class="push-status" role="status" aria-live="polite">Bu test sadece cihazda yerel bildirim gösterir.</div></div>
-    <div class="refresh"><div id="refreshInfo" class="refresh-info">Çağrılar yükleniyor...</div><button id="refreshBtn" class="secondary" type="button">↻ Yenile</button></div>
-    <div id="dashboardMessage" class="message hidden" role="status" aria-live="polite"></div>
-    <div class="section-title">🔔 Bekleyen Çağrılar</div><div id="pendingList"><div class="empty">Çağrılar yükleniyor...</div></div>
-    <div class="section-title">✅ Üstlendiğim Çağrılar</div><div id="myCallsList"><div class="empty">Çağrılar yükleniyor...</div></div>
-    <div class="section-title">👥 Diğer Garsonların Çağrıları</div><div id="otherCallsList"><div class="empty">Çağrılar yükleniyor...</div></div>
+
+    <div class="card">
+      <div class="top">
+        <div>
+          <div id="staffName" class="name">Garson</div>
+          <div class="muted">Aktif çağrı yönetimi</div>
+        </div>
+
+        <button
+          id="logoutBtn"
+          class="logout"
+          type="button"
+        >
+          Çıkış
+        </button>
+      </div>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div id="pendingCount" class="stat-number">0</div>
+        <div class="stat-label">Bekleyen Çağrı</div>
+      </div>
+
+      <div class="stat">
+        <div id="myCount" class="stat-number">0</div>
+        <div class="stat-label">Üstlendiğim</div>
+      </div>
+    </div>
+
+    <!-- SES -->
+
+    <div class="card">
+      <h2>🔔 Yeni Çağrı Bildirimleri</h2>
+
+      <div class="muted">
+        Panel açıkken yeni çağrı geldiğinde
+        sesli uyarı alabilirsiniz.
+      </div>
+
+      <button
+        id="soundBtn"
+        class="sound-button"
+        type="button"
+      >
+        🔊 Bildirim Sesini Aç
+      </button>
+    </div>
+
+    <!-- TELEFON BILDIRIMI -->
+
+    <div class="card">
+      <h2>📲 Telefon Bildirimleri</h2>
+
+      <div class="muted">
+        Bildirim izni vererek cihazınızda
+        deneme bildirimi görüntüleyebilirsiniz.
+      </div>
+
+      <button
+        id="pushTestBtn"
+        class="push-button"
+        type="button"
+      >
+        📲 Telefon Bildirimini Test Et
+      </button>
+
+      <div id="pushMessage" class="message hidden"></div>
+    </div>
+
+    <!-- YENILE -->
+
+    <div class="refresh">
+      <div id="refreshInfo" class="muted">
+        Çağrılar yükleniyor...
+      </div>
+
+      <button
+        id="refreshBtn"
+        class="secondary"
+        type="button"
+      >
+        ↻ Yenile
+      </button>
+    </div>
+
+    <div id="dashboardMessage" class="message hidden"></div>
+
+    <h3>🔔 Bekleyen Çağrılar</h3>
+    <div id="pendingList">
+      <div class="empty">Yükleniyor...</div>
+    </div>
+
+    <h3>✅ Üstlendiğim Çağrılar</h3>
+    <div id="myCallsList">
+      <div class="empty">Yükleniyor...</div>
+    </div>
+
+    <h3>👥 Diğer Garsonların Çağrıları</h3>
+    <div id="otherCallsList">
+      <div class="empty">Yükleniyor...</div>
+    </div>
+
   </section>
-  <div class="notice">Akıllı Garson • Demo sürümü<br>Otomatik kontrol: 10 saniye • Kilit ekranı için uzaktan bildirim henüz aktif değil.</div>
+
+  <div class="footer">
+    Akıllı Garson • Personel Paneli
+  </div>
+
 </main>
+
 <script>
-'use strict';
-// Production URL: Yalnızca güvenlik kontrolleri tamamlanıp STAFF API yayınlandığında çalışır.
-const API_BASE = 'https://2vcjhcky.rpcld.app/webhook';
-const REFRESH_MS = 10000;
-const RESTAURANT = 'akilli-garson-demo';
-const SESSION_KEY = 'akilli_garson_staff_session';
+"use strict";
+
+// =====================================
+// API
+// =====================================
+
+const BASE =
+  "https://2vcjhcky.rpcld.app/webhook";
+
 const API = {
-  login: `${API_BASE}/akilli-garson-staff-login`,
-  calls: `${API_BASE}/akilli-garson-staff-calls`,
-  accept: `${API_BASE}/akilli-garson-staff-accept`,
-  complete: `${API_BASE}/akilli-garson-staff-complete`,
-  logout: `${API_BASE}/akilli-garson-staff-logout`
+  login: BASE + "/akilli-garson-staff-login",
+  calls: BASE + "/akilli-garson-staff-calls",
+  accept: BASE + "/akilli-garson-staff-accept",
+  complete: BASE + "/akilli-garson-staff-complete",
+  logout: BASE + "/akilli-garson-staff-logout"
 };
+
+const RESTAURANT = "akilli-garson-demo";
+const SESSION_KEY = "akilli_garson_staff_session";
+const REFRESH_MS = 10000;
+
 const $ = id => document.getElementById(id);
-const DEFAULT_TITLE = 'Akıllı Garson | Personel Paneli';
+
 let session = null;
 let busy = false;
-let loadingCalls = false;
-let refreshTimer = null;
+let loading = false;
+let timer = null;
+
 let audioContext = null;
 let soundEnabled = false;
-let firstCallLoad = true;
-const alertedCallIds = new Set();
-const highlightedCallIds = new Set();
 
-function showMessage(id, message, type = 'success') {
+let firstLoad = true;
+const knownCalls = new Set();
+const newCalls = new Set();
+
+// =====================================
+// MESAJLAR
+// =====================================
+
+function message(id, text, type = "") {
   const el = $(id);
-  el.textContent = message;
-  el.classList.remove('hidden', 'error', 'alert');
-  if (type === 'error' || type === 'alert') el.classList.add(type);
+  el.textContent = text;
+  el.className = "message " + type;
 }
-function hideMessage(id) { $(id).classList.add('hidden'); }
-function isSessionValid(data) {
-  return Boolean(data && /^[a-f0-9]{64}$/i.test(data.token || '') && data.staff &&
-    /^[1-9]\d*$/.test(String(data.staff.id || '')) &&
-    data.expires_at && Date.parse(data.expires_at) > Date.now());
+
+function hideMessage(id) {
+  $(id).className = "message hidden";
 }
+
+// =====================================
+// OTURUM
+// =====================================
+
+function validSession(s) {
+  return Boolean(
+    s &&
+    typeof s.token === "string" &&
+    /^[a-f0-9]{64}$/i.test(s.token) &&
+    s.staff &&
+    s.staff.id &&
+    s.expires_at &&
+    Date.parse(s.expires_at) > Date.now()
+  );
+}
+
+function saveSession(s) {
+  session = s;
+  sessionStorage.setItem(
+    SESSION_KEY,
+    JSON.stringify(s)
+  );
+}
+
 function clearSession() {
   session = null;
-  try { sessionStorage.removeItem(SESSION_KEY); } catch (_) {}
+  sessionStorage.removeItem(SESSION_KEY);
 }
-function restoreSession() {
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(SESSION_KEY) || 'null');
-    if (isSessionValid(saved)) session = saved;
-    else clearSession();
-  } catch (_) { clearSession(); }
-}
-function saveSession(data) {
-  session = data;
-  try { sessionStorage.setItem(SESSION_KEY, JSON.stringify(data)); } catch (_) {}
-}
-async function postJSON(url, body) {
-  const controller = new AbortController();
-  const timeout = setTimeout(() => controller.abort(), 15000);
-  try {
-    const response = await fetch(url, {
-      method: 'POST', mode: 'cors', credentials: 'omit', cache: 'no-store',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(body), signal: controller.signal
-    });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return await response.json();
-  } finally { clearTimeout(timeout); }
-}
-function updateSoundButton() {
-  $('soundBtn').textContent = soundEnabled ? '🔊 Bildirim Sesi Açık' : '🔇 Bildirim Sesini Aç';
-  $('soundBtn').classList.toggle('enabled', soundEnabled);
-}
-function playCallSound() {
-  if (!soundEnabled || !audioContext || audioContext.state !== 'running') return;
-  const now = audioContext.currentTime;
-  for (const offset of [0, 0.28]) {
-    const oscillator = audioContext.createOscillator();
-    const gain = audioContext.createGain();
-    oscillator.type = 'sine';
-    oscillator.frequency.value = 880;
-    gain.gain.setValueAtTime(0.0001, now + offset);
-    gain.gain.exponentialRampToValueAtTime(0.12, now + offset + 0.025);
-    gain.gain.exponentialRampToValueAtTime(0.001, now + offset + 0.22);
-    oscillator.connect(gain);
-    gain.connect(audioContext.destination);
-    oscillator.start(now + offset);
-    oscillator.stop(now + offset + 0.23);
-  }
-}
-$('soundBtn').addEventListener('click', async () => {
-  if (soundEnabled) { soundEnabled = false; updateSoundButton(); return; }
-  try {
-    const AudioContextClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioContextClass) throw new Error('Ses desteklenmiyor');
-    if (!audioContext) audioContext = new AudioContextClass();
-    await audioContext.resume();
-    soundEnabled = audioContext.state === 'running';
-    updateSoundButton();
-    if (soundEnabled) {
-      playCallSound();
-      showMessage('dashboardMessage', 'Bildirim sesi açıldı. Panel açıkken yeni çağrılar için ses çalacak.');
-    } else throw new Error('Ses başlatılamadı');
-  } catch (_) { soundEnabled = false; updateSoundButton(); showMessage('dashboardMessage', 'Tarayıcı sesli bildirimi başlatamadı.', 'error'); }
-});
-function resetCallTracking() {
-  alertedCallIds.clear();
-  highlightedCallIds.clear();
-  firstCallLoad = true;
-  document.title = DEFAULT_TITLE;
-}
-function detectNewCalls(calls) {
-  const pending = calls.filter(c => c.status === 'pending');
-  if (firstCallLoad) {
-    pending.forEach(c => alertedCallIds.add(String(c.call_id)));
-    firstCallLoad = false;
-    return false;
-  }
-  const fresh = pending.filter(c => !alertedCallIds.has(String(c.call_id)));
-  fresh.forEach(c => {
-    const id = String(c.call_id);
-    alertedCallIds.add(id);
-    highlightedCallIds.add(id);
-  });
-  if (!fresh.length) return false;
-  playCallSound();
-  const tables = [...new Set(fresh.map(c => c.table_number))];
-  showMessage('dashboardMessage', `🔔 Yeni çağrı! Masa ${tables.join(', ')}`, 'alert');
-  document.title = `🔔 ${fresh.length} Yeni Çağrı | Akıllı Garson`;
-  return true;
-}
-function stopRefreshing() { if (refreshTimer !== null) clearInterval(refreshTimer); refreshTimer = null; }
-function startRefreshing() {
-  stopRefreshing();
-  if (REFRESH_MS <= 0) return;
-  refreshTimer = setInterval(() => {
-    if (session && !document.hidden && !busy && !loadingCalls) loadCalls();
-  }, REFRESH_MS);
-}
+
 function showLogin() {
-  stopRefreshing();
-  $('dashboard').classList.add('hidden');
-  $('loginScreen').classList.remove('hidden');
-  $('password').value = '';
-  document.title = DEFAULT_TITLE;
+  stopPolling();
+  $("loginScreen").classList.remove("hidden");
+  $("dashboard").classList.add("hidden");
+  $("password").value = "";
 }
+
 function showDashboard() {
-  resetCallTracking();
-  $('loginScreen').classList.add('hidden');
-  $('dashboard').classList.remove('hidden');
-  $('staffName').textContent = session.staff.name || 'Garson';
-  $('pendingCount').textContent = '0';
-  $('myCount').textContent = '0';
-  for (const id of ['pendingList', 'myCallsList', 'otherCallsList']) {
-    $(id).replaceChildren(createEmpty('Çağrılar yükleniyor...'));
-  }
-  hideMessage('dashboardMessage');
-  startRefreshing();
+  $("loginScreen").classList.add("hidden");
+  $("dashboard").classList.remove("hidden");
+
+  $("staffName").textContent =
+    session.staff.name || "Garson";
+
+  firstLoad = true;
+  knownCalls.clear();
+  newCalls.clear();
+
+  $("pendingList").replaceChildren(
+    emptyElement("Çağrılar yükleniyor...")
+  );
+  $("myCallsList").replaceChildren(
+    emptyElement("Çağrılar yükleniyor...")
+  );
+  $("otherCallsList").replaceChildren(
+    emptyElement("Çağrılar yükleniyor...")
+  );
+
+  hideMessage("dashboardMessage");
+
   loadCalls();
+  startPolling();
 }
+
 function expireSession() {
   clearSession();
-  resetCallTracking();
   showLogin();
-  showMessage('loginMessage', 'Oturumunuz sona erdi. Yeniden giriş yapın.', 'error');
+  message(
+    "loginMessage",
+    "Oturum süresi doldu. Tekrar giriş yapın.",
+    "error"
+  );
 }
-$('loginForm').addEventListener('submit', async event => {
-  event.preventDefault();
-  if (busy) return;
-  const staffId = $('staffId').value.trim();
-  const password = $('password').value;
-  if (!/^[1-9]\d*$/.test(staffId) || !password) {
-    showMessage('loginMessage', 'Personel numarası ve şifre gerekli.', 'error'); return;
-  }
-  busy = true;
-  $('loginBtn').disabled = true;
-  showMessage('loginMessage', 'Giriş kontrol ediliyor...');
+
+// =====================================
+// HTTP
+// =====================================
+
+async function postJSON(url, body) {
+  const controller = new AbortController();
+  const timeout = setTimeout(
+    () => controller.abort(),
+    15000
+  );
+
   try {
-    const data = await postJSON(API.login, { restaurant: RESTAURANT, staff_id: staffId, password });
-    const candidate = { token: data.session_token, staff: data.staff, expires_at: data.expires_at };
-    if (data.success === true && data.result === 'authenticated' && isSessionValid(candidate)) {
-      saveSession(candidate);
-      $('password').value = '';
-      hideMessage('loginMessage');
-      showDashboard();
-    } else showMessage('loginMessage', data.message || 'Giriş başarısız.', 'error');
-  } catch (_) {
-    showMessage('loginMessage', 'Bağlantı kurulamadı. STAFF API yayımlı değilse Production URL çalışmaz.', 'error');
-  } finally { busy = false; $('loginBtn').disabled = false; }
-});
-function formatTime(value) {
-  const date = new Date(value);
-  return Number.isNaN(date.getTime()) ? '' : date.toLocaleTimeString('tr-TR', { hour: '2-digit', minute: '2-digit' });
-}
-function createEmpty(message) {
-  const el = document.createElement('div');
-  el.className = 'empty';
-  el.textContent = message;
-  return el;
-}
-function createCallCard(call, type) {
-  const card = document.createElement('article');
-  card.className = 'call-card';
-  if (highlightedCallIds.has(String(call.call_id))) card.classList.add('new-call');
-  const header = document.createElement('div');
-  header.className = 'call-header';
-  const table = document.createElement('div');
-  table.className = 'table-number';
-  table.textContent = `Masa ${call.table_number}`;
-  const badge = document.createElement('span');
-  badge.className = `badge ${call.status === 'pending' ? 'pending' : 'accepted'}`;
-  badge.textContent = call.status === 'pending' ? 'Bekliyor' : 'Üstlenildi';
-  header.append(table, badge);
-  const label = document.createElement('div');
-  label.className = 'call-type';
-  label.textContent = call.request_type === 'bill' ? '🧾 Hesap İstiyor' : '🔔 Garson Çağırıyor';
-  const meta = document.createElement('div');
-  meta.className = 'call-meta';
-  meta.textContent = `Çağrı #${call.call_id} • ${formatTime(call.created_at)}`;
-  card.append(header, label, meta);
-  if (type === 'pending' || type === 'mine') {
-    const btn = document.createElement('button');
-    btn.className = type === 'pending' ? 'primary' : 'complete';
-    btn.textContent = type === 'pending' ? 'Çağrıyı Üstlen' : '✓ Tamamlandı';
-    btn.disabled = busy;
-    btn.addEventListener('click', () => handleCallAction(type === 'pending' ? 'accept' : 'complete', call.call_id));
-    card.append(btn);
-  } else {
-    const info = document.createElement('div');
-    info.className = 'call-meta';
-    info.textContent = 'Başka bir personel tarafından üstlenildi.';
-    card.append(info);
-  }
-  return card;
-}
-function renderGroup(id, calls, type, emptyText) {
-  const container = $(id);
-  container.replaceChildren(...(calls.length ? calls.map(c => createCallCard(c, type)) : [createEmpty(emptyText)]));
-}
-function renderCalls(calls) {
-  const me = String(session.staff.id);
-  const pending = calls.filter(c => c.status === 'pending');
-  const mine = calls.filter(c => c.status === 'accepted' && String(c.accepted_by) === me);
-  const others = calls.filter(c => c.status === 'accepted' && String(c.accepted_by) !== me);
-  $('pendingCount').textContent = String(pending.length);
-  $('myCount').textContent = String(mine.length);
-  renderGroup('pendingList', pending, 'pending', 'Bekleyen çağrı yok.');
-  renderGroup('myCallsList', mine, 'mine', 'Üstlendiğiniz açık çağrı yok.');
-  renderGroup('otherCallsList', others, 'other', 'Diğer garsonlarda açık çağrı yok.');
-}
-async function loadCalls() {
-  if (!session || busy || loadingCalls) return;
-  if (!isSessionValid(session)) { expireSession(); return; }
-  loadingCalls = true;
-  const token = session.token;
-  $('refreshBtn').disabled = true;
-  $('refreshInfo').textContent = 'Çağrılar kontrol ediliyor...';
-  try {
-    const data = await postJSON(API.calls, { session_token: token });
-    if (!session || session.token !== token) return;
-    if (data.result === 'unauthorized') { expireSession(); return; }
-    if (data.success !== true || !Array.isArray(data.calls)) throw new Error('Geçersiz API yanıtı');
-    const fresh = detectNewCalls(data.calls);
-    renderCalls(data.calls);
-    $('refreshInfo').textContent = `Son güncelleme: ${new Date().toLocaleTimeString('tr-TR')}`;
-    if (!fresh && $('dashboardMessage').classList.contains('error')) hideMessage('dashboardMessage');
-  } catch (_) {
-    if (session && session.token === token) {
-      $('refreshInfo').textContent = 'Bağlantı kurulamadı.';
-      showMessage('dashboardMessage', 'Çağrılar alınamadı. STAFF API yayımlı değilse Production URL çalışmaz.', 'error');
-    }
-  } finally { loadingCalls = false; $('refreshBtn').disabled = false; }
-}
-async function handleCallAction(action, callId) {
-  if (!session || busy) return;
-  if (!isSessionValid(session)) { expireSession(); return; }
-  busy = true;
-  $('refreshBtn').disabled = true;
-  const token = session.token;
-  showMessage('dashboardMessage', action === 'accept' ? 'Çağrı üstleniliyor...' : 'Çağrı tamamlanıyor...');
-  try {
-    const data = await postJSON(action === 'accept' ? API.accept : API.complete, {
-      session_token: token, call_id: callId
+    const response = await fetch(url, {
+      method: "POST",
+      mode: "cors",
+      cache: "no-store",
+      credentials: "omit",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify(body),
+      signal: controller.signal
     });
-    if (!session || session.token !== token) return;
-    if (data.result === 'unauthorized') { expireSession(); return; }
-    const ok = data.success === true;
-    showMessage('dashboardMessage', data.message || (ok ? 'İşlem başarılı.' : 'İşlem gerçekleştirilemedi.'), ok ? 'success' : 'error');
-    if (ok) {
-      highlightedCallIds.delete(String(callId));
-      document.title = DEFAULT_TITLE;
+
+    if (!response.ok) {
+      throw new Error("HTTP " + response.status);
     }
-  } catch (_) {
-    showMessage('dashboardMessage', 'İşlemin sonucu doğrulanamadı. Tekrar basmadan önce çağrı listesini yenileyin.', 'error');
+
+    return await response.json();
+
   } finally {
-    busy = false;
-    $('refreshBtn').disabled = false;
-    if (session && session.token === token) await loadCalls();
+    clearTimeout(timeout);
   }
 }
-$('refreshBtn').addEventListener('click', loadCalls);
-document.addEventListener('visibilitychange', () => {
-  if (!document.hidden && session && !busy && !loadingCalls) loadCalls();
-});
-$('logoutBtn').addEventListener('click', async () => {
-  if (!session || busy) return;
-  busy = true;
-  $('logoutBtn').disabled = true;
-  $('logoutBtn').textContent = 'Çıkış yapılıyor...';
-  const token = session.token;
-  let confirmed = false;
-  try {
-    const data = await postJSON(API.logout, { session_token: token });
-    confirmed = data.result === 'logged_out' || data.result === 'unauthorized';
-  } catch (_) { /* Local session is cleared even if server logout is unavailable. */ }
-  finally {
-    clearSession();
-    resetCallTracking();
-    $('staffId').value = '';
-    showLogin();
-    showMessage('loginMessage', confirmed
-      ? 'Çıkış yapıldı.'
-      : 'Bu cihazdan çıkış yapıldı, fakat sunucudaki oturumun sonlandığı doğrulanamadı.', confirmed ? 'success' : 'error');
-    $('logoutBtn').disabled = false;
-    $('logoutBtn').textContent = 'Çıkış';
-    busy = false;
+
+// =====================================
+// GIRIS
+// =====================================
+
+$("loginForm").addEventListener(
+  "submit",
+  async event => {
+    event.preventDefault();
+    if (busy) return;
+
+    busy = true;
+    $("loginBtn").disabled = true;
+
+    try {
+      const data = await postJSON(
+        API.login,
+        {
+          restaurant: RESTAURANT,
+          staff_id: Number($("staffId").value),
+          password: $("password").value
+        }
+      );
+
+      const candidate = {
+        token: data.session_token,
+        staff: data.staff,
+        expires_at: data.expires_at
+      };
+
+      if (
+        data.success === true &&
+        data.result === "authenticated" &&
+        validSession(candidate)
+      ) {
+        saveSession(candidate);
+        showDashboard();
+      } else {
+        message(
+          "loginMessage",
+          data.message || "Giriş başarısız.",
+          "error"
+        );
+      }
+
+    } catch (error) {
+      message(
+        "loginMessage",
+        "Giriş bağlantısı başarısız.",
+        "error"
+      );
+
+    } finally {
+      busy = false;
+      $("loginBtn").disabled = false;
+    }
   }
-});
-// PWA Service Worker: mevcut çağrı API'sinden bağımsızdır.
-let pushRegistrationPromise = null;
-function getPushRegistration() {
-  if (!('serviceWorker' in navigator)) {
-    return Promise.reject(new Error('Bu tarayıcı Service Worker desteklemiyor.'));
-  }
-  if (!pushRegistrationPromise) {
-    pushRegistrationPromise = navigator.serviceWorker.register('./service-worker.js')
-      .catch(error => { pushRegistrationPromise = null; throw error; });
-  }
-  return pushRegistrationPromise;
+);
+
+// =====================================
+// SES
+// =====================================
+
+function playSound() {
+  if (!soundEnabled || !audioContext) return;
+  if (audioContext.state !== "running") return;
+
+  const now = audioContext.currentTime;
+
+  [0, 0.28].forEach(offset => {
+    const osc = audioContext.createOscillator();
+    const gain = audioContext.createGain();
+
+    osc.type = "sine";
+    osc.frequency.value = 880;
+
+    gain.gain.setValueAtTime(
+      0.0001,
+      now + offset
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.12,
+      now + offset + 0.025
+    );
+
+    gain.gain.exponentialRampToValueAtTime(
+      0.001,
+      now + offset + 0.22
+    );
+
+    osc.connect(gain);
+    gain.connect(audioContext.destination);
+
+    osc.start(now + offset);
+    osc.stop(now + offset + 0.23);
+  });
 }
-if ('serviceWorker' in navigator) {
-  getPushRegistration().catch(error => console.warn('Service Worker kaydı başarısız:', error));
-}
-$('pushTestBtn').addEventListener('click', async () => {
-  const button = $('pushTestBtn');
-  if (!('Notification' in window) || !('serviceWorker' in navigator)) {
-    $('pushStatus').textContent = 'Bu tarayıcı cihaz bildirimini desteklemiyor.';
-    return;
-  }
-  button.disabled = true;
-  try {
-    const permission = await Notification.requestPermission();
-    if (permission !== 'granted') {
-      $('pushStatus').textContent = 'Bildirim izni verilmedi. Telefonun uygulama izinlerini kontrol edin.';
+
+$("soundBtn").addEventListener(
+  "click",
+  async () => {
+    if (soundEnabled) {
+      soundEnabled = false;
+      $("soundBtn").classList.remove("enabled");
+      $("soundBtn").textContent =
+        "🔊 Bildirim Sesini Aç";
       return;
     }
-    const registration = await getPushRegistration();
-    await registration.showNotification('🔔 Akıllı Garson', {
-      body: 'Test bildirimi başarılı! Bu, gerçek müşteri çağrısı değildir.',
-      tag: 'akilli-garson-local-test',
-      data: { url: location.origin + '/akilli-garson/staff.html' }
-    });
-    $('pushStatus').textContent = 'Test bildirimi gösterildi. Uzaktan Web Push henüz kurulu değil.';
-  } catch (error) {
-    $('pushStatus').textContent = 'Bildirim testi başarısız: ' + error.message;
-  } finally {
-    button.disabled = false;
+
+    try {
+      const AudioClass =
+        window.AudioContext ||
+        window.webkitAudioContext;
+
+      if (!AudioClass) {
+        throw new Error("Ses desteği yok.");
+      }
+
+      audioContext ||= new AudioClass();
+
+      await audioContext.resume();
+
+      soundEnabled =
+        audioContext.state === "running";
+
+      if (!soundEnabled) {
+        throw new Error("Ses başlatılamadı.");
+      }
+
+      $("soundBtn").classList.add("enabled");
+      $("soundBtn").textContent =
+        "🔊 Bildirim Sesi Açık";
+
+      playSound();
+
+    } catch (error) {
+      message(
+        "dashboardMessage",
+        "Bildirim sesi açılamadı: " + error.message,
+        "error"
+      );
+    }
   }
-});
-updateSoundButton();
-restoreSession();
-if (session) showDashboard();
-else showLogin();
+);
+
+// =====================================
+// YENI CAGRI TESPITI
+// =====================================
+
+function detectNewCalls(calls) {
+  const pending = calls.filter(
+    c => c.status === "pending"
+  );
+
+  if (firstLoad) {
+    pending.forEach(c => {
+      knownCalls.add(String(c.call_id));
+    });
+
+    firstLoad = false;
+    return;
+  }
+
+  const arrivals = pending.filter(
+    c => !knownCalls.has(String(c.call_id))
+  );
+
+  arrivals.forEach(c => {
+    const id = String(c.call_id);
+    knownCalls.add(id);
+    newCalls.add(id);
+  });
+
+  if (arrivals.length) {
+    playSound();
+
+    const tables = [
+      ...new Set(
+        arrivals.map(c => c.table_number)
+      )
+    ];
+
+    message(
+      "dashboardMessage",
+      "🔔 Yeni çağrı! Masa " + tables.join(", "),
+      "alert"
+    );
+
+    document.title =
+      "🔔 Yeni Çağrı | Akıllı Garson";
+  }
+}
+
+// =====================================
+// CAGRI KARTLARI
+// =====================================
+
+function emptyElement(text) {
+  const el = document.createElement("div");
+  el.className = "empty";
+  el.textContent = text;
+  return el;
+}
+
+function formatTime(value) {
+  const d = new Date(value);
+
+  if (Number.isNaN(d.getTime())) {
+    return "";
+  }
+
+  return d.toLocaleTimeString("tr-TR", {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+}
+
+function createCallCard(call, kind) {
+  const card = document.createElement("div");
+
+  card.className =
+    "call" +
+    (
+      newCalls.has(String(call.call_id))
+        ? " new"
+        : ""
+    );
+
+  const header = document.createElement("div");
+  header.className = "call-header";
+
+  const table = document.createElement("div");
+  table.className = "table-number";
+  table.textContent = "Masa " + call.table_number;
+
+  const badge = document.createElement("span");
+  badge.className =
+    "badge" +
+    (
+      call.status === "accepted"
+        ? " accepted"
+        : ""
+    );
+
+  badge.textContent =
+    call.status === "pending"
+      ? "Bekliyor"
+      : "Üstlenildi";
+
+  header.append(table, badge);
+
+  const type = document.createElement("div");
+  type.className = "call-type";
+
+  type.textContent =
+    call.request_type === "bill"
+      ? "🧾 Hesap İstiyor"
+      : "🔔 Garson Çağırıyor";
+
+  const meta = document.createElement("div");
+  meta.className = "call-meta";
+
+  meta.textContent =
+    "Çağrı #" + call.call_id +
+    " • " + formatTime(call.created_at);
+
+  card.append(header, type, meta);
+
+  if (kind === "pending" || kind === "mine") {
+    const button = document.createElement("button");
+
+    button.className =
+      kind === "pending"
+        ? "primary"
+        : "success";
+
+    button.textContent =
+      kind === "pending"
+        ? "Çağrıyı Üstlen"
+        : "✓ Tamamlandı";
+
+    button.addEventListener(
+      "click",
+      () => callAction(
+        kind === "pending"
+          ? "accept"
+          : "complete",
+        call.call_id
+      )
+    );
+
+    card.append(button);
+
+  } else {
+    const text = document.createElement("div");
+    text.className = "muted";
+    text.textContent =
+      "Başka bir personel tarafından üstlenildi.";
+
+    card.append(text);
+  }
+
+  return card;
+}
+
+function renderGroup(
+  id,
+  calls,
+  kind,
+  emptyText
+) {
+  const container = $(id);
+  container.replaceChildren();
+
+  if (!calls.length) {
+    container.append(emptyElement(emptyText));
+    return;
+  }
+
+  calls.forEach(call => {
+    container.append(
+      createCallCard(call, kind)
+    );
+  });
+}
+
+function renderCalls(calls) {
+  const myId = String(session.staff.id);
+
+  const pending = calls.filter(
+    c => c.status === "pending"
+  );
+
+  const mine = calls.filter(
+    c =>
+      c.status === "accepted" &&
+      String(c.accepted_by) === myId
+  );
+
+  const others = calls.filter(
+    c =>
+      c.status === "accepted" &&
+      String(c.accepted_by) !== myId
+  );
+
+  $("pendingCount").textContent = pending.length;
+  $("myCount").textContent = mine.length;
+
+  renderGroup(
+    "pendingList",
+    pending,
+    "pending",
+    "Bekleyen çağrı yok."
+  );
+
+  renderGroup(
+    "myCallsList",
+    mine,
+    "mine",
+    "Üstlendiğiniz çağrı yok."
+  );
+
+  renderGroup(
+    "otherCallsList",
+    others,
+    "other",
+    "Diğer garsonlarda çağrı yok."
+  );
+}
+
+// =====================================
+// CAGRI LISTESINI GETIR
+// =====================================
+
+async function loadCalls() {
+  if (!session || busy || loading) return;
+
+  if (!validSession(session)) {
+    expireSession();
+    return;
+  }
+
+  loading = true;
+  $("refreshBtn").disabled = true;
+
+  const token = session.token;
+
+  try {
+    const data = await postJSON(
+      API.calls,
+      { session_token: token }
+    );
+
+    if (!session || session.token !== token) {
+      return;
+    }
+
+    if (data.result === "unauthorized") {
+      expireSession();
+      return;
+    }
+
+    if (
+      data.success !== true ||
+      !Array.isArray(data.calls)
+    ) {
+      throw new Error(
+        data.message || "Liste alınamadı."
+      );
+    }
+
+    detectNewCalls(data.calls);
+    renderCalls(data.calls);
+
+    $("refreshInfo").textContent =
+      "Son güncelleme: " +
+      new Date().toLocaleTimeString("tr-TR");
+
+    if (
+      $("dashboardMessage").classList.contains(
+        "error"
+      )
+    ) {
+      hideMessage("dashboardMessage");
+    }
+
+  } catch (error) {
+    $("refreshInfo").textContent =
+      "Bağlantı hatası";
+
+    message(
+      "dashboardMessage",
+      "Çağrılar alınamadı: " + error.message,
+      "error"
+    );
+
+  } finally {
+    loading = false;
+    $("refreshBtn").disabled = false;
+  }
+}
+
+// =====================================
+// USTLEN / TAMAMLA
+// =====================================
+
+async function callAction(action, callId) {
+  if (busy || !session) return;
+
+  if (!validSession(session)) {
+    expireSession();
+    return;
+  }
+
+  busy = true;
+  $("refreshBtn").disabled = true;
+
+  const token = session.token;
+
+  try {
+    const data = await postJSON(
+      action === "accept"
+        ? API.accept
+        : API.complete,
+      {
+        session_token: token,
+        call_id: callId
+      }
+    );
+
+    if (!session || session.token !== token) {
+      return;
+    }
+
+    if (data.result === "unauthorized") {
+      expireSession();
+      return;
+    }
+
+    if (data.success === true) {
+      newCalls.delete(String(callId));
+
+      message(
+        "dashboardMessage",
+        data.message || "İşlem başarılı."
+      );
+
+      document.title =
+        "Akıllı Garson | Personel Paneli";
+
+    } else {
+      message(
+        "dashboardMessage",
+        data.message || "İşlem başarısız.",
+        "error"
+      );
+    }
+
+  } catch (error) {
+    message(
+      "dashboardMessage",
+      "İşlem gerçekleştirilemedi: " +
+      error.message,
+      "error"
+    );
+
+  } finally {
+    busy = false;
+    $("refreshBtn").disabled = false;
+
+    if (session) {
+      loadCalls();
+    }
+  }
+}
+
+// =====================================
+// OTOMATIK YENILE
+// =====================================
+
+function stopPolling() {
+  if (timer) {
+    clearInterval(timer);
+    timer = null;
+  }
+}
+
+function startPolling() {
+  stopPolling();
+
+  timer = setInterval(() => {
+    if (
+      session &&
+      !document.hidden &&
+      !busy &&
+      !loading
+    ) {
+      loadCalls();
+    }
+  }, REFRESH_MS);
+}
+
+$("refreshBtn").addEventListener(
+  "click",
+  loadCalls
+);
+
+document.addEventListener(
+  "visibilitychange",
+  () => {
+    if (
+      !document.hidden &&
+      session &&
+      !busy &&
+      !loading
+    ) {
+      loadCalls();
+    }
+  }
+);
+
+// =====================================
+// SERVICE WORKER
+// =====================================
+
+let swRegistrationPromise = null;
+
+function registerWorker() {
+  if (!("serviceWorker" in navigator)) {
+    return Promise.reject(
+      new Error("Service Worker desteklenmiyor.")
+    );
+  }
+
+  if (!swRegistrationPromise) {
+    swRegistrationPromise =
+      navigator.serviceWorker.register(
+        "./service-worker.js"
+      ).catch(error => {
+        swRegistrationPromise = null;
+        throw error;
+      });
+  }
+
+  return swRegistrationPromise;
+}
+
+if ("serviceWorker" in navigator) {
+  registerWorker().catch(error => {
+    console.warn("Service Worker:", error);
+  });
+}
+
+// =====================================
+// TELEFON BILDIRIM TESTI
+// =====================================
+
+$("pushTestBtn").addEventListener(
+  "click",
+  async () => {
+    if (
+      !("Notification" in window) ||
+      !("serviceWorker" in navigator)
+    ) {
+      message(
+        "pushMessage",
+        "Bu tarayıcı bildirimleri desteklemiyor.",
+        "error"
+      );
+      return;
+    }
+
+    $("pushTestBtn").disabled = true;
+
+    try {
+      // Bildirim izni, dogrudan buton
+      // tiklamasi uzerinden istenir.
+      const permission =
+        await Notification.requestPermission();
+
+      if (permission !== "granted") {
+        message(
+          "pushMessage",
+          "Bildirim izni verilmedi.",
+          "error"
+        );
+        return;
+      }
+
+      await registerWorker();
+
+      const registration =
+        await navigator.serviceWorker.ready;
+
+      await registration.showNotification(
+        "🔔 Akıllı Garson",
+        {
+          body:
+            "Telefon bildirim testi başarılı!",
+          tag: "akilli-garson-test",
+          data: {
+            url:
+              location.origin +
+              "/akilli-garson/staff.html"
+          }
+        }
+      );
+
+      message(
+        "pushMessage",
+        "Test bildirimi oluşturuldu. Telefon bildirimlerini kontrol edin."
+      );
+
+    } catch (error) {
+      message(
+        "pushMessage",
+        "Bildirim testi başarısız: " +
+        error.message,
+        "error"
+      );
+
+    } finally {
+      $("pushTestBtn").disabled = false;
+    }
+  }
+);
+
+// =====================================
+// CIKIS
+// =====================================
+
+$("logoutBtn").addEventListener(
+  "click",
+  async () => {
+    if (busy || !session) return;
+
+    busy = true;
+    $("logoutBtn").disabled = true;
+
+    const token = session.token;
+    let confirmed = false;
+
+    try {
+      const data = await postJSON(
+        API.logout,
+        { session_token: token }
+      );
+
+      confirmed =
+        data.result === "logged_out" ||
+        data.result === "unauthorized";
+
+    } catch (error) {
+      console.warn(
+        "Sunucu çıkışı doğrulanamadı."
+      );
+
+    } finally {
+      clearSession();
+      showLogin();
+
+      message(
+        "loginMessage",
+        confirmed
+          ? "Çıkış yapıldı."
+          : "Cihazdaki oturum kapatıldı, sunucu çıkışı doğrulanamadı.",
+        confirmed ? "" : "error"
+      );
+
+      $("logoutBtn").disabled = false;
+      busy = false;
+    }
+  }
+);
+
+// =====================================
+// SAYFA ACILISI
+// =====================================
+
+try {
+  const saved = JSON.parse(
+    sessionStorage.getItem(
+      SESSION_KEY
+    ) || "null"
+  );
+
+  if (validSession(saved)) {
+    session = saved;
+    showDashboard();
+  } else {
+    clearSession();
+    showLogin();
+  }
+
+} catch (error) {
+  clearSession();
+  showLogin();
+}
+
 </script>
 </body>
 </html>
