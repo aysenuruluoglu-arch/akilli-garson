@@ -1,0 +1,13 @@
+
+{
+  "id": "/akilli-garson/staff.html",
+  "name": "Akıllı Garson",
+  "short_name": "Akıllı Garson",
+  "description": "Restoran personeli çağrı ve bildirim sistemi",
+  "start_url": "/akilli-garson/staff.html",
+  "scope": "/akilli-garson/",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#13243a",
+  "lang": "tr"
+}
