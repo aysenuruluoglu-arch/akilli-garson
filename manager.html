@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -7,1404 +6,161 @@
 <meta name="theme-color" content="#13243a">
 <meta name="referrer" content="no-referrer">
 <title>Akıllı Garson | Yönetici Paneli</title>
-
 <style>
-*{box-sizing:border-box}
+*{box-sizing:border-box}body{margin:0;padding:20px 14px;background:#f3f6fa;color:#17263c;font:15px Arial,sans-serif}.app{max-width:480px;margin:auto}.header{background:#13243a;color:#fff;padding:25px 22px;border-radius:20px;margin-bottom:16px}.brand{font-size:23px;font-weight:800}.sub{font-size:13px;color:#b9c8da;margin-top:6px}.card{background:#fff;padding:22px;border-radius:17px;margin-bottom:15px;box-shadow:0 5px 18px #14243b0b}h2{margin:0 0 16px;font-size:19px}label{display:block;font-weight:bold;font-size:13px;margin:14px 0 7px}input{padding:14px;border:1px solid #dbe3ee;border-radius:10px;width:100%;font-size:16px}button{padding:12px 15px;border:0;border-radius:11px;font-weight:700;cursor:pointer}button:disabled{opacity:.55;cursor:wait}.primary{background:#245bda;color:white;width:100%;margin-top:17px}.secondary{background:#edf2f9;color:#213a60}.logout{background:#30445e;color:#fff}.top{display:flex;align-items:center;justify-content:space-between;gap:12px}.muted{font-size:12px;color:#8290a2;line-height:1.5}.message{padding:13px;border-radius:11px;background:#e7f6ed;color:#17683b;margin:12px 0;font-size:13px;line-height:1.5}.message.error{background:#fff0f0;color:#ae232a}.hidden{display:none!important}.staff{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:17px 0;border-bottom:1px solid #edf0f5}.staff:last-child{border:0}.name{font-size:16px;font-weight:700}.status{font-size:12px;color:#79869a;margin-top:5px}.switch{border-radius:20px;min-width:94px;background:#e4e9f1;color:#4b596b}.switch.on{background:#def5e6;color:#166839}.count{font-size:13px;color:#63758b;margin-top:8px}.footer{text-align:center;font-size:12px;color:#8793a5;padding:10px}a{color:#245bda}
 
-body{
-  margin:0;
-  padding:18px 13px;
-  background:#f3f6fa;
-  color:#17263c;
-  font-family:Arial,sans-serif;
-  font-size:14px;
-}
-
-.app{
-  max-width:530px;
-  margin:auto;
-}
-
-.header{
-  background:#13243a;
-  color:#fff;
-  padding:25px 22px;
-  border-radius:20px;
-  margin-bottom:16px;
-}
-
-.brand{
-  font-size:24px;
-  font-weight:800;
-}
-
-.subtitle{
-  margin-top:7px;
-  color:#bdccdc;
-  font-size:13px;
-}
-
-.card{
-  background:#fff;
-  padding:20px;
-  border-radius:17px;
-  margin-bottom:15px;
-  box-shadow:0 4px 16px #14243b0a;
-}
-
-h2{
-  margin:0 0 15px;
-  font-size:18px;
-}
-
-h3{
-  font-size:15px;
-  margin:0 0 12px;
-}
-
-label{
-  display:block;
-  font-weight:700;
-  font-size:13px;
-  margin:15px 0 7px;
-}
-
-input{
-  padding:14px;
-  width:100%;
-  font-size:16px;
-  border:1px solid #dbe3ee;
-  border-radius:11px;
-}
-
-button{
-  padding:12px 14px;
-  font-size:13px;
-  font-weight:700;
-  border:0;
-  border-radius:11px;
-  cursor:pointer;
-}
-
-button:disabled{
-  opacity:.5;
-  cursor:not-allowed;
-}
-
-.primary{
-  background:#245bda;
-  color:#fff;
-}
-
-.full{
-  width:100%;
-  margin-top:18px;
-  padding:15px;
-}
-
-.secondary{
-  background:#edf2f9;
-  color:#213a60;
-}
-
-.logout{
-  background:#30445e;
-  color:white;
-}
-
-.top{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-}
-
-.name{
-  font-size:16px;
-  font-weight:800;
-}
-
-.muted{
-  color:#8290a2;
-  font-size:12px;
-  line-height:1.6;
-  margin-top:5px;
-}
-
-.hidden{
-  display:none!important;
-}
-
-.message{
-  padding:13px;
-  border-radius:11px;
-  background:#e7f6ed;
-  color:#17683b;
-  margin-top:13px;
-  font-size:13px;
-  line-height:1.5;
-}
-
-.message.error{
-  background:#fff0f0;
-  color:#ae232a;
-}
-
-.staff-row{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  padding:16px 0;
-  border-bottom:1px solid #edf0f5;
-}
-
-.staff-row:last-child{
-  border-bottom:none;
-}
-
-.staff-name{
-  font-size:15px;
-  font-weight:700;
-}
-
-.staff-status{
-  color:#8290a2;
-  font-size:12px;
-  margin-top:6px;
-}
-
-.switch{
-  min-width:86px;
-  background:#e4e9f1;
-  color:#4b596b;
-  border-radius:20px;
-}
-
-.switch.on{
-  background:#def5e6;
-  color:#166839;
-}
-
-.count{
-  color:#63758b;
-  font-size:13px;
-  margin:9px 0 6px;
-}
-
-.stats-grid{
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:11px;
-}
-
-.stat{
-  padding:17px 14px;
-  background:#f5f7fb;
-  border-radius:14px;
-  min-height:112px;
-}
-
-.stat-icon{
-  font-size:21px;
-  margin-bottom:9px;
-}
-
-.stat-value{
-  font-size:28px;
-  font-weight:800;
-  letter-spacing:-.5px;
-  overflow-wrap:anywhere;
-}
-
-.stat-label{
-  margin-top:5px;
-  font-size:12px;
-  color:#738298;
-  line-height:1.4;
-}
-
-.section-note{
-  margin:3px 0 16px;
-  color:#8391a3;
-  font-size:12px;
-  line-height:1.6;
-}
-
-.performance-row{
-  padding:16px 0;
-  border-bottom:1px solid #edf0f5;
-}
-
-.performance-row:last-child{
-  border:0;
-}
-
-.performance-top{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  gap:10px;
-}
-
-.performance-name{
-  font-weight:800;
-  font-size:15px;
-}
-
-.performance-count{
-  font-size:13px;
-  color:#245bda;
-  font-weight:800;
-}
-
-.performance-details{
-  color:#8391a3;
-  font-size:12px;
-  margin-top:7px;
-}
-
-.empty{
-  padding:20px;
-  text-align:center;
-  color:#8391a3;
-  background:#f5f7fb;
-  border-radius:12px;
-  font-size:13px;
-}
-
-.footer{
-  text-align:center;
-  color:#8391a3;
-  font-size:12px;
-  padding:12px;
-}
+.section-note{color:#8391a3;font-size:12px;line-height:1.6}
+.stats-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}
+.stat{background:#f5f7fb;border-radius:14px;padding:16px 12px}
+.stat-value{font-size:25px;font-weight:800;margin-bottom:5px}
+.stat-label{font-size:12px;color:#738298}
+.performance-row{padding:13px 0;border-bottom:1px solid #edf0f5}
+.performance-top{display:flex;justify-content:space-between;gap:10px;font-weight:700}
+.performance-details{font-size:12px;color:#8391a3;margin-top:6px}
 </style>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer>
+// YONETICI PERFORMANS TABLOSU
+const statsIds={totalCalls:'total_calls',billRequests:'bill_requests',waiterRequests:'waiter_requests',completedCalls:'completed_calls',pendingCalls:'pending_calls',cancelledCalls:'cancelled_calls'};
+let performanceLoading=false;
+function statNum(value){const n=Number(value??0);return Number.isFinite(n)?n.toLocaleString('tr-TR'):'0';}
+function statSeconds(value){if(value===null||value===undefined)return '—';const n=Number(value);if(!Number.isFinite(n))return '—';return n>=60?(n/60).toLocaleString('tr-TR',{maximumFractionDigits:1})+' dk':n.toLocaleString('tr-TR',{maximumFractionDigits:1})+' sn';}
+async function loadPerformance(){
+  if(!session||performanceLoading)return;
+  if(!valid(session)){expire();return;}
+  performanceLoading=true;
+  $('refreshPerformanceBtn').disabled=true;
+  const token=session.token;
+  try{
+    const d=await post(API.performance,{session_token:token});
+    if(!session||session.token!==token)return;
+    if(d.result==='unauthorized'){expire();return;}
+    if(d.success!==true||!d.stats||typeof d.stats!=='object'||Array.isArray(d.stats))throw Error(d.message||'Performans verisi alınamadı.');
+    const st=d.stats;
+    for(const [id,key] of Object.entries(statsIds))$(id).textContent=statNum(st[key]);
+    $('avgResponse').textContent=statSeconds(st.avg_response_seconds);
+    $('reportDate').textContent=st.date?'Rapor tarihi: '+st.date:'Günlük performans';
+    const area=$('staffPerformance');area.replaceChildren();
+    const people=Array.isArray(st.staff)?[...st.staff]:[];
+    people.sort((a,b)=>Number(b.calls_accepted||0)-Number(a.calls_accepted||0));
+    if(!people.length){area.textContent='Henüz performans verisi yok.';}else{
+      for(const person of people){
+        const row=document.createElement('div');row.className='performance-row';
+        const top=document.createElement('div');top.className='performance-top';
+        const name=document.createElement('span');name.textContent=String(person.name||'Garson');
+        const count=document.createElement('span');count.textContent=statNum(person.calls_accepted)+' çağrı';
+        top.append(name,count);
+        const details=document.createElement('div');details.className='performance-details';details.textContent='Ort. yanıt süresi: '+statSeconds(person.avg_response_seconds);
+        row.append(top,details);area.append(row);
+      }
+    }
+    hide('performanceMessage');
+  }catch(error){msg('performanceMessage','Performans verileri alınamadı: '+error.message,true);}
+  finally{performanceLoading=false;$('refreshPerformanceBtn').disabled=false;}
+}
+// RESTORANIN SABIT BILDIRIM CIHAZI
+const MANAGER_ONESIGNAL_APP_ID='fa3546e9-94a3-407a-9154-6b5aa7b856cf';
+let managerOneSignal=null;
+let managerPushError=null;
+window.OneSignalDeferred=window.OneSignalDeferred||[];
+window.OneSignalDeferred.push(async function(OneSignal){
+ try{
+  await OneSignal.init({appId:MANAGER_ONESIGNAL_APP_ID,serviceWorkerPath:'/akilli-garson/onesignal/OneSignalSDKWorker.js',serviceWorkerParam:{scope:'/akilli-garson/onesignal/'},notifyButton:{enable:false}});
+  managerOneSignal=OneSignal;
+ }catch(error){managerPushError=error;console.error('OneSignal:',error);}
+});
+$('managerPushBtn').addEventListener('click',async()=>{
+ const button=$('managerPushBtn');if(button.disabled)return;
+ button.disabled=true;
+ try{
+  if(!valid(session))throw Error('Önce yönetici girişi yapın.');
+  if(!managerOneSignal)throw Error(managerPushError?.message||'OneSignal henüz hazır değil.');
+  if(!('Notification' in window))throw Error('Bu tarayıcı bildirimleri desteklemiyor.');
+  if(!managerOneSignal.Notifications.isPushSupported())throw Error('Web Push bu cihazda desteklenmiyor.');
+  if(Notification.permission==='denied')throw Error('Site için bildirim izni engellenmiş. Tarayıcı ayarlarından izin verin.');
+  if(Notification.permission!=='granted')await managerOneSignal.Notifications.requestPermission();
+  if(Notification.permission!=='granted')throw Error('Bildirim izni verilmedi.');
+  await managerOneSignal.User.PushSubscription.optIn();
+  let id=null;
+  for(let i=0;i<10;i++){
+   id=managerOneSignal.User.PushSubscription.id;
+   if(id)break;
+   await new Promise(resolve=>setTimeout(resolve,500));
+  }
+  if(!id)throw Error('OneSignal abonelik kimliği henüz oluşmadı.');
+  const token=session.token;
+  const response=await post(API.managerPush,{session_token:token,subscription_id:id});
+  if(!session||session.token!==token)throw Error('Yönetici oturumu değişti.');
+  if(response.success!==true||response.result!=='registered')throw Error(response.result||'Kayıt başarısız.');
+  msg('managerPushMessage','✅ Bu bilgisayar restoranın bildirim cihazı olarak kaydedildi.');
+  button.textContent='✅ Bilgisayar Kaydedildi';
+ }catch(error){msg('managerPushMessage','Bildirim kaydı başarısız: '+error.message,true);}
+ finally{button.disabled=false;}
+});
+</script>
 </head>
-
 <body>
 <main class="app">
-
-<header class="header">
-  <div class="brand">Akıllı Garson</div>
-  <div class="subtitle">
-    Restoran Yönetim ve Performans Paneli
-  </div>
-</header>
-
-<!-- YONETICI GIRISI -->
-
+<header class="header"><div class="brand">Akıllı Garson</div><div class="sub">Restoran yönetici paneli</div></header>
 <section id="loginScreen" class="card">
-  <h2>Yönetici Girişi</h2>
-
-  <form id="loginForm">
-
-    <label for="staffId">
-      Yönetici Personel Numarası
-    </label>
-
-    <input
-      id="staffId"
-      type="number"
-      min="1"
-      step="1"
-      autocomplete="username"
-      placeholder="Personel numarası"
-      required
-    >
-
-    <label for="password">Şifre</label>
-
-    <input
-      id="password"
-      type="password"
-      autocomplete="current-password"
-      placeholder="Şifrenizi girin"
-      required
-    >
-
-    <button
-      id="loginBtn"
-      type="submit"
-      class="primary full"
-    >
-      Giriş Yap
-    </button>
-
-  </form>
-
-  <div
-    id="loginMessage"
-    class="message hidden"
-    role="status"
-  ></div>
+<h2>Yönetici Girişi</h2>
+<form id="loginForm">
+<label for="staffId">Yönetici Personel Numarası</label><input id="staffId" type="number" min="1" step="1" inputmode="numeric" value="5" required autocomplete="username">
+<label for="password">Şifre</label><input id="password" type="password" required autocomplete="current-password" placeholder="Yönetici şifresi">
+<button class="primary" id="loginBtn" type="submit">Giriş Yap</button>
+</form><div id="loginMessage" class="message hidden" role="status"></div>
 </section>
-
-<!-- YONETICI PANELI -->
-
 <section id="dashboard" class="hidden">
-
-  <!-- YONETICI BILGISI -->
-
-  <div class="card">
-    <div class="top">
-      <div>
-        <div id="managerName" class="name">
-          Restoran Yöneticisi
-        </div>
-        <div class="muted">
-          Yönetici oturumu aktif
-        </div>
-      </div>
-
-      <button
-        id="logoutBtn"
-        class="logout"
-        type="button"
-      >
-        Çıkış
-      </button>
-    </div>
-  </div>
-
-  <!-- GENEL YENILE -->
-
-  <div class="card">
-    <div class="top">
-      <div>
-        <div class="name">Genel Bakış</div>
-        <div id="lastUpdated" class="muted">
-          Veriler henüz yüklenmedi.
-        </div>
-      </div>
-
-      <button
-        id="refreshAllBtn"
-        class="secondary"
-        type="button"
-      >
-        ↻ Yenile
-      </button>
-    </div>
-  </div>
-
-  <!-- GUNLUK ISTATISTIKLER -->
-
-  <div class="card">
-    <h2>📊 Günlük Performans</h2>
-
-    <div id="reportDate" class="section-note">
-      Türkiye saatine göre bugünün verileri
-    </div>
-
-    <div class="stats-grid">
-
-      <div class="stat">
-        <div class="stat-icon">🔔</div>
-        <div id="totalCalls" class="stat-value">—</div>
-        <div class="stat-label">Toplam çağrı</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-icon">🧾</div>
-        <div id="billRequests" class="stat-value">—</div>
-        <div class="stat-label">Hesap isteği</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-icon">👨‍🍳</div>
-        <div id="waiterRequests" class="stat-value">—</div>
-        <div class="stat-label">Garson çağrısı</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-icon">✅</div>
-        <div id="completedCalls" class="stat-value">—</div>
-        <div class="stat-label">Tamamlanan çağrı</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-icon">⏱️</div>
-        <div id="avgResponse" class="stat-value">—</div>
-        <div class="stat-label">Ort. yanıt süresi</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-icon">⏳</div>
-        <div id="pendingCalls" class="stat-value">—</div>
-        <div class="stat-label">Bekleyen çağrı</div>
-      </div>
-
-      <div class="stat">
-        <div class="stat-icon">❌</div>
-        <div id="cancelledCalls" class="stat-value">—</div>
-        <div class="stat-label">İptal edilen çağrı</div>
-      </div>
-
-    </div>
-
-    <div
-      id="performanceMessage"
-      class="message hidden"
-      role="status"
-    ></div>
-
-  </div>
-
-  <!-- GARSON PERFORMANSI -->
-
-  <div class="card">
-    <h2>🏆 Garson Performansı</h2>
-
-    <p class="section-note">
-      Bugün üstlenilen çağrılar ve ortalama
-      yanıt süreleri.
-    </p>
-
-    <div id="staffPerformance">
-      <div class="empty">
-        Veriler yükleniyor...
-      </div>
-    </div>
-  </div>
-
-  <!-- PERSONEL YONETIMI -->
-
-  <div class="card">
-
-    <div class="top">
-      <h2 style="margin:0">
-        👥 Personel Yönetimi
-      </h2>
-
-      <button
-        id="refreshStaffBtn"
-        type="button"
-        class="secondary"
-      >
-        ↻ Yenile
-      </button>
-    </div>
-
-    <div id="staffSummary" class="count">
-      Personeller yükleniyor...
-    </div>
-
-    <div id="staffList"></div>
-
-    <div
-      id="staffMessage"
-      class="message hidden"
-      role="status"
-    ></div>
-
-  </div>
-
-</section>
-
-<div class="footer">
-  Akıllı Garson • Yönetici Paneli
+<div class="card"><div class="top"><div><b id="managerName">Restoran Yöneticisi</b><div class="muted">Personel vardiya kontrolü</div></div><button id="logoutBtn" class="logout" type="button">Çıkış</button></div></div>
+<div class="card">
+<h2>🖥️ Restoran Bilgisayarı Bildirimleri</h2>
+<p class="section-note">Bu bilgisayar tüm masalardan gelen çağrılar için bildirim alacak. Garsonlar pasife alınsa bile bildirimi açık kalır.</p>
+<button id="managerPushBtn" class="primary" type="button">🔔 Bu Bilgisayarda Bildirimleri Etkinleştir</button>
+<div id="managerPushMessage" class="message hidden" role="status"></div>
 </div>
-
+<div class="card">
+<div class="top"><h2 style="margin:0">📊 Günlük Performans</h2><button id="refreshPerformanceBtn" class="secondary" type="button">↻ Yenile</button></div>
+<p id="reportDate" class="section-note">Türkiye saatine göre bugünün verileri</p>
+<div class="stats-grid">
+<div class="stat"><div id="totalCalls" class="stat-value">—</div><div class="stat-label">Toplam çağrı</div></div>
+<div class="stat"><div id="billRequests" class="stat-value">—</div><div class="stat-label">Hesap isteği</div></div>
+<div class="stat"><div id="waiterRequests" class="stat-value">—</div><div class="stat-label">Garson çağrısı</div></div>
+<div class="stat"><div id="completedCalls" class="stat-value">—</div><div class="stat-label">Tamamlanan çağrı</div></div>
+<div class="stat"><div id="avgResponse" class="stat-value">—</div><div class="stat-label">Ort. yanıt süresi</div></div>
+<div class="stat"><div id="pendingCalls" class="stat-value">—</div><div class="stat-label">Bekleyen çağrı</div></div>
+<div class="stat"><div id="cancelledCalls" class="stat-value">—</div><div class="stat-label">İptal edilen çağrı</div></div>
+</div>
+<div id="performanceMessage" class="message hidden" role="status"></div>
+</div>
+<div class="card"><h2>🏆 Garson Performansı</h2><p class="section-note">Bugün üstlenilen çağrılar ve ortalama yanıt süreleri.</p><div id="staffPerformance" class="muted">Veriler yükleniyor...</div></div>
+<div class="card"><div class="top"><h2 style="margin:0">Personeller</h2><button id="refreshBtn" class="secondary" type="button">↻ Yenile</button></div><div id="summary" class="count">Liste henüz yüklenmedi.</div><div id="staffList"></div><div id="dashboardMessage" class="message hidden" role="status"></div></div>
+</section>
+<div class="footer">Yalnızca yetkili yöneticiler içindir.</div>
 </main>
-
 <script>
-"use strict";
-
-// ====================================
-// API AYARLARI
-// ====================================
-
-const BASE =
-  "https://2vcjhcky.rpcld.app/webhook";
-
-const API = {
-  login:
-    BASE + "/akilli-garson-staff-login",
-
-  staffList:
-    BASE + "/akilli-garson-manager-staff-list",
-
-  staffUpdate:
-    BASE + "/akilli-garson-manager-staff-update",
-
-  performance:
-    BASE + "/akilli-garson-manager-performance",
-
-  logout:
-    BASE + "/akilli-garson-staff-logout"
-};
-
-const RESTAURANT = "akilli-garson-demo";
-
-const SESSION_KEY =
-  "akilli_garson_manager_session";
-
-const $ = id =>
-  document.getElementById(id);
-
-let session = null;
-let busy = false;
-let loadingStaff = false;
-let loadingPerformance = false;
-
-// ====================================
-// MESAJLAR
-// ====================================
-
-function showMessage(
-  id,
-  message,
-  error = false
-) {
-  const el = $(id);
-
-  el.textContent = message;
-
-  el.className =
-    "message" + (error ? " error" : "");
-}
-
-function hideMessage(id) {
-  $(id).className = "message hidden";
-}
-
-// ====================================
-// OTURUM
-// ====================================
-
-function validSession(data) {
-  return Boolean(
-    data &&
-    typeof data.token === "string" &&
-    /^[a-f0-9]{64}$/i.test(data.token) &&
-    data.staff &&
-    data.staff.role === "manager" &&
-    data.expires_at &&
-    Date.parse(data.expires_at) > Date.now()
-  );
-}
-
-function saveSession(data) {
-  session = data;
-
-  sessionStorage.setItem(
-    SESSION_KEY,
-    JSON.stringify(data)
-  );
-}
-
-function clearSession() {
-  session = null;
-
-  sessionStorage.removeItem(
-    SESSION_KEY
-  );
-}
-
-function showLogin() {
-  $("loginScreen").classList.remove(
-    "hidden"
-  );
-
-  $("dashboard").classList.add(
-    "hidden"
-  );
-
-  $("password").value = "";
-}
-
-function showDashboard() {
-  $("loginScreen").classList.add(
-    "hidden"
-  );
-
-  $("dashboard").classList.remove(
-    "hidden"
-  );
-
-  $("managerName").textContent =
-    session.staff.name ||
-    "Restoran Yöneticisi";
-}
-
-function expireSession() {
-  clearSession();
-  showLogin();
-
-  showMessage(
-    "loginMessage",
-    "Oturum geçersiz veya süresi dolmuş.",
-    true
-  );
-}
-
-// ====================================
-// API
-// ====================================
-
-async function postJSON(url, body) {
-  const controller = new AbortController();
-
-  const timeout = setTimeout(
-    () => controller.abort(),
-    15000
-  );
-
-  try {
-    const response = await fetch(url, {
-      method: "POST",
-      mode: "cors",
-      cache: "no-store",
-      credentials: "omit",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify(body),
-      signal: controller.signal
-    });
-
-    if (!response.ok) {
-      throw new Error(
-        "HTTP " + response.status
-      );
-    }
-
-    return await response.json();
-
-  } finally {
-    clearTimeout(timeout);
-  }
-}
-
-// ====================================
-// YONETICI GIRISI
-// ====================================
-
-$("loginForm").addEventListener(
-  "submit",
-  async event => {
-    event.preventDefault();
-
-    if (busy) return;
-
-    busy = true;
-    $("loginBtn").disabled = true;
-
-    hideMessage("loginMessage");
-
-    let loggedIn = false;
-
-    try {
-      const data = await postJSON(
-        API.login,
-        {
-          restaurant: RESTAURANT,
-          staff_id: Number(
-            $("staffId").value
-          ),
-          password: $("password").value
-        }
-      );
-
-      const candidate = {
-        token: data.session_token,
-        staff: data.staff,
-        expires_at: data.expires_at
-      };
-
-      if (
-        data.success === true &&
-        data.result === "authenticated" &&
-        validSession(candidate)
-      ) {
-        saveSession(candidate);
-        showDashboard();
-        loggedIn = true;
-
-      } else {
-        showMessage(
-          "loginMessage",
-          data.message ||
-          "Giriş başarısız veya yönetici yetkisi yok.",
-          true
-        );
-      }
-
-    } catch (error) {
-      showMessage(
-        "loginMessage",
-        "Giriş bağlantısı başarısız.",
-        true
-      );
-
-    } finally {
-      busy = false;
-      $("loginBtn").disabled = false;
-    }
-
-    if (loggedIn) {
-      await refreshAll();
-    }
-  }
-);
-
-// ====================================
-// ISTATISTIK YARDIMCILARI
-// ====================================
-
-function numberText(value) {
-  const number = Number(value ?? 0);
-
-  return Number.isFinite(number)
-    ? number.toLocaleString("tr-TR")
-    : "0";
-}
-
-function secondsText(value) {
-  if (value === null || value === undefined) {
-    return "—";
-  }
-
-  const seconds = Number(value);
-
-  if (!Number.isFinite(seconds)) {
-    return "—";
-  }
-
-  if (seconds >= 60) {
-    return (
-      (seconds / 60)
-        .toLocaleString(
-          "tr-TR",
-          { maximumFractionDigits: 1 }
-        ) + " dk"
-    );
-  }
-
-  return seconds.toLocaleString(
-    "tr-TR",
-    { maximumFractionDigits: 1 }
-  ) + " sn";
-}
-
-function displayDate(value) {
-  if (!value) return "Bugün";
-
-  const parts = String(value)
-    .split("-")
-    .map(Number);
-
-  if (parts.length !== 3) {
-    return String(value);
-  }
-
-  const [year, month, day] = parts;
-
-  const date = new Date(
-    Date.UTC(year, month - 1, day, 12)
-  );
-
-  return date.toLocaleDateString(
-    "tr-TR",
-    {
-      timeZone: "UTC",
-      day: "numeric",
-      month: "long",
-      year: "numeric"
-    }
-  );
-}
-
-// ====================================
-// PERFORMANS KARTLARI
-// ====================================
-
-function renderPerformance(stats) {
-  $("reportDate").textContent =
-    displayDate(stats.date) +
-    " • Günlük performans";
-
-  $("totalCalls").textContent =
-    numberText(stats.total_calls);
-
-  $("billRequests").textContent =
-    numberText(stats.bill_requests);
-
-  $("waiterRequests").textContent =
-    numberText(stats.waiter_requests);
-
-  $("completedCalls").textContent =
-    numberText(stats.completed_calls);
-
-  $("pendingCalls").textContent =
-    numberText(stats.pending_calls);
-
-  $("cancelledCalls").textContent =
-    numberText(stats.cancelled_calls);
-
-  $("avgResponse").textContent =
-    secondsText(stats.avg_response_seconds);
-
-  renderStaffPerformance(
-    Array.isArray(stats.staff)
-      ? stats.staff
-      : []
-  );
-}
-
-// ====================================
-// GARSON PERFORMANSI
-// ====================================
-
-function renderStaffPerformance(people) {
-  const container =
-    $("staffPerformance");
-
-  container.replaceChildren();
-
-  if (!people.length) {
-    const empty =
-      document.createElement("div");
-
-    empty.className = "empty";
-
-    empty.textContent =
-      "Henüz performans verisi yok.";
-
-    container.append(empty);
-    return;
-  }
-
-  const sorted = [...people].sort(
-    (a, b) =>
-      Number(b.calls_accepted || 0) -
-      Number(a.calls_accepted || 0)
-  );
-
-  sorted.forEach(person => {
-    const row =
-      document.createElement("div");
-
-    row.className = "performance-row";
-
-    const top =
-      document.createElement("div");
-
-    top.className = "performance-top";
-
-    const name =
-      document.createElement("div");
-
-    name.className = "performance-name";
-    name.textContent = person.name;
-
-    const count =
-      document.createElement("div");
-
-    count.className = "performance-count";
-
-    count.textContent =
-      numberText(person.calls_accepted) +
-      " çağrı";
-
-    top.append(name, count);
-
-    const details =
-      document.createElement("div");
-
-    details.className =
-      "performance-details";
-
-    details.textContent =
-      "Ort. yanıt süresi: " +
-      secondsText(
-        person.avg_response_seconds
-      );
-
-    row.append(top, details);
-    container.append(row);
-  });
-}
-
-// ====================================
-// PERFORMANS VERISINI CEK
-// ====================================
-
-async function loadPerformance() {
-  if (!session || loadingPerformance) {
-    return;
-  }
-
-  if (!validSession(session)) {
-    expireSession();
-    return;
-  }
-
-  loadingPerformance = true;
-
-  const token = session.token;
-
-  try {
-    const data = await postJSON(
-      API.performance,
-      { session_token: token }
-    );
-
-    if (
-      !session ||
-      session.token !== token
-    ) {
-      return;
-    }
-
-    if (data.result === "unauthorized") {
-      expireSession();
-      return;
-    }
-
-    if (
-      data.success !== true ||
-      !data.stats ||
-      typeof data.stats !== "object" ||
-      Array.isArray(data.stats)
-    ) {
-      throw new Error(
-        data.message ||
-        "Performans verisi alınamadı."
-      );
-    }
-
-    renderPerformance(data.stats);
-
-    hideMessage(
-      "performanceMessage"
-    );
-
-  } catch (error) {
-    showMessage(
-      "performanceMessage",
-      "Performans verileri alınamadı: " +
-      error.message,
-      true
-    );
-
-  } finally {
-    loadingPerformance = false;
-  }
-}
-
-// ====================================
-// PERSONEL KARTI
-// ====================================
-
-function createStaffRow(person) {
-  const row =
-    document.createElement("div");
-
-  row.className = "staff-row";
-
-  const left =
-    document.createElement("div");
-
-  const name =
-    document.createElement("div");
-
-  name.className = "staff-name";
-  name.textContent = person.name;
-
-  const status =
-    document.createElement("div");
-
-  status.className = "staff-status";
-
-  status.textContent =
-    "ID: " + person.id +
-    " • " +
-    (
-      person.is_active
-        ? "Vardiyada"
-        : "Vardiya dışında"
-    );
-
-  left.append(name, status);
-
-  const button =
-    document.createElement("button");
-
-  button.type = "button";
-
-  button.className =
-    "switch" +
-    (person.is_active ? " on" : "");
-
-  button.textContent =
-    person.is_active
-      ? "Aktif"
-      : "Pasif";
-
-  button.addEventListener(
-    "click",
-    () => changeStatus(person, button)
-  );
-
-  row.append(left, button);
-
-  return row;
-}
-
-// ====================================
-// PERSONEL LISTESI
-// ====================================
-
-async function loadStaff() {
-  if (
-    !session ||
-    busy ||
-    loadingStaff
-  ) {
-    return;
-  }
-
-  if (!validSession(session)) {
-    expireSession();
-    return;
-  }
-
-  loadingStaff = true;
-
-  const token = session.token;
-
-  $("refreshStaffBtn").disabled = true;
-
-  try {
-    const data = await postJSON(
-      API.staffList,
-      { session_token: token }
-    );
-
-    if (
-      !session ||
-      session.token !== token
-    ) {
-      return;
-    }
-
-    if (data.result === "unauthorized") {
-      expireSession();
-      return;
-    }
-
-    if (
-      data.success !== true ||
-      !Array.isArray(data.staff)
-    ) {
-      throw new Error(
-        data.message ||
-        "Liste alınamadı."
-      );
-    }
-
-    const people = data.staff;
-
-    const container = $("staffList");
-
-    container.replaceChildren();
-
-    const activeCount =
-      people.filter(
-        p => p.is_active === true
-      ).length;
-
-    $("staffSummary").textContent =
-      people.length +
-      " garson • " +
-      activeCount +
-      " aktif";
-
-    if (!people.length) {
-      const empty =
-        document.createElement("div");
-
-      empty.className = "empty";
-      empty.textContent =
-        "Henüz garson bulunmuyor.";
-
-      container.append(empty);
-    }
-
-    people.forEach(person => {
-      container.append(
-        createStaffRow(person)
-      );
-    });
-
-    hideMessage("staffMessage");
-
-  } catch (error) {
-    showMessage(
-      "staffMessage",
-      "Personel listesi alınamadı: " +
-      error.message,
-      true
-    );
-
-  } finally {
-    loadingStaff = false;
-
-    $("refreshStaffBtn").disabled =
-      false;
-  }
-}
-
-// ====================================
-// AKTIF / PASIF DEGISTIRME
-// ====================================
-
-async function changeStatus(person, button) {
-  if (busy || !session) {
-    return;
-  }
-
-  if (!validSession(session)) {
-    expireSession();
-    return;
-  }
-
-  busy = true;
-  button.disabled = true;
-
-  const token = session.token;
-
-  const nextActive =
-    person.is_active !== true;
-
-  try {
-    const data = await postJSON(
-      API.staffUpdate,
-      {
-        session_token: token,
-        staff_id: Number(person.id),
-        is_active: nextActive
-      }
-    );
-
-    if (
-      !session ||
-      session.token !== token
-    ) {
-      return;
-    }
-
-    if (
-      data.success === true &&
-      data.result === "updated"
-    ) {
-      person.is_active = nextActive;
-
-      button.className =
-        "switch" +
-        (nextActive ? " on" : "");
-
-      button.textContent =
-        nextActive ? "Aktif" : "Pasif";
-
-      rowStatus(button, person);
-
-      showMessage(
-        "staffMessage",
-        person.name +
-        (
-          nextActive
-            ? " aktif edildi."
-            : " pasife alındı."
-        )
-      );
-
-      // Liste sayacini yenile.
-      const buttons = [
-        ...$("staffList")
-          .querySelectorAll(".switch")
-      ];
-
-      const active =
-        buttons.filter(
-          b => b.classList.contains("on")
-        ).length;
-
-      $("staffSummary").textContent =
-        buttons.length +
-        " garson • " +
-        active +
-        " aktif";
-
-    } else {
-      showMessage(
-        "staffMessage",
-        data.message ||
-        "Personel güncellenemedi.",
-        true
-      );
-    }
-
-  } catch (error) {
-    showMessage(
-      "staffMessage",
-      "Güncelleme başarısız: " +
-      error.message,
-      true
-    );
-
-  } finally {
-    busy = false;
-    button.disabled = false;
-  }
-}
-
-function rowStatus(button, person) {
-  const status =
-    button.parentElement.querySelector(
-      ".staff-status"
-    );
-
-  if (!status) return;
-
-  status.textContent =
-    "ID: " + person.id +
-    " • " +
-    (
-      person.is_active
-        ? "Vardiyada"
-        : "Vardiya dışında"
-    );
-}
-
-// ====================================
-// GENEL YENILEME
-// ====================================
-
-async function refreshAll() {
-  if (!session || busy) {
-    return;
-  }
-
-  if (!validSession(session)) {
-    expireSession();
-    return;
-  }
-
-  $("refreshAllBtn").disabled = true;
-
-  $("lastUpdated").textContent =
-    "Veriler güncelleniyor...";
-
-  try {
-    await Promise.all([
-      loadStaff(),
-      loadPerformance()
-    ]);
-
-    if (session) {
-      $("lastUpdated").textContent =
-        "Son kontrol: " +
-        new Date().toLocaleTimeString(
-          "tr-TR"
-        );
-    }
-
-  } finally {
-    $("refreshAllBtn").disabled =
-      false;
-  }
-}
-
-$("refreshAllBtn").addEventListener(
-  "click",
-  refreshAll
-);
-
-$("refreshStaffBtn").addEventListener(
-  "click",
-  loadStaff
-);
-
-// ====================================
-// CIKIS
-// ====================================
-
-$("logoutBtn").addEventListener(
-  "click",
-  async () => {
-    if (busy || !session) return;
-
-    busy = true;
-
-    $("logoutBtn").disabled = true;
-
-    const token = session.token;
-
-    let confirmed = false;
-
-    try {
-      const data = await postJSON(
-        API.logout,
-        { session_token: token }
-      );
-
-      confirmed =
-        data.result === "logged_out" ||
-        data.result === "unauthorized";
-
-    } catch (error) {
-      console.warn(
-        "Sunucu çıkışı doğrulanamadı."
-      );
-
-    } finally {
-      clearSession();
-      showLogin();
-
-      showMessage(
-        "loginMessage",
-        confirmed
-          ? "Çıkış yapıldı."
-          : "Cihaz oturumu kapatıldı; sunucu çıkışı doğrulanamadı.",
-        !confirmed
-      );
-
-      $("logoutBtn").disabled = false;
-
-      busy = false;
-    }
-  }
-);
-
-// ====================================
-// SAYFA BASLANGICI
-// ====================================
-
-try {
-  const saved = JSON.parse(
-    sessionStorage.getItem(
-      SESSION_KEY
-    ) || "null"
-  );
-
-  if (validSession(saved)) {
-    session = saved;
-    showDashboard();
-    refreshAll();
-
-  } else {
-    clearSession();
-    showLogin();
-  }
-
-} catch (error) {
-  clearSession();
-  showLogin();
-}
-
+'use strict';
+const BASE='https://2vcjhcky.rpcld.app/webhook';
+const API={login:BASE+'/akilli-garson-staff-login',list:BASE+'/akilli-garson-manager-staff-list',update:BASE+'/akilli-garson-manager-staff-update',logout:BASE+'/akilli-garson-staff-logout',performance:BASE+'/akilli-garson-manager-performance',managerPush:BASE+'/akilli-garson-manager-push-register'};
+const RESTAURANT='akilli-garson-demo';
+const KEY='akilli_garson_manager_session';
+const $=id=>document.getElementById(id);
+let session=null,busy=false;
+function msg(id,value,error=false){const e=$(id);e.textContent=value;e.className='message'+(error?' error':'');}
+function hide(id){$(id).className='message hidden';}
+function valid(s){return !!(s&&typeof s.token==='string'&&/^[a-f0-9]{64}$/i.test(s.token)&&s.staff&&String(s.staff.role)==='manager'&&s.expires_at&&Date.parse(s.expires_at)>Date.now());}
+function save(s){session=s;sessionStorage.setItem(KEY,JSON.stringify(s));}
+function clear(){session=null;sessionStorage.removeItem(KEY);}
+function showLogin(){ $('loginScreen').classList.remove('hidden');$('dashboard').classList.add('hidden');$('password').value='';}
+function showDashboard(){ $('loginScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');$('managerName').textContent=session.staff.name||'Restoran Yöneticisi';$('staffList').replaceChildren();$('summary').textContent='Listeyi getirmek için Yenile butonuna basın.';hide('dashboardMessage');}
+function expire(){clear();showLogin();msg('loginMessage','Oturum geçersiz veya süresi dolmuş. Tekrar giriş yapın.',true);}
+async function post(url,body){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const r=await fetch(url,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.json();}finally{clearTimeout(timer);}}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;$('loginBtn').disabled=true;hide('loginMessage');try{const id=Number($('staffId').value);const password=$('password').value;const d=await post(API.login,{restaurant:RESTAURANT,staff_id:id,password});const s={token:d.session_token,staff:d.staff,expires_at:d.expires_at};if(d.success===true&&d.result==='authenticated'&&valid(s)){save(s);showDashboard();await Promise.all([loadStaff(),loadPerformance()]);}else{msg('loginMessage',d.message||'Yönetici girişi başarısız. Personel rolünü kontrol edin.',true);}}catch(err){msg('loginMessage','Giriş bağlantısı başarısız: '+err.message,true);}finally{busy=false;$('loginBtn').disabled=false;}});
+function statusRow(person){const row=document.createElement('div');row.className='staff';const left=document.createElement('div');const name=document.createElement('div');name.className='name';name.textContent=person.name;const state=document.createElement('div');state.className='status';state.textContent='ID: '+person.id+' • '+(person.is_active?'Vardiyada':'Vardiya dışında');left.append(name,state);const toggle=document.createElement('button');toggle.className='switch'+(person.is_active?' on':'');toggle.type='button';toggle.textContent=person.is_active?'Aktif':'Pasif';toggle.setAttribute('aria-label',person.name+' durumunu değiştir');toggle.addEventListener('click',()=>changeStatus(person,toggle));row.append(left,toggle);return row;}
+async function loadStaff(){if(!session||busy)return;if(!valid(session)){expire();return;}busy=true;$('refreshBtn').disabled=true;try{const d=await post(API.list,{session_token:session.token});if(!session)return;if(d.success!==true||!Array.isArray(d.staff)){msg('dashboardMessage',d.message||'Personel listesi alınamadı. Yönetici oturumunu kontrol edin.',true);return;}hide('dashboardMessage');$('staffList').replaceChildren();const people=d.staff;$('summary').textContent=people.length+' garson • '+people.filter(p=>p.is_active===true).length+' aktif';if(!people.length){const e=document.createElement('p');e.className='muted';e.textContent='Henüz garson bulunmuyor.';$('staffList').append(e);}else people.forEach(p=>$('staffList').append(statusRow(p)));}catch(err){msg('dashboardMessage','Liste alınamadı: '+err.message,true);}finally{busy=false;$('refreshBtn').disabled=false;}}
+async function changeStatus(person,button){if(busy||!session)return;if(!valid(session)){expire();return;}busy=true;button.disabled=true;const next=person.is_active!==true;try{const d=await post(API.update,{session_token:session.token,staff_id:Number(person.id),is_active:next});if(d.success===true&&d.result==='updated'){person.is_active=next;button.textContent=next?'Aktif':'Pasif';button.className='switch'+(next?' on':'');button.parentElement.querySelector('.status').textContent='ID: '+person.id+' • '+(next?'Vardiyada':'Vardiya dışında');const active=[...$('staffList').querySelectorAll('.switch.on')].length;$('summary').textContent=$('staffList').children.length+' garson • '+active+' aktif';msg('dashboardMessage',person.name+' '+(next?'aktif edildi.':'pasife alındı.'));}else{msg('dashboardMessage',d.message||'İşlem reddedildi. Yönetici yetkisini kontrol edin.',true);}}catch(err){msg('dashboardMessage','Güncelleme başarısız: '+err.message,true);}finally{busy=false;button.disabled=false;}}
+$('refreshBtn').addEventListener('click',loadStaff);
+$('refreshPerformanceBtn').addEventListener('click',loadPerformance);
+$('logoutBtn').addEventListener('click',async()=>{if(busy)return;busy=true;$('logoutBtn').disabled=true;const token=session?.token;let confirmed=false;try{if(token){const d=await post(API.logout,{session_token:token});confirmed=d.result==='logged_out'||d.result==='unauthorized';}}catch(e){}finally{clear();showLogin();msg('loginMessage',confirmed?'Çıkış yapıldı.':'Cihazdaki oturum kapatıldı. Sunucudaki oturumun kapandığı doğrulanamadı.',!confirmed);$('logoutBtn').disabled=false;busy=false;}});
+try{const old=JSON.parse(sessionStorage.getItem(KEY)||'null');if(valid(old)){session=old;showDashboard();loadStaff();loadPerformance();}else{clear();showLogin();}}catch(e){clear();showLogin();}
 </script>
 </body>
 </html>
