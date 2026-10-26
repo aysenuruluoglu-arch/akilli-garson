@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -399,13 +398,15 @@ function validSession(data) {
 
 function saveSession(data) {
   session = data;
-  sessionStorage.setItem(
+  localStorage.setItem(
     SESSION_KEY,JSON.stringify(data)
   );
+  sessionStorage.removeItem(SESSION_KEY);
 }
 
 function clearSession() {
   session = null;
+  localStorage.removeItem(SESSION_KEY);
   sessionStorage.removeItem(SESSION_KEY);
 }
 
@@ -1344,11 +1345,13 @@ $("logoutBtn").addEventListener(
 
 try {
   const saved = JSON.parse(
-    sessionStorage.getItem(SESSION_KEY) || "null"
+    localStorage.getItem(SESSION_KEY) ||
+    sessionStorage.getItem(SESSION_KEY) ||
+    "null"
   );
 
   if (validSession(saved)) {
-    session = saved;
+    saveSession(saved);
     showDashboard();
   } else {
     clearSession();
