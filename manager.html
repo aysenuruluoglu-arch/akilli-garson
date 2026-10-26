@@ -18,7 +18,72 @@
 .performance-top{display:flex;justify-content:space-between;gap:10px;font-weight:700}
 .performance-details{font-size:12px;color:#8391a3;margin-top:6px}
 </style>
-<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer>
+<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+</head>
+<body>
+<main class="app">
+<header class="header"><div class="brand">Akıllı Garson</div><div class="sub">Restoran yönetici paneli</div></header>
+<section id="loginScreen" class="card">
+<h2>Yönetici Girişi</h2>
+<form id="loginForm">
+<label for="staffId">Yönetici Personel Numarası</label><input id="staffId" type="number" min="1" step="1" inputmode="numeric" value="5" required autocomplete="username">
+<label for="password">Şifre</label><input id="password" type="password" required autocomplete="current-password" placeholder="Yönetici şifresi">
+<button class="primary" id="loginBtn" type="submit">Giriş Yap</button>
+</form><div id="loginMessage" class="message hidden" role="status"></div>
+</section>
+<section id="dashboard" class="hidden">
+<div class="card"><div class="top"><div><b id="managerName">Restoran Yöneticisi</b><div class="muted">Personel vardiya kontrolü</div></div><button id="logoutBtn" class="logout" type="button">Çıkış</button></div></div>
+<div class="card">
+<h2>🖥️ Restoran Bilgisayarı Bildirimleri</h2>
+<p class="section-note">Bu bilgisayar tüm masalardan gelen çağrılar için bildirim alacak. Garsonlar pasife alınsa bile bildirimi açık kalır.</p>
+<button id="managerPushBtn" class="primary" type="button">🔔 Bu Bilgisayarda Bildirimleri Etkinleştir</button>
+<div id="managerPushMessage" class="message hidden" role="status"></div>
+</div>
+<div class="card">
+<div class="top"><h2 style="margin:0">📊 Günlük Performans</h2><button id="refreshPerformanceBtn" class="secondary" type="button">↻ Yenile</button></div>
+<p id="reportDate" class="section-note">Türkiye saatine göre bugünün verileri</p>
+<div class="stats-grid">
+<div class="stat"><div id="totalCalls" class="stat-value">—</div><div class="stat-label">Toplam çağrı</div></div>
+<div class="stat"><div id="billRequests" class="stat-value">—</div><div class="stat-label">Hesap isteği</div></div>
+<div class="stat"><div id="waiterRequests" class="stat-value">—</div><div class="stat-label">Garson çağrısı</div></div>
+<div class="stat"><div id="completedCalls" class="stat-value">—</div><div class="stat-label">Tamamlanan çağrı</div></div>
+<div class="stat"><div id="avgResponse" class="stat-value">—</div><div class="stat-label">Ort. yanıt süresi</div></div>
+<div class="stat"><div id="pendingCalls" class="stat-value">—</div><div class="stat-label">Bekleyen çağrı</div></div>
+<div class="stat"><div id="cancelledCalls" class="stat-value">—</div><div class="stat-label">İptal edilen çağrı</div></div>
+</div>
+<div id="performanceMessage" class="message hidden" role="status"></div>
+</div>
+<div class="card"><h2>🏆 Garson Performansı</h2><p class="section-note">Bugün üstlenilen çağrılar ve ortalama yanıt süreleri.</p><div id="staffPerformance" class="muted">Veriler yükleniyor...</div></div>
+<div class="card"><div class="top"><h2 style="margin:0">Personeller</h2><button id="refreshBtn" class="secondary" type="button">↻ Yenile</button></div><div id="summary" class="count">Liste henüz yüklenmedi.</div><div id="staffList"></div><div id="dashboardMessage" class="message hidden" role="status"></div></div>
+</section>
+<div class="footer">Yalnızca yetkili yöneticiler içindir.</div>
+</main>
+<script>
+'use strict';
+const BASE='https://2vcjhcky.rpcld.app/webhook';
+const API={login:BASE+'/akilli-garson-staff-login',list:BASE+'/akilli-garson-manager-staff-list',update:BASE+'/akilli-garson-manager-staff-update',logout:BASE+'/akilli-garson-staff-logout',performance:BASE+'/akilli-garson-manager-performance',managerPush:BASE+'/akilli-garson-manager-push-register'};
+const RESTAURANT='akilli-garson-demo';
+const KEY='akilli_garson_manager_session';
+const $=id=>document.getElementById(id);
+let session=null,busy=false;
+function msg(id,value,error=false){const e=$(id);e.textContent=value;e.className='message'+(error?' error':'');}
+function hide(id){$(id).className='message hidden';}
+function valid(s){return !!(s&&typeof s.token==='string'&&/^[a-f0-9]{64}$/i.test(s.token)&&s.staff&&String(s.staff.role)==='manager'&&s.expires_at&&Date.parse(s.expires_at)>Date.now());}
+function save(s){session=s;localStorage.setItem(KEY,JSON.stringify(s));}
+function clear(){session=null;localStorage.removeItem(KEY);}
+function showLogin(){ $('loginScreen').classList.remove('hidden');$('dashboard').classList.add('hidden');$('password').value='';}
+function showDashboard(){ $('loginScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');$('managerName').textContent=session.staff.name||'Restoran Yöneticisi';$('staffList').replaceChildren();$('summary').textContent='Listeyi getirmek için Yenile butonuna basın.';hide('dashboardMessage');}
+function expire(){clear();showLogin();msg('loginMessage','Oturum geçersiz veya süresi dolmuş. Tekrar giriş yapın.',true);}
+async function post(url,body){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const r=await fetch(url,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.json();}finally{clearTimeout(timer);}}
+$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;$('loginBtn').disabled=true;hide('loginMessage');try{const id=Number($('staffId').value);const password=$('password').value;const d=await post(API.login,{restaurant:RESTAURANT,staff_id:id,password});const s={token:d.session_token,staff:d.staff,expires_at:d.expires_at};if(d.success===true&&d.result==='authenticated'&&valid(s)){save(s);showDashboard();await Promise.all([loadStaff(),loadPerformance()]);}else{msg('loginMessage',d.message||'Yönetici girişi başarısız. Personel rolünü kontrol edin.',true);}}catch(err){msg('loginMessage','Giriş bağlantısı başarısız: '+err.message,true);}finally{busy=false;$('loginBtn').disabled=false;}});
+function statusRow(person){const row=document.createElement('div');row.className='staff';const left=document.createElement('div');const name=document.createElement('div');name.className='name';name.textContent=person.name;const state=document.createElement('div');state.className='status';state.textContent='ID: '+person.id+' • '+(person.is_active?'Vardiyada':'Vardiya dışında');left.append(name,state);const toggle=document.createElement('button');toggle.className='switch'+(person.is_active?' on':'');toggle.type='button';toggle.textContent=person.is_active?'Aktif':'Pasif';toggle.setAttribute('aria-label',person.name+' durumunu değiştir');toggle.addEventListener('click',()=>changeStatus(person,toggle));row.append(left,toggle);return row;}
+async function loadStaff(){if(!session||busy)return;if(!valid(session)){expire();return;}busy=true;$('refreshBtn').disabled=true;try{const d=await post(API.list,{session_token:session.token});if(!session)return;if(d.result==='unauthorized'){expire();return;}if(d.success!==true||!Array.isArray(d.staff)){msg('dashboardMessage',d.message||'Personel listesi alınamadı. Yönetici oturumunu kontrol edin.',true);return;}hide('dashboardMessage');$('staffList').replaceChildren();const people=d.staff;$('summary').textContent=people.length+' garson • '+people.filter(p=>p.is_active===true).length+' aktif';if(!people.length){const e=document.createElement('p');e.className='muted';e.textContent='Henüz garson bulunmuyor.';$('staffList').append(e);}else people.forEach(p=>$('staffList').append(statusRow(p)));}catch(err){msg('dashboardMessage','Liste alınamadı: '+err.message,true);}finally{busy=false;$('refreshBtn').disabled=false;}}
+async function changeStatus(person,button){if(busy||!session)return;if(!valid(session)){expire();return;}busy=true;button.disabled=true;const next=person.is_active!==true;try{const d=await post(API.update,{session_token:session.token,staff_id:Number(person.id),is_active:next});if(d.result==='unauthorized'){expire();return;}if(d.success===true&&d.result==='updated'){person.is_active=next;button.textContent=next?'Aktif':'Pasif';button.className='switch'+(next?' on':'');button.parentElement.querySelector('.status').textContent='ID: '+person.id+' • '+(next?'Vardiyada':'Vardiya dışında');const active=[...$('staffList').querySelectorAll('.switch.on')].length;$('summary').textContent=$('staffList').children.length+' garson • '+active+' aktif';msg('dashboardMessage',person.name+' '+(next?'aktif edildi.':'pasife alındı.'));}else{msg('dashboardMessage',d.message||'İşlem reddedildi. Yönetici yetkisini kontrol edin.',true);}}catch(err){msg('dashboardMessage','Güncelleme başarısız: '+err.message,true);}finally{busy=false;button.disabled=false;}}
+$('refreshBtn').addEventListener('click',loadStaff);
+$('refreshPerformanceBtn').addEventListener('click',loadPerformance);
+$('logoutBtn').addEventListener('click',async()=>{if(busy)return;busy=true;$('logoutBtn').disabled=true;const token=session?.token;let confirmed=false;try{if(token){const d=await post(API.logout,{session_token:token});confirmed=d.result==='logged_out'||d.result==='unauthorized';}}catch(e){}finally{clear();showLogin();msg('loginMessage',confirmed?'Çıkış yapıldı.':'Cihazdaki oturum kapatıldı. Sunucudaki oturumun kapandığı doğrulanamadı.',!confirmed);$('logoutBtn').disabled=false;busy=false;}});
+try{const old=JSON.parse(localStorage.getItem(KEY)||'null');if(valid(old)){session=old;showDashboard();loadStaff();loadPerformance();}else{clear();showLogin();}}catch(e){clear();showLogin();}
+
 // YONETICI PERFORMANS TABLOSU
 const statsIds={totalCalls:'total_calls',billRequests:'bill_requests',waiterRequests:'waiter_requests',completedCalls:'completed_calls',pendingCalls:'pending_calls',cancelledCalls:'cancelled_calls'};
 let performanceLoading=false;
@@ -96,71 +161,7 @@ $('managerPushBtn').addEventListener('click',async()=>{
  }catch(error){msg('managerPushMessage','Bildirim kaydı başarısız: '+error.message,true);}
  finally{button.disabled=false;}
 });
-</script>
-</head>
-<body>
-<main class="app">
-<header class="header"><div class="brand">Akıllı Garson</div><div class="sub">Restoran yönetici paneli</div></header>
-<section id="loginScreen" class="card">
-<h2>Yönetici Girişi</h2>
-<form id="loginForm">
-<label for="staffId">Yönetici Personel Numarası</label><input id="staffId" type="number" min="1" step="1" inputmode="numeric" value="5" required autocomplete="username">
-<label for="password">Şifre</label><input id="password" type="password" required autocomplete="current-password" placeholder="Yönetici şifresi">
-<button class="primary" id="loginBtn" type="submit">Giriş Yap</button>
-</form><div id="loginMessage" class="message hidden" role="status"></div>
-</section>
-<section id="dashboard" class="hidden">
-<div class="card"><div class="top"><div><b id="managerName">Restoran Yöneticisi</b><div class="muted">Personel vardiya kontrolü</div></div><button id="logoutBtn" class="logout" type="button">Çıkış</button></div></div>
-<div class="card">
-<h2>🖥️ Restoran Bilgisayarı Bildirimleri</h2>
-<p class="section-note">Bu bilgisayar tüm masalardan gelen çağrılar için bildirim alacak. Garsonlar pasife alınsa bile bildirimi açık kalır.</p>
-<button id="managerPushBtn" class="primary" type="button">🔔 Bu Bilgisayarda Bildirimleri Etkinleştir</button>
-<div id="managerPushMessage" class="message hidden" role="status"></div>
-</div>
-<div class="card">
-<div class="top"><h2 style="margin:0">📊 Günlük Performans</h2><button id="refreshPerformanceBtn" class="secondary" type="button">↻ Yenile</button></div>
-<p id="reportDate" class="section-note">Türkiye saatine göre bugünün verileri</p>
-<div class="stats-grid">
-<div class="stat"><div id="totalCalls" class="stat-value">—</div><div class="stat-label">Toplam çağrı</div></div>
-<div class="stat"><div id="billRequests" class="stat-value">—</div><div class="stat-label">Hesap isteği</div></div>
-<div class="stat"><div id="waiterRequests" class="stat-value">—</div><div class="stat-label">Garson çağrısı</div></div>
-<div class="stat"><div id="completedCalls" class="stat-value">—</div><div class="stat-label">Tamamlanan çağrı</div></div>
-<div class="stat"><div id="avgResponse" class="stat-value">—</div><div class="stat-label">Ort. yanıt süresi</div></div>
-<div class="stat"><div id="pendingCalls" class="stat-value">—</div><div class="stat-label">Bekleyen çağrı</div></div>
-<div class="stat"><div id="cancelledCalls" class="stat-value">—</div><div class="stat-label">İptal edilen çağrı</div></div>
-</div>
-<div id="performanceMessage" class="message hidden" role="status"></div>
-</div>
-<div class="card"><h2>🏆 Garson Performansı</h2><p class="section-note">Bugün üstlenilen çağrılar ve ortalama yanıt süreleri.</p><div id="staffPerformance" class="muted">Veriler yükleniyor...</div></div>
-<div class="card"><div class="top"><h2 style="margin:0">Personeller</h2><button id="refreshBtn" class="secondary" type="button">↻ Yenile</button></div><div id="summary" class="count">Liste henüz yüklenmedi.</div><div id="staffList"></div><div id="dashboardMessage" class="message hidden" role="status"></div></div>
-</section>
-<div class="footer">Yalnızca yetkili yöneticiler içindir.</div>
-</main>
-<script>
-'use strict';
-const BASE='https://2vcjhcky.rpcld.app/webhook';
-const API={login:BASE+'/akilli-garson-staff-login',list:BASE+'/akilli-garson-manager-staff-list',update:BASE+'/akilli-garson-manager-staff-update',logout:BASE+'/akilli-garson-staff-logout',performance:BASE+'/akilli-garson-manager-performance',managerPush:BASE+'/akilli-garson-manager-push-register'};
-const RESTAURANT='akilli-garson-demo';
-const KEY='akilli_garson_manager_session';
-const $=id=>document.getElementById(id);
-let session=null,busy=false;
-function msg(id,value,error=false){const e=$(id);e.textContent=value;e.className='message'+(error?' error':'');}
-function hide(id){$(id).className='message hidden';}
-function valid(s){return !!(s&&typeof s.token==='string'&&/^[a-f0-9]{64}$/i.test(s.token)&&s.staff&&String(s.staff.role)==='manager'&&s.expires_at&&Date.parse(s.expires_at)>Date.now());}
-function save(s){session=s;sessionStorage.setItem(KEY,JSON.stringify(s));}
-function clear(){session=null;sessionStorage.removeItem(KEY);}
-function showLogin(){ $('loginScreen').classList.remove('hidden');$('dashboard').classList.add('hidden');$('password').value='';}
-function showDashboard(){ $('loginScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');$('managerName').textContent=session.staff.name||'Restoran Yöneticisi';$('staffList').replaceChildren();$('summary').textContent='Listeyi getirmek için Yenile butonuna basın.';hide('dashboardMessage');}
-function expire(){clear();showLogin();msg('loginMessage','Oturum geçersiz veya süresi dolmuş. Tekrar giriş yapın.',true);}
-async function post(url,body){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const r=await fetch(url,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.json();}finally{clearTimeout(timer);}}
-$('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;$('loginBtn').disabled=true;hide('loginMessage');try{const id=Number($('staffId').value);const password=$('password').value;const d=await post(API.login,{restaurant:RESTAURANT,staff_id:id,password});const s={token:d.session_token,staff:d.staff,expires_at:d.expires_at};if(d.success===true&&d.result==='authenticated'&&valid(s)){save(s);showDashboard();await Promise.all([loadStaff(),loadPerformance()]);}else{msg('loginMessage',d.message||'Yönetici girişi başarısız. Personel rolünü kontrol edin.',true);}}catch(err){msg('loginMessage','Giriş bağlantısı başarısız: '+err.message,true);}finally{busy=false;$('loginBtn').disabled=false;}});
-function statusRow(person){const row=document.createElement('div');row.className='staff';const left=document.createElement('div');const name=document.createElement('div');name.className='name';name.textContent=person.name;const state=document.createElement('div');state.className='status';state.textContent='ID: '+person.id+' • '+(person.is_active?'Vardiyada':'Vardiya dışında');left.append(name,state);const toggle=document.createElement('button');toggle.className='switch'+(person.is_active?' on':'');toggle.type='button';toggle.textContent=person.is_active?'Aktif':'Pasif';toggle.setAttribute('aria-label',person.name+' durumunu değiştir');toggle.addEventListener('click',()=>changeStatus(person,toggle));row.append(left,toggle);return row;}
-async function loadStaff(){if(!session||busy)return;if(!valid(session)){expire();return;}busy=true;$('refreshBtn').disabled=true;try{const d=await post(API.list,{session_token:session.token});if(!session)return;if(d.success!==true||!Array.isArray(d.staff)){msg('dashboardMessage',d.message||'Personel listesi alınamadı. Yönetici oturumunu kontrol edin.',true);return;}hide('dashboardMessage');$('staffList').replaceChildren();const people=d.staff;$('summary').textContent=people.length+' garson • '+people.filter(p=>p.is_active===true).length+' aktif';if(!people.length){const e=document.createElement('p');e.className='muted';e.textContent='Henüz garson bulunmuyor.';$('staffList').append(e);}else people.forEach(p=>$('staffList').append(statusRow(p)));}catch(err){msg('dashboardMessage','Liste alınamadı: '+err.message,true);}finally{busy=false;$('refreshBtn').disabled=false;}}
-async function changeStatus(person,button){if(busy||!session)return;if(!valid(session)){expire();return;}busy=true;button.disabled=true;const next=person.is_active!==true;try{const d=await post(API.update,{session_token:session.token,staff_id:Number(person.id),is_active:next});if(d.success===true&&d.result==='updated'){person.is_active=next;button.textContent=next?'Aktif':'Pasif';button.className='switch'+(next?' on':'');button.parentElement.querySelector('.status').textContent='ID: '+person.id+' • '+(next?'Vardiyada':'Vardiya dışında');const active=[...$('staffList').querySelectorAll('.switch.on')].length;$('summary').textContent=$('staffList').children.length+' garson • '+active+' aktif';msg('dashboardMessage',person.name+' '+(next?'aktif edildi.':'pasife alındı.'));}else{msg('dashboardMessage',d.message||'İşlem reddedildi. Yönetici yetkisini kontrol edin.',true);}}catch(err){msg('dashboardMessage','Güncelleme başarısız: '+err.message,true);}finally{busy=false;button.disabled=false;}}
-$('refreshBtn').addEventListener('click',loadStaff);
-$('refreshPerformanceBtn').addEventListener('click',loadPerformance);
-$('logoutBtn').addEventListener('click',async()=>{if(busy)return;busy=true;$('logoutBtn').disabled=true;const token=session?.token;let confirmed=false;try{if(token){const d=await post(API.logout,{session_token:token});confirmed=d.result==='logged_out'||d.result==='unauthorized';}}catch(e){}finally{clear();showLogin();msg('loginMessage',confirmed?'Çıkış yapıldı.':'Cihazdaki oturum kapatıldı. Sunucudaki oturumun kapandığı doğrulanamadı.',!confirmed);$('logoutBtn').disabled=false;busy=false;}});
-try{const old=JSON.parse(sessionStorage.getItem(KEY)||'null');if(valid(old)){session=old;showDashboard();loadStaff();loadPerformance();}else{clear();showLogin();}}catch(e){clear();showLogin();}
+
 </script>
 </body>
 </html>
