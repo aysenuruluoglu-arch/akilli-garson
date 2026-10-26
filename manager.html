@@ -17,6 +17,15 @@
 .performance-row{padding:13px 0;border-bottom:1px solid #edf0f5}
 .performance-top{display:flex;justify-content:space-between;gap:10px;font-weight:700}
 .performance-details{font-size:12px;color:#8391a3;margin-top:6px}
+.live-call{border:1px solid #e4eaf3;border-radius:13px;padding:15px;margin-top:11px;background:#fff;scroll-margin-top:20px}
+.live-call.target{border:2px solid #245bda;background:#edf4ff}
+.live-call-head{display:flex;justify-content:space-between;gap:10px;align-items:center}
+.live-status{font-size:12px;font-weight:700;border-radius:20px;padding:6px 9px;background:#fff0d6;color:#925c0c}
+.live-status.accepted{background:#e7f0ff;color:#2653a8}
+.live-call-note{font-size:13px;margin-top:8px}
+.live-call-meta{font-size:12px;color:#728298;margin-top:8px}
+.live-empty{color:#8290a2;font-size:13px;padding:12px 0}
+
 </style>
 <script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 </head>
@@ -38,6 +47,13 @@
 <p class="section-note">Bu bilgisayar tüm masalardan gelen çağrılar için bildirim alacak. Garsonlar pasife alınsa bile bildirimi açık kalır.</p>
 <button id="managerPushBtn" class="primary" type="button">🔔 Bu Bilgisayarda Bildirimleri Etkinleştir</button>
 <div id="managerPushMessage" class="message hidden" role="status"></div>
+</div>
+<div class="card" id="liveCallsSection">
+<div class="top"><h2 style="margin:0">🔔 Canlı Masa Çağrıları</h2><button id="refreshLiveBtn" class="secondary" type="button">↻ Yenile</button></div>
+<p class="section-note">Tüm masaların bekleyen ve üstlenilen çağrıları. Liste otomatik yenilenir.</p>
+<div id="liveSummary" class="count">Çağrılar yükleniyor...</div>
+<div id="liveCallsList" aria-live="polite"></div>
+<div id="liveCallsMessage" class="message hidden" role="status"></div>
 </div>
 <div class="card">
 <div class="top"><h2 style="margin:0">📊 Günlük Performans</h2><button id="refreshPerformanceBtn" class="secondary" type="button">↻ Yenile</button></div>
@@ -61,7 +77,7 @@
 <script>
 'use strict';
 const BASE='https://2vcjhcky.rpcld.app/webhook';
-const API={login:BASE+'/akilli-garson-staff-login',list:BASE+'/akilli-garson-manager-staff-list',update:BASE+'/akilli-garson-manager-staff-update',logout:BASE+'/akilli-garson-staff-logout',performance:BASE+'/akilli-garson-manager-performance',managerPush:BASE+'/akilli-garson-manager-push-register'};
+const API={login:BASE+'/akilli-garson-staff-login',list:BASE+'/akilli-garson-manager-staff-list',update:BASE+'/akilli-garson-manager-staff-update',logout:BASE+'/akilli-garson-staff-logout',performance:BASE+'/akilli-garson-manager-performance',managerPush:BASE+'/akilli-garson-manager-push-register',liveCalls:BASE+'/akilli-garson-manager-live-calls'};
 const RESTAURANT='akilli-garson-demo';
 const KEY='akilli_garson_manager_session';
 const $=id=>document.getElementById(id);
@@ -71,8 +87,8 @@ function hide(id){$(id).className='message hidden';}
 function valid(s){return !!(s&&typeof s.token==='string'&&/^[a-f0-9]{64}$/i.test(s.token)&&s.staff&&String(s.staff.role)==='manager'&&s.expires_at&&Date.parse(s.expires_at)>Date.now());}
 function save(s){session=s;localStorage.setItem(KEY,JSON.stringify(s));}
 function clear(){session=null;localStorage.removeItem(KEY);}
-function showLogin(){ $('loginScreen').classList.remove('hidden');$('dashboard').classList.add('hidden');$('password').value='';}
-function showDashboard(){ $('loginScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');$('managerName').textContent=session.staff.name||'Restoran Yöneticisi';$('staffList').replaceChildren();$('summary').textContent='Listeyi getirmek için Yenile butonuna basın.';hide('dashboardMessage');}
+function showLogin(){stopLivePolling(); $('loginScreen').classList.remove('hidden');$('dashboard').classList.add('hidden');$('password').value='';}
+function showDashboard(){ $('loginScreen').classList.add('hidden');$('dashboard').classList.remove('hidden');$('managerName').textContent=session.staff.name||'Restoran Yöneticisi';$('staffList').replaceChildren();$('summary').textContent='Listeyi getirmek için Yenile butonuna basın.';hide('dashboardMessage');$('liveCallsList').replaceChildren();$('liveSummary').textContent='Çağrılar yükleniyor...';liveFocusDone=false;startLivePolling();loadLiveCalls();}
 function expire(){clear();showLogin();msg('loginMessage','Oturum geçersiz veya süresi dolmuş. Tekrar giriş yapın.',true);}
 async function post(url,body){const controller=new AbortController();const timer=setTimeout(()=>controller.abort(),15000);try{const r=await fetch(url,{method:'POST',mode:'cors',credentials:'omit',cache:'no-store',headers:{'Content-Type':'application/json'},body:JSON.stringify(body),signal:controller.signal});if(!r.ok)throw Error('HTTP '+r.status);return await r.json();}finally{clearTimeout(timer);}}
 $('loginForm').addEventListener('submit',async e=>{e.preventDefault();if(busy)return;busy=true;$('loginBtn').disabled=true;hide('loginMessage');try{const id=Number($('staffId').value);const password=$('password').value;const d=await post(API.login,{restaurant:RESTAURANT,staff_id:id,password});const s={token:d.session_token,staff:d.staff,expires_at:d.expires_at};if(d.success===true&&d.result==='authenticated'&&valid(s)){save(s);showDashboard();await Promise.all([loadStaff(),loadPerformance()]);}else{msg('loginMessage',d.message||'Yönetici girişi başarısız. Personel rolünü kontrol edin.',true);}}catch(err){msg('loginMessage','Giriş bağlantısı başarısız: '+err.message,true);}finally{busy=false;$('loginBtn').disabled=false;}});
@@ -161,6 +177,66 @@ $('managerPushBtn').addEventListener('click',async()=>{
  }catch(error){msg('managerPushMessage','Bildirim kaydı başarısız: '+error.message,true);}
  finally{button.disabled=false;}
 });
+
+
+// CANLI MASA CAGRI LISTESI — SADECE YONETICI ERISIMI
+const LIVE_INTERVAL_MS=10000;
+const targetCallId=(new URLSearchParams(location.search)).get('call_id');
+let liveTimer=null;
+let liveLoading=false;
+let liveFocusDone=false;
+let lastLiveData=[];
+function stopLivePolling(){if(liveTimer!==null){clearInterval(liveTimer);liveTimer=null;}}
+function startLivePolling(){
+ stopLivePolling();
+ liveTimer=setInterval(()=>{if(session&&!document.hidden)loadLiveCalls();},LIVE_INTERVAL_MS);
+}
+function liveTime(value){
+ const dt=new Date(value);
+ return Number.isNaN(dt.getTime())?'':dt.toLocaleTimeString('tr-TR',{hour:'2-digit',minute:'2-digit'});
+}
+function renderLiveCalls(calls){
+ const area=$('liveCallsList');area.replaceChildren();
+ const pending=calls.filter(c=>c.status==='pending').length;
+ const accepted=calls.filter(c=>c.status==='accepted').length;
+ $('liveSummary').textContent=`${pending} bekleyen • ${accepted} üstlenilen çağrı`;
+ if(!calls.length){const empty=document.createElement('p');empty.className='live-empty';empty.textContent='Şu anda açık masa çağrısı yok.';area.append(empty);return;}
+ const ordered=[...calls].sort((a,b)=> (a.status==='pending'?0:1)-(b.status==='pending'?0:1) || Date.parse(a.created_at)-Date.parse(b.created_at));
+ let target=null;
+ for(const c of ordered){
+  const card=document.createElement('div');card.className='live-call';
+  const isTarget=targetCallId && String(c.call_id)===targetCallId;
+  if(isTarget){card.classList.add('target');target=card;}
+  const head=document.createElement('div');head.className='live-call-head';
+  const number=document.createElement('strong');number.textContent='Masa '+c.table_number;
+  const status=document.createElement('span');status.className='live-status'+(c.status==='accepted'?' accepted':'');
+  status.textContent=c.status==='pending'?'Bekliyor':'Üstlenildi';head.append(number,status);
+  const req=document.createElement('div');req.className='live-call-note';
+  req.textContent=c.request_type==='bill'?'🧾 Hesap İstiyor':'🔔 Garson Çağırıyor';
+  const staff=document.createElement('div');staff.className='live-call-meta';
+  staff.textContent=c.status==='accepted'?'İlgilenen: '+(c.accepted_by_name||'Personel #'+c.accepted_by):'Henüz üstlenilmedi';
+  const created=document.createElement('div');created.className='live-call-meta';created.textContent='Çağrı #'+c.call_id+' • '+liveTime(c.created_at);
+  card.append(head,req,staff,created);area.append(card);
+ }
+ if(target&&!liveFocusDone){liveFocusDone=true;requestAnimationFrame(()=>target.scrollIntoView({behavior:'smooth',block:'center'}));}
+}
+async function loadLiveCalls(){
+ if(!session||liveLoading||!valid(session))return;
+ liveLoading=true;$('refreshLiveBtn').disabled=true;
+ const token=session.token;
+ try{
+  const d=await post(API.liveCalls,{session_token:token});
+  if(!session||session.token!==token)return;
+  if(d.result==='unauthorized'){expire();return;}
+  if(d.success!==true)throw Error(d.message||'Yetkisiz veya beklenmeyen cevap.');
+  const calls=typeof d.calls==='string'?JSON.parse(d.calls):d.calls;
+  if(!Array.isArray(calls))throw Error('Çağrı listesi hatalı.');
+  lastLiveData=calls;renderLiveCalls(calls);hide('liveCallsMessage');
+ }catch(error){msg('liveCallsMessage','Canlı çağrılar alınamadı: '+error.message,true);}
+ finally{liveLoading=false;$('refreshLiveBtn').disabled=false;}
+}
+$('refreshLiveBtn').addEventListener('click',loadLiveCalls);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&session)loadLiveCalls();});
 
 // Start only after performance state and push handlers have initialized.
 try {
