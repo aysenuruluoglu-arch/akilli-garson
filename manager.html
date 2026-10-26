@@ -82,7 +82,7 @@ async function changeStatus(person,button){if(busy||!session)return;if(!valid(se
 $('refreshBtn').addEventListener('click',loadStaff);
 $('refreshPerformanceBtn').addEventListener('click',loadPerformance);
 $('logoutBtn').addEventListener('click',async()=>{if(busy)return;busy=true;$('logoutBtn').disabled=true;const token=session?.token;let confirmed=false;try{if(token){const d=await post(API.logout,{session_token:token});confirmed=d.result==='logged_out'||d.result==='unauthorized';}}catch(e){}finally{clear();showLogin();msg('loginMessage',confirmed?'Çıkış yapıldı.':'Cihazdaki oturum kapatıldı. Sunucudaki oturumun kapandığı doğrulanamadı.',!confirmed);$('logoutBtn').disabled=false;busy=false;}});
-try{const old=JSON.parse(localStorage.getItem(KEY)||'null');if(valid(old)){session=old;showDashboard();loadStaff();loadPerformance();}else{clear();showLogin();}}catch(e){clear();showLogin();}
+// Initial session restore runs after all handlers and state are initialized.
 
 // YONETICI PERFORMANS TABLOSU
 const statsIds={totalCalls:'total_calls',billRequests:'bill_requests',waiterRequests:'waiter_requests',completedCalls:'completed_calls',pendingCalls:'pending_calls',cancelledCalls:'cancelled_calls'};
@@ -161,6 +161,24 @@ $('managerPushBtn').addEventListener('click',async()=>{
  }catch(error){msg('managerPushMessage','Bildirim kaydı başarısız: '+error.message,true);}
  finally{button.disabled=false;}
 });
+
+// Start only after performance state and push handlers have initialized.
+try {
+  const saved = JSON.parse(localStorage.getItem(KEY) || 'null');
+  if (valid(saved)) {
+    session = saved;
+    showDashboard();
+    loadStaff();
+    loadPerformance();
+  } else {
+    clear();
+    showLogin();
+  }
+} catch (error) {
+  console.error('Yönetici oturumu geri yüklenemedi:', error);
+  clear();
+  showLogin();
+}
 
 </script>
 </body>
