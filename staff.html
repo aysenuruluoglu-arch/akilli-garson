@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -165,6 +166,11 @@ button:disabled{opacity:.5;cursor:not-allowed}
 }
 
 .call.new{border:2px solid #f0ae37}
+.call.target-call{
+  border:3px solid #245bda;
+  box-shadow:0 0 0 5px #245bda20;
+  scroll-margin-top:22px
+}
 .table-number{font-size:22px;font-weight:800}
 
 .badge{
@@ -338,6 +344,13 @@ const API = {
 const RESTAURANT = "akilli-garson-demo";
 const SESSION_KEY = "akilli_garson_staff_session";
 const REFRESH_MS = 10000;
+
+// Bildirimden gelen cagrinin kimligi (kimlik dogrulama araci degildir).
+const notificationCallId = (() => {
+  const raw = new URLSearchParams(location.search).get("call_id");
+  return raw && /^[1-9]\d{0,17}$/.test(raw) ? raw : null;
+})();
+let notificationCallFocused = false;
 
 const ONESIGNAL_APP_ID =
   "fa3546e9-94a3-407a-9154-6b5aa7b856cf";
@@ -693,6 +706,11 @@ function createCallCard(call,kind) {
       ? " new" : ""
   );
 
+  card.dataset.callId = String(call.call_id);
+  if (notificationCallId === String(call.call_id)) {
+    card.classList.add("target-call");
+  }
+
   const header = document.createElement("div");
   header.className = "call-header";
 
@@ -806,6 +824,32 @@ function renderCalls(calls) {
     "otherCallsList",others,"other",
     "Diğer garsonlarda çağrı yok."
   );
+
+  // Yalnizca yetkili oturumla sunucudan donen cagrilar vurgulanir.
+  if (notificationCallId && !notificationCallFocused) {
+    const target = calls.find(c =>
+      String(c.call_id) === notificationCallId
+    );
+
+    if (target) {
+      notificationCallFocused = true;
+      showMessage(
+        "dashboardMessage",
+        "🔔 Masa " + target.table_number +
+        " çağrısı açıldı.",
+        "alert"
+      );
+      requestAnimationFrame(() => {
+        const card = Array.from(
+          document.querySelectorAll(".call[data-call-id]")
+        ).find(el => el.dataset.callId === notificationCallId);
+        card?.scrollIntoView({
+          behavior:"smooth",
+          block:"center"
+        });
+      });
+    }
+  }
 }
 
 // ====================================
