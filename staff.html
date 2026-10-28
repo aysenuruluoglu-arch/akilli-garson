@@ -368,7 +368,11 @@ let loading = false;
 let timer = null;
 
 let audioContext = null;
-let soundEnabled = false;
+const SOUND_PREF_KEY = "akilli_garson_alarm_sesi_acik";
+let soundEnabled = (() => {
+  try { return localStorage.getItem(SOUND_PREF_KEY) === "1"; }
+  catch (_) { return false; }
+})();
 let alarmTimer = null;
 let alarmPending = false;
 let lastCalls = [];
@@ -466,6 +470,8 @@ function showDashboard() {
   loadCalls();
   startPolling();
   updatePushButton();
+  updateSoundButton();
+  void activateSavedSound();
 }
 
 function expireSession() {
@@ -629,31 +635,73 @@ function updateAlarmFromCalls(calls) {
   if (!alarmPending) stopAlarm();
 }
 
+function rememberSoundPreference(value) {
+  try { localStorage.setItem(SOUND_PREF_KEY, value ? "1" : "0"); }
+  catch (_) { /* Depolama engellense de mevcut oturum calisir. */ }
+}
+
+function updateSoundButton() {
+  const button = $("soundBtn");
+  button.classList.toggle("enabled", soundEnabled);
+  button.textContent = !soundEnabled
+    ? "🔊 Tekrarlayan Alarmı Aç"
+    : audioContext?.state === "running"
+      ? "✅ Tekrarlayan Alarm Açık"
+      : "🔊 Alarm seçili — sesi etkinleştirmek için dokun";
+}
+
+// iOS yeni bir sayfa oturumunda sesi yeniden kilitleyebilir.
+// Kaydedilen tercih kendiliginden acilir; oynatma izni gereken
+// cihazlarda sayfadaki ilk dokunus ses motorunu etkinlestirir.
+async function activateSavedSound() {
+  if (!soundEnabled || !session || document.hidden) return;
+  const AudioClass = window.AudioContext || window.webkitAudioContext;
+  if (!AudioClass) return;
+  try {
+    audioContext ||= new AudioClass();
+    if (audioContext.state !== "running") await audioContext.resume();
+    if (audioContext.state === "running" && alarmPending) syncAlarm();
+  } catch (error) {
+    console.warn("Alarm sesi oynatma izni bekleniyor:",error);
+  } finally {
+    updateSoundButton();
+  }
+}
+
+// Dokunma veya fiziksel klavye etkileşimi, gerekiyorsa
+// tarayicinin ses kilidini acar. Ayrica ses butonuna basmak gerekmez.
+function unlockSoundFromInteraction() {
+  if (soundEnabled && session && !document.hidden &&
+      audioContext?.state !== "running") {
+    void activateSavedSound();
+  }
+}
+document.addEventListener("pointerdown", unlockSoundFromInteraction, {passive:true});
+document.addEventListener("touchstart", unlockSoundFromInteraction, {passive:true});
+document.addEventListener("keydown", unlockSoundFromInteraction);
+
 $("soundBtn").addEventListener("click", async () => {
-  if (soundEnabled) {
-    soundEnabled = false;
-    stopAlarm();
-    $("soundBtn").classList.remove("enabled");
-    $("soundBtn").textContent = "🔊 Bildirim Sesini Aç";
+  if (soundEnabled && audioContext?.state !== "running") {
+    await activateSavedSound();
     return;
   }
-  try {
-    const AudioClass = window.AudioContext || window.webkitAudioContext;
-    if (!AudioClass) throw new Error("Ses desteği bulunamadı.");
-    audioContext ||= new AudioClass();
-    await audioContext.resume();
-    if (audioContext.state !== "running") {
-      throw new Error("Ses başlatılamadı.");
-    }
-    soundEnabled = true;
-    $("soundBtn").classList.add("enabled");
-    $("soundBtn").textContent = "🔊 Tekrarlayan Alarm Açık";
-    // Butona basildiginda bir kez test sesi duyulur.
-    // Bekleyen cagri varsa alarm bundan sonra tekrarlanir.
-    if (alarmPending) syncAlarm();
-    else playSound();
-  } catch (error) {
-    showMessage("dashboardMessage", "Alarm sesi açılamadı: " + error.message, "error");
+  if (soundEnabled) {
+    soundEnabled = false;
+    rememberSoundPreference(false);
+    stopAlarm();
+    updateSoundButton();
+    return;
+  }
+  soundEnabled = true;
+  rememberSoundPreference(true);
+  await activateSavedSound();
+  updateSoundButton();
+  if (!audioContext || audioContext.state !== "running") {
+    showMessage("dashboardMessage",
+      "Ses tercihi kaydedildi. Ses duyulmazsa ekrana bir kez dokunun.",
+      "alert");
+  } else if (!alarmPending) {
+    playSound(); // Acma isleminde kisa test sesi.
   }
 });
 
@@ -1035,8 +1083,8 @@ $("refreshBtn").addEventListener(
 
 document.addEventListener("visibilitychange",() => {
   if (document.hidden) stopAlarm();
-  else if (alarmPending && soundEnabled) {
-    audioContext?.resume().then(() => syncAlarm()).catch(() => {});
+  else if (soundEnabled) {
+    void activateSavedSound();
   }
   if (
     !document.hidden &&
