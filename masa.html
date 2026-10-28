@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#f3f6fa">
+<meta name="robots" content="noindex, nofollow">
+<title>Akıllı Garson | Masa Hizmeti</title>
+<style>
+  html,body{margin:0;width:100%;height:100%;background:#f3f6fa;font-family:Arial,sans-serif}
+  #customer{border:0;width:100%;height:100%;display:block}
+  #error{display:none;min-height:100vh;box-sizing:border-box;align-items:center;justify-content:center;padding:24px;color:#17263c;text-align:center}
+  #error>div{background:white;border-radius:20px;padding:30px;box-shadow:0 10px 35px #14243b14;max-width:360px}
+</style>
+</head>
+<body>
+<iframe id="customer" title="Masa hizmet paneli" referrerpolicy="no-referrer"></iframe>
+<div id="error"><div>Geçerli bir masa seçilemedi. Lütfen masanızdaki NFC veya QR kodunu yeniden okutun.</div></div>
+<script>
+'use strict';
+const tableTokens = Object.freeze({
+  '1':'978b011c945ca2678780a747b248592c6f5b0369d84cdc6f',
+  '2':'77ebfa47946206222a4383eb1dc5842274c70fece018b5b7',
+  '3':'4adabe3fe82c83bba91d9cef83ad26c63d82c4a28b4cf202',
+  '4':'2f2cd7b11b6156812a1ea79edbe31f1fbde9bbee5b6ae22d',
+  '5':'4d37a7e61042fd19339bf58aaf192f784926f4fea130bc83'
+});
+const masa = new URLSearchParams(location.search).get('masa');
+const token = Object.prototype.hasOwnProperty.call(tableTokens,masa) ? tableTokens[masa] : null;
+if(token){
+  document.title = 'Akıllı Garson | Masa '+masa;
+  const url = new URL('./index.html',location.href);
+  url.searchParams.set('token',token);
+  const frame = document.getElementById('customer');
+  frame.addEventListener('load', () => {
+    try {
+      const doc = frame.contentDocument;
+      if (!doc) return;
+      doc.querySelectorAll('.footer').forEach(el => el.remove());
+      // 'Demo' ifadesi yalnizca alt bilgi metnindeyse bunu kaldir.
+    } catch (e) { console.warn('Alt bilgi temizlenemedi.'); }
+  });
+  frame.src=url.href;
+}else{
+  document.getElementById('customer').remove();
+  document.getElementById('error').style.display='flex';
+}
+</script>
+</body>
+</html>
