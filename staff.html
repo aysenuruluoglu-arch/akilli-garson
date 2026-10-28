@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="tr">
 <head>
@@ -959,7 +958,9 @@ async function callAction(action,callId) {
     } else {
       showMessage(
         "dashboardMessage",
-        data.message || "İşlem başarısız.",
+        data.result === "already_busy"
+          ? "Önce üstlendiğiniz masanın işlemini Tamamlandı yapın."
+          : (data.message || "İşlem başarısız."),
         "error"
       );
     }
