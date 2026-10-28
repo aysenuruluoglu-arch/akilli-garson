@@ -1,75 +1,76 @@
 <!doctype html>
 <html lang="tr">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#101e32"><title>Akıllı Garson | Masa Demo Paneli</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#13243a">
+<meta name="robots" content="noindex,nofollow">
+<title>Akıllı Garson | Masa Hizmeti</title>
 <style>
-:root{--navy:#101e32;--blue:#285ce5;--muted:#6e7d90;--bg:#f3f6fb;--line:#e6ebf3;--green:#0f8b64;--orange:#cf8010}*{box-sizing:border-box}body{margin:0;font-family:system-ui,-apple-system,Segoe UI,sans-serif;color:#17263c;background:var(--bg)}header{background:var(--navy);color:white;padding:23px 5vw}.header{max-width:1000px;margin:auto;display:flex;justify-content:space-between;align-items:center;gap:15px}.brand{font-size:24px;font-weight:800;letter-spacing:-.7px}.header small{display:block;color:#b9c8df;margin-top:4px;font-size:12px}main{max-width:1000px;margin:30px auto;padding:0 20px}h1{font-size:27px;margin:0 0 8px}p{color:var(--muted);line-height:1.6;margin:0 0 20px}.pill{display:inline-flex;padding:7px 12px;background:#e7edff;color:#2851b8;border-radius:20px;font-size:12px;font-weight:700}.layout{display:grid;grid-template-columns:1.1fr .9fr;gap:20px}.panel{background:white;padding:24px;border-radius:20px;box-shadow:0 5px 24px #1624400a}.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.table{border:2px solid var(--line);border-radius:16px;min-height:132px;display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;background:#fafcff;color:var(--navy);transition:.12s}.table:hover{border-color:#a4bbfa;transform:translateY(-2px)}.table.active{border-color:var(--blue);background:#eef3ff}.table .symbol{font-size:27px;margin-bottom:9px}.table strong{font-size:16px}.table span{font-size:11px;color:var(--muted);margin-top:6px}.panel h2{margin:0 0 17px;font-size:19px}.selected-num{font-size:46px;font-weight:850;letter-spacing:-2px;margin:3px 0}.selected-label{font-size:12px;color:var(--muted);font-weight:750;letter-spacing:2px}.action{border:0;border-radius:12px;padding:15px 17px;width:100%;cursor:pointer;font-size:15px;font-weight:750;margin-top:11px}.primary{background:var(--blue);color:white}.secondary{background:#eaf0fb;color:#26416f}.cancel{background:#fff0f0;color:#ad2929}.action:disabled{opacity:.55;cursor:not-allowed}.status{padding:12px 13px;border-radius:12px;background:#e8f7ee;color:#116d3e;margin-top:15px;font-size:13px;line-height:1.5}.error{background:#fff3e6;color:#975c19}.hidden{display:none!important}.helper{font-size:12px;margin:14px 0 0;color:var(--muted)}.topbtn{background:#273b58;color:white;border:1px solid #52627b;border-radius:10px;padding:10px 13px;cursor:pointer;font-weight:650}.settings{margin-top:18px}.settings label{font-size:13px;font-weight:700;display:block;margin:11px 0 5px}.settings input{display:block;width:100%;font-size:13px;padding:12px;border:1px solid #dbe2ef;border-radius:10px}.small{font-size:12px}.settings button{max-width:260px}.customer-embed{width:100%;height:650px;border:1px solid var(--line);border-radius:14px;background:white}.iframe-note{font-size:12px;color:var(--muted);margin:9px 0 0}.footer{font-size:12px;text-align:center;margin:28px;color:#98a3b2}@media(max-width:720px){.layout{grid-template-columns:1fr}.grid{grid-template-columns:repeat(3,1fr)}.table{min-height:105px}.panel{padding:18px}main{margin:20px auto}.brand{font-size:21px}h1{font-size:23px}}
-</style></head>
+:root{--navy:#13243a;--line:#e2e8f2;--background:#f3f6fa;--blue:#245bda}
+*{box-sizing:border-box}
+body{margin:0;background:var(--background);color:var(--navy);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
+header{background:var(--navy);color:white;padding:20px 24px}
+header>div{max-width:1040px;margin:auto;font-size:21px;font-weight:800}
+main{max-width:1040px;margin:30px auto;padding:0 18px}
+h1{font-size:26px;margin:0 0 22px}
+.layout{display:grid;grid-template-columns:1fr 1.1fr;gap:18px}
+.panel{background:white;padding:24px;border-radius:20px;box-shadow:0 7px 26px #14243b0a}
+.panel h2{font-size:19px;margin:0 0 20px}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
+.table{cursor:pointer;border:2px solid var(--line);background:#fafcff;border-radius:15px;min-height:115px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:var(--navy);font-weight:750;font-size:16px}
+.table:hover{border-color:#a6bcf7}.table.active{border-color:var(--blue);background:#edf3ff}.table .symbol{font-size:25px}
+#chosen{font-size:35px;font-weight:850;letter-spacing:-1.5px;margin-bottom:17px}
+iframe{display:block;width:100%;height:620px;border:0;border-radius:18px;background:white}
+@media(max-width:750px){.layout{grid-template-columns:1fr}.panel{padding:16px}.table{min-height:90px}main{margin:20px auto}h1{font-size:23px}}
+</style>
+</head>
 <body>
-<header><div class="header"><div><div class="brand">✦ Akıllı Garson</div><small>Restoranlar için akıllı masa hizmeti</small></div></div></header>
-<main><div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:9px"><h1 style="margin:0">Restoran Masa Paneli</h1><span class="pill">5 masalı demo</span></div><p>NFC kartla bu sayfayı açın, masa seçin ve Garson Çağır veya Hesap İste butonuna basın. Gerçek bildirim yönetici ve aktif garsonlara gönderilir.</p>
-<div class="layout"><section class="panel"><h2>Masalar</h2><div class="grid" id="tables"></div><div class="helper">Her masa ayrı çağrı oluşturur. Garson Çağır veya Hesap İste işlemleri yöneticiye ve aktif garsonlara bildirilir.</div></section><section class="panel"><div class="selected-label">SEÇİLEN MASA</div><div class="selected-num" id="chosen">Masa 1</div><p style="margin-bottom:15px">Size nasıl yardımcı olabiliriz?</p><div id="mode" class="pill">Etkileşimli demo</div><div id="embeddedCustomer" class="hidden" style="margin-top:16px"><iframe id="customerFrame" class="customer-embed" title="Seçilen masanın müşteri ekranı" loading="eager" referrerpolicy="no-referrer"></iframe><p class="iframe-note">Çağrıyı bu ekranın içindeki Garson Çağır veya Hesap İste butonuyla gönderin.</p></div><div id="demoActions" class="hidden"><button class="action primary" id="callBtn" type="button">🔔 Garson Çağır</button><button class="action secondary" id="billBtn" type="button">🧾 Hesap İste</button><button class="action cancel hidden" id="cancelBtn" type="button">İsteği İptal Et</button></div><div id="status" role="status" aria-live="polite" class="status hidden"></div><p class="helper" id="hint">Demo modunda işlemler yalnızca bu ekranda gösterilir, gerçek garson bildirimi gitmez.</p></section></div>
-<div class="footer">Akıllı Garson · NFC müşteri demo paneli</div></main>
+<header><div>Akıllı Garson</div></header>
+<main>
+<h1>Masa Hizmeti</h1>
+<div class="layout">
+  <section class="panel" aria-label="Masa seçimi">
+    <h2>Masanızı seçin</h2>
+    <div class="grid" id="tables"></div>
+  </section>
+  <section class="panel" aria-label="Masa işlemleri">
+    <div id="chosen">Masa 1</div>
+    <iframe id="customerFrame" title="Masa hizmet ekranı" referrerpolicy="no-referrer" loading="eager"></iframe>
+  </section>
+</div>
+</main>
 <script>
 'use strict';
-const $=id=>document.getElementById(id);
-const urls = {
-  1: 'https://aysenuruluoglu-arch.github.io/akilli-garson/?token=978b011c945ca2678780a747b248592c6f5b0369d84cdc6f',
-  2: 'https://aysenuruluoglu-arch.github.io/akilli-garson/?token=77ebfa47946206222a4383eb1dc5842274c70fece018b5b7',
-  3: 'https://aysenuruluoglu-arch.github.io/akilli-garson/?token=4adabe3fe82c83bba91d9cef83ad26c63d82c4a28b4cf202',
-  4: 'https://aysenuruluoglu-arch.github.io/akilli-garson/?token=2f2cd7b11b6156812a1ea79edbe31f1fbde9bbee5b6ae22d',
-  5: 'https://aysenuruluoglu-arch.github.io/akilli-garson/?token=4d37a7e61042fd19339bf58aaf192f784926f4fea130bc83'
+// Her masa, mevcut güvenli çağrı API'sinin gerçek masa tokenına bağlanır.
+const tokens={
+  1:'978b011c945ca2678780a747b248592c6f5b0369d84cdc6f',
+  2:'77ebfa47946206222a4383eb1dc5842274c70fece018b5b7',
+  3:'4adabe3fe82c83bba91d9cef83ad26c63d82c4a28b4cf202',
+  4:'2f2cd7b11b6156812a1ea79edbe31f1fbde9bbee5b6ae22d',
+  5:'4d37a7e61042fd19339bf58aaf192f784926f4fea130bc83'
 };
-let selected=1;let requested={};
-const tableRoot=$('tables');
-for(let i=1;i<=5;i++){
- const b=document.createElement('button');b.type='button';b.className='table';b.dataset.table=String(i);b.innerHTML='<div class="symbol">🍽️</div><strong>Masa '+i+'</strong><span id="status-table-'+i+'">Seçmek için dokun</span>';b.addEventListener('click',()=>selectTable(i));tableRoot.append(b);
+// Kullanıcının paylaştığı reklam/izleme parametrelerini görünür URL'den çıkar.
+if(location.search || location.hash){history.replaceState(null,'',location.pathname);}
+const container=document.getElementById('tables');
+const frame=document.getElementById('customerFrame');
+function selectTable(n){
+  document.getElementById('chosen').textContent='Masa '+n;
+  for(const b of container.querySelectorAll('button')){
+    const active=Number(b.dataset.table)===n;
+    b.classList.toggle('active',active);
+    b.setAttribute('aria-pressed',String(active));
+  }
+  frame.src='./?token='+tokens[n];
 }
-function safeUrl(i){try{const url=new URL(urls[i]||'');return url.protocol==='https:'&&url.hostname==='aysenuruluoglu-arch.github.io'&&url.pathname.startsWith('/akilli-garson/')&&url.searchParams.has('token')&&/^[a-f0-9]{48}$/i.test(url.searchParams.get('token')||'')?url.href:null;}catch{return null;}}
-function selectTable(i){
- selected=i;
- $('chosen').textContent='Masa '+i;
- document.querySelectorAll('.table').forEach(b=>b.classList.toggle('active',Number(b.dataset.table)===i));
- const link=safeUrl(i);
- const live=Boolean(link);
- $('mode').textContent=live?'Gerçek masa bağlantısı':'Etkileşimli demo';
- $('embeddedCustomer').classList.toggle('hidden',!live);
- $('demoActions').classList.toggle('hidden',live);
- $('hint').textContent=live?
- 'Bu gerçek müşteri ekranından yapılan istekler kayıtlı restoran bilgisayarına ve aktif garsonların telefonlarına gönderilir. Açık çağrı varsa tekrar çağrı oluşturulmaz.':
- 'Bu masa için gerçek bağlantı bulunmuyor. Demo butonları bildirim göndermez.';
- const frame=$('customerFrame');
- // Same-origin customer iframe retains the original app's call/cancel semantics.
- if(live){
-   if(frame.dataset.table!==String(i)||frame.getAttribute('src')!==link){
-     frame.src=link;
-     frame.dataset.table=String(i);
-   }
- }else{
-   frame.removeAttribute('src');
-   delete frame.dataset.table;
- }
- $('status').classList.toggle('hidden',!requested[i]||live);
- $('cancelBtn').classList.toggle('hidden',!requested[i]||live);
- $('callBtn').disabled=Boolean(requested[i]&&!live);
- $('billBtn').disabled=Boolean(requested[i]&&!live);
- if(requested[i]&&!live){
-   $('status').textContent=requested[i]==='waiter'?'🔔 Demo: Bu masadan garson çağrısı oluşturuldu.':'🧾 Demo: Bu masadan hesap isteği oluşturuldu.';
- }
- for(let n=1;n<=5;n++){
-   $('status-table-'+n).textContent=safeUrl(n)?'Gerçek bağlantı hazır':(requested[n]?'Demo isteği var':'Demo modu');
- }
+for(let n=1;n<=5;n++){
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='table';btn.dataset.table=String(n);
+  btn.innerHTML='<span class="symbol" aria-hidden="true">🍽️</span><span>Masa '+n+'</span>';
+  btn.addEventListener('click',()=>selectTable(n));
+  container.append(btn);
 }
-function action(type){
- // In live mode, real action buttons are inside the embedded original customer app.
- if(safeUrl(selected))return;
- if(requested[selected])return;
- requested[selected]=type;
- selectTable(selected);
-}
-$('callBtn').addEventListener('click',()=>action('waiter'));
-$('billBtn').addEventListener('click',()=>action('bill'));
-$('cancelBtn').addEventListener('click',()=>{delete requested[selected];selectTable(selected);});
 selectTable(1);
-</script></body></html>
+</script>
+</body>
+</html>
