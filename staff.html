@@ -261,7 +261,7 @@ button:disabled{opacity:.5;cursor:not-allowed}
   <div class="card">
     <h2>🔔 Yeni Çağrı Bildirimleri</h2>
     <div class="muted">
-      Panel açıkken yeni çağrılar için sesli uyarı.
+      Panel görünürken ve üstlenilmemiş çağrı varken alarm yaklaşık 3 saniyede bir çalar. Bir çağrıyı üstlendiğinizde veya bekleyen çağrı kalmadığında durur. Telefon kilitliyken OneSignal bildirimleri kullanılır.
     </div>
     <button id="soundBtn" class="sound-button" type="button">
       🔊 Bildirim Sesini Aç
@@ -369,6 +369,10 @@ let timer = null;
 
 let audioContext = null;
 let soundEnabled = false;
+let alarmTimer = null;
+let alarmPending = false;
+let lastCalls = [];
+const ALARM_INTERVAL_MS = 3200;
 
 let firstLoad = true;
 const knownCalls = new Set();
@@ -424,12 +428,18 @@ function clearSession() {
 
 function showLogin() {
   stopPolling();
+  alarmPending = false;
+  stopAlarm();
+  lastCalls = [];
   $("loginScreen").classList.remove("hidden");
   $("dashboard").classList.add("hidden");
   $("password").value = "";
 }
 
 function showDashboard() {
+  stopAlarm();
+  alarmPending = false;
+  lastCalls = [];
   $("loginScreen").classList.add("hidden");
   $("dashboard").classList.remove("hidden");
 
@@ -557,78 +567,93 @@ $("loginForm").addEventListener(
 );
 
 // ====================================
-// SOUND
+// PANEL ACIKKEN TEKRARLAYAN SESLI ALARM
 // ====================================
+// iPhone kilitliyken bu kod ses calmayabilir.
+// Kilitli telefon icin OneSignal push ayrica calisir.
+
+function stopAlarm() {
+  if (alarmTimer !== null) {
+    clearInterval(alarmTimer);
+    alarmTimer = null;
+  }
+}
 
 function playSound() {
-  if (!soundEnabled || !audioContext) return;
+  if (!soundEnabled || !session || document.hidden || !audioContext) return;
   if (audioContext.state !== "running") return;
 
   const now = audioContext.currentTime;
-
-  [0,0.28].forEach(offset => {
+  // Belirgin ama distorsiyona yol acmayacak iki kisa uyari.
+  [0, 0.32, 0.64].forEach((offset, i) => {
     const osc = audioContext.createOscillator();
     const gain = audioContext.createGain();
-
-    osc.type = "sine";
-    osc.frequency.value = 880;
-
-    gain.gain.setValueAtTime(
-      0.0001,now + offset
-    );
-    gain.gain.exponentialRampToValueAtTime(
-      0.12,now + offset + .025
-    );
-    gain.gain.exponentialRampToValueAtTime(
-      .001,now + offset + .22
-    );
-
+    const start = now + offset;
+    osc.type = "square";
+    osc.frequency.setValueAtTime(i % 2 ? 740 : 950, start);
+    gain.gain.setValueAtTime(0.0001, start);
+    gain.gain.exponentialRampToValueAtTime(0.075, start + 0.025);
+    gain.gain.exponentialRampToValueAtTime(0.0001, start + 0.23);
     osc.connect(gain);
     gain.connect(audioContext.destination);
-
-    osc.start(now + offset);
-    osc.stop(now + offset + .23);
+    osc.start(start);
+    osc.stop(start + 0.24);
+    osc.onended = () => { osc.disconnect(); gain.disconnect(); };
   });
 }
 
-$("soundBtn").addEventListener("click",async () => {
+function syncAlarm() {
+  stopAlarm();
+  const active = soundEnabled && alarmPending && Boolean(session) &&
+    !document.hidden && audioContext?.state === "running";
+  if (!active) return;
+  playSound();
+  alarmTimer = setInterval(() => {
+    if (!soundEnabled || !alarmPending || !session || document.hidden) {
+      stopAlarm();
+      return;
+    }
+    playSound();
+  }, ALARM_INTERVAL_MS);
+}
+
+function updateAlarmFromCalls(calls) {
+  lastCalls = calls;
+  const myId = String(session?.staff?.id ?? "");
+  const alreadyServing = calls.some(c =>
+    c.status === "accepted" && String(c.accepted_by) === myId
+  );
+  // Garson zaten bir masayla ilgileniyorsa yeni alarm calmaz.
+  alarmPending = !alreadyServing && calls.some(c => c.status === "pending");
+  if (alarmPending && soundEnabled && alarmTimer === null) syncAlarm();
+  if (!alarmPending) stopAlarm();
+}
+
+$("soundBtn").addEventListener("click", async () => {
   if (soundEnabled) {
     soundEnabled = false;
+    stopAlarm();
     $("soundBtn").classList.remove("enabled");
-    $("soundBtn").textContent =
-      "🔊 Bildirim Sesini Aç";
+    $("soundBtn").textContent = "🔊 Bildirim Sesini Aç";
     return;
   }
-
   try {
-    const AudioClass =
-      window.AudioContext ||
-      window.webkitAudioContext;
-
-    if (!AudioClass) {
-      throw new Error("Ses desteği bulunamadı.");
-    }
-
+    const AudioClass = window.AudioContext || window.webkitAudioContext;
+    if (!AudioClass) throw new Error("Ses desteği bulunamadı.");
     audioContext ||= new AudioClass();
     await audioContext.resume();
-
-    soundEnabled =
-      audioContext.state === "running";
-
-    if (!soundEnabled) {
+    if (audioContext.state !== "running") {
       throw new Error("Ses başlatılamadı.");
     }
-
+    soundEnabled = true;
     $("soundBtn").classList.add("enabled");
-    $("soundBtn").textContent =
-      "🔊 Bildirim Sesi Açık";
-    playSound();
-  } catch(error) {
-    showMessage(
-      "dashboardMessage",
-      "Bildirim sesi açılamadı: " + error.message,
-      "error"
-    );
+    $("soundBtn").textContent = "🔊 Tekrarlayan Alarm Açık";
+    // Butona basildiginda bir kez test sesi duyulur.
+    // Bekleyen cagri varsa alarm bundan sonra tekrarlanir.
+    if (alarmPending) syncAlarm();
+    else playSound();
+  } catch (error) {
+    showMessage("dashboardMessage", "Alarm sesi açılamadı: " + error.message, "error");
   }
 });
 
@@ -661,7 +686,7 @@ function detectNewCalls(calls) {
 
   if (!arrivals.length) return;
 
-  playSound();
+  // Tekrarlayan alarm, updateAlarmFromCalls ile yonetilir.
 
   const tables = [
     ...new Set(arrivals.map(c => c.table_number))
@@ -889,6 +914,7 @@ async function loadCalls() {
 
     detectNewCalls(data.calls);
     renderCalls(data.calls);
+    updateAlarmFromCalls(data.calls);
 
     $("refreshInfo").textContent =
       "Son güncelleme: " +
@@ -1008,6 +1034,10 @@ $("refreshBtn").addEventListener(
 );
 
 document.addEventListener("visibilitychange",() => {
+  if (document.hidden) stopAlarm();
+  else if (alarmPending && soundEnabled) {
+    audioContext?.resume().then(() => syncAlarm()).catch(() => {});
+  }
   if (
     !document.hidden &&
     session &&
