@@ -18,7 +18,7 @@
 <div id="actions"><button class="primary" id="waiterBtn" type="button">🔔 Garson Çağır</button><button class="secondary" id="billBtn" type="button">🧾 Hesap İste</button></div>
 <div id="status" role="status" aria-live="polite"></div>
 <button class="cancel" id="cancelBtn" style="display:none" type="button">İsteği İptal Et</button><button class="secondary" id="retryBtn" style="display:none" type="button">Durumu Yeniden Kontrol Et</button><button class="secondary" id="forgetBtn" style="display:none" type="button">Bu cihazdaki eski kaydı temizle</button>
-<div class="notice" id="notice">NFC veya QR ile masa hizmeti</div>
+
 <div class="footer">Akıllı Garson • Demo</div>
 </main>
 <script>
@@ -32,7 +32,7 @@ const token = params.get("token") || "";
 const validToken = /^[a-f0-9]{48}$/.test(token);
 const $ = id => document.getElementById(id);
 const title = $("tableTitle"), waiterBtn = $("waiterBtn"), billBtn = $("billBtn");
-const cancelBtn = $("cancelBtn"), retryBtn=$("retryBtn"), forgetBtn=$("forgetBtn"), statusBox = $("status"), notice = $("notice");
+const cancelBtn = $("cancelBtn"), retryBtn=$("retryBtn"), forgetBtn=$("forgetBtn"), statusBox = $("status");
 const storageKey = "akilli_garson_request_" + token;
 let request = null, busy = false, checking = false, callState = null, lastStatusError = false, failedChecks = 0;
 function showStatus(message, error=false){statusBox.textContent=message;statusBox.style.display="block";statusBox.classList.toggle("error",error);}
@@ -41,7 +41,7 @@ function clearRequest(){request=null;callState=null;try{sessionStorage.removeIte
 function restoreRequest(){if(!validToken)return;try{const data=JSON.parse(sessionStorage.getItem(storageKey)||"null");if(data&&Number.isSafeInteger(Number(data.call_id))&&Number(data.call_id)>0&&/^[a-f0-9]{64}$/.test(data.cancel_token||"")){request=data;callState="pending";if(data.table_number)title.textContent="Masa "+data.table_number;}}catch(e){clearRequest();}}
 function updateButtons(){waiterBtn.disabled=!validToken||busy||!!request;billBtn.disabled=!validToken||busy||!!request;cancelBtn.style.display=request&&callState==="pending"?"block":"none";cancelBtn.disabled=busy;retryBtn.style.display=request&&lastStatusError?"block":"none";retryBtn.disabled=busy||checking;forgetBtn.style.display=request&&lastStatusError?"block":"none";forgetBtn.disabled=busy;}
 async function postJSON(url,body){const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),12000);try{const response=await fetch(url,{method:"POST",mode:"cors",cache:"no-store",credentials:"omit",headers:{"Content-Type":"application/json"},body:JSON.stringify(body),signal:controller.signal});if(!response.ok)throw new Error("HTTP "+response.status);return await response.json();}finally{clearTimeout(timeout);}}
-function displayCallState(state){callState=state;lastStatusError=false;failedChecks=0;switch(state){case "pending":showStatus("⏳ Talebiniz garsonlara iletildi. Garson bekleniyor.");notice.textContent="Bir garson çağrınızı üstlendiğinde bu ekran güncellenecek.";break;case "accepted":showStatus("✅ Garson talebinizi aldı, masanıza gelmek üzere ilgileniyor. Lütfen bekleyin.");notice.textContent="Çağrınız bir garson tarafından üstlenildi. Sayfayı yenilemenize gerek yok.";break;case "completed":clearRequest();showStatus("✅ Talebiniz tamamlandı.");notice.textContent="İhtiyacınız olursa yeniden çağrı oluşturabilirsiniz.";break;case "cancelled":clearRequest();showStatus("İsteğiniz iptal edildi.");notice.textContent="Yeni istek oluşturabilirsiniz.";break;}updateButtons();}
+function displayCallState(state){callState=state;lastStatusError=false;failedChecks=0;switch(state){case "pending":showStatus("⏳ Talebiniz garsonlara iletildi. Garson bekleniyor.");break;case "accepted":showStatus("✅ Garson çağrınızı üstlendi. Sizinle ilgilenecek, lütfen bekleyin.");break;case "completed":clearRequest();showStatus("✅ Talebiniz tamamlandı.");break;case "cancelled":clearRequest();showStatus("İsteğiniz iptal edildi.");break;}updateButtons();}
 function unpackResponse(raw){
   let value=raw;
   if(Array.isArray(value))value=value[0];
@@ -67,13 +67,13 @@ async function checkCallStatus(){
     failedChecks++;
     lastStatusError=true;
     showStatus('⚠️ Çağrı durumu güncellenemiyor. Talebiniz kaydedilmiş olabilir; yeniden göndermeyin.',true);
-    notice.textContent='Hata: '+String(e.message||e)+'. Yeniden kontrol et veya yalnızca bu cihazda kalmış eski kaydı temizle.';
+    console.warn("Durum sorgusu başarısız:", e);
   }finally{checking=false;updateButtons();}
 }
 async function createRequest(type){if(!validToken||busy||request)return;busy=true;updateButtons();showStatus("İsteğiniz gönderiliyor...");try{const data=unpackResponse(await postJSON(CREATE_URL,{token,request_type:type}));if(data.success===true&&data.result==="created"&&data.call_id&&/^[a-f0-9]{64}$/.test(data.cancel_token||"")){saveRequest({call_id:data.call_id,cancel_token:data.cancel_token,request_type:type,table_number:data.table_number});if(data.table_number)title.textContent="Masa "+data.table_number;displayCallState("pending");}else if(data.result==="already_open"){if(data.table_number)title.textContent="Masa "+data.table_number;showStatus("Bu masa için zaten açık bir istek bulunuyor.",true);}else if(data.result==="cooldown"){showStatus("Yeni çağrı için 15 saniye bekleyin.",true);}else{showStatus(data.message||"İstek oluşturulamadı.",true);}}catch(e){showStatus("Bağlantı sırasında sorun oluştu. Çağrı kaydedilmiş olabilir, yeniden basmadan önce bekleyin.",true);}finally{busy=false;updateButtons();if(request)checkCallStatus();}}
 async function cancelRequest(){if(!request||busy||!validToken||callState!=="pending")return;busy=true;updateButtons();const current=request;showStatus("İptal işlemi yapılıyor...");try{const data=unpackResponse(await postJSON(CANCEL_URL,{token,call_id:current.call_id,cancel_token:current.cancel_token}));if(data.result==="cancelled"||data.result==="already_cancelled"){displayCallState("cancelled");}else if(data.result==="already_accepted"){displayCallState("accepted");}else if(data.result==="already_completed"){displayCallState("completed");}else{showStatus(data.message||"İptal işlemi gerçekleştirilemedi.",true);}}catch(e){showStatus("Bağlantı hatası. İptal durumunu doğrulayamadık; lütfen bekleyin.",true);}finally{busy=false;updateButtons();if(request)checkCallStatus();}}
-if(!validToken){title.textContent="Masa bulunamadı";notice.textContent="Masanızdaki NFC veya QR kodunu okutun.";showStatus("Geçerli bir masa bağlantısı bulunamadı.",true);}else{restoreRequest();if(request){showStatus("⏳ Önceki çağrınızın durumu kontrol ediliyor...");checkCallStatus();}}
-updateButtons();waiterBtn.addEventListener("click",()=>createRequest("waiter"));billBtn.addEventListener("click",()=>createRequest("bill"));cancelBtn.addEventListener("click",cancelRequest);retryBtn.addEventListener("click",checkCallStatus);forgetBtn.addEventListener("click",()=>{if(!confirm("Bu işlem yalnızca bu cihazın eski kaydını temizler. Sunucudaki açık çağrıyı iptal ETMEZ. Devam edilsin mi?"))return;clearRequest();lastStatusError=false;showStatus("Yerel eski kayıt temizlendi. Sunucuda açık bir çağrı varsa yeni istek engellenebilir.");notice.textContent="Yeni çağrı oluşturabilirsiniz; sunucuda açık çağrı varsa ikinci çağrı oluşmaz.";updateButtons();});
+if(!validToken){title.textContent="Masa bulunamadı";showStatus("Geçerli bir masa bağlantısı bulunamadı.",true);}else{restoreRequest();if(request){showStatus("⏳ Açık çağrınızın durumu kontrol ediliyor...");checkCallStatus();}}
+updateButtons();waiterBtn.addEventListener("click",()=>createRequest("waiter"));billBtn.addEventListener("click",()=>createRequest("bill"));cancelBtn.addEventListener("click",cancelRequest);retryBtn.addEventListener("click",checkCallStatus);forgetBtn.addEventListener("click",()=>{if(!confirm("Bu işlem yalnızca bu cihazın eski kaydını temizler. Sunucudaki açık çağrıyı iptal ETMEZ. Devam edilsin mi?"))return;clearRequest();lastStatusError=false;showStatus("Yerel eski kayıt temizlendi. Sunucuda açık bir çağrı varsa yeni istek engellenebilir.");updateButtons();});
 setInterval(()=>{if(!document.hidden)checkCallStatus();},2000);
 document.addEventListener("visibilitychange",()=>{if(!document.hidden)checkCallStatus();});
 </script>
