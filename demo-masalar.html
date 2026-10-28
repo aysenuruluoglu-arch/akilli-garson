@@ -1,3 +1,4 @@
+
 <!doctype html>
 <html lang="tr">
 <head>
@@ -7,70 +8,209 @@
 <meta name="robots" content="noindex,nofollow">
 <title>Akıllı Garson | Masa Hizmeti</title>
 <style>
-:root{--navy:#13243a;--line:#e2e8f2;--background:#f3f6fa;--blue:#245bda}
+:root{
+  --navy:#13243a;
+  --line:#e2e8f2;
+  --background:#f3f6fa;
+  --blue:#245bda
+}
 *{box-sizing:border-box}
-body{margin:0;background:var(--background);color:var(--navy);font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif}
-header{background:var(--navy);color:white;padding:20px 24px}
-header>div{max-width:1040px;margin:auto;font-size:21px;font-weight:800}
-main{max-width:1040px;margin:30px auto;padding:0 18px}
+body{
+  margin:0;
+  background:var(--background);
+  color:var(--navy);
+  font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif
+}
+header{
+  background:var(--navy);
+  color:white;
+  padding:20px 24px
+}
+header>div{
+  max-width:1040px;
+  margin:auto;
+  font-size:21px;
+  font-weight:800
+}
+main{
+  max-width:1040px;
+  margin:30px auto;
+  padding:0 18px
+}
 h1{font-size:26px;margin:0 0 22px}
-.layout{display:grid;grid-template-columns:1fr 1.1fr;gap:18px}
-.panel{background:white;padding:24px;border-radius:20px;box-shadow:0 7px 26px #14243b0a}
+.layout{
+  display:grid;
+  grid-template-columns:1fr 1.1fr;
+  gap:18px
+}
+.panel{
+  background:white;
+  padding:24px;
+  border-radius:20px;
+  box-shadow:0 7px 26px #14243b0a
+}
 .panel h2{font-size:19px;margin:0 0 20px}
-.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px}
-.table{cursor:pointer;border:2px solid var(--line);background:#fafcff;border-radius:15px;min-height:115px;display:flex;align-items:center;justify-content:center;flex-direction:column;gap:7px;color:var(--navy);font-weight:750;font-size:16px}
-.table:hover{border-color:#a6bcf7}.table.active{border-color:var(--blue);background:#edf3ff}.table .symbol{font-size:25px}
-#chosen{font-size:35px;font-weight:850;letter-spacing:-1.5px;margin-bottom:17px}
-iframe{display:block;width:100%;height:620px;border:0;border-radius:18px;background:white}
-@media(max-width:750px){.layout{grid-template-columns:1fr}.panel{padding:16px}.table{min-height:90px}main{margin:20px auto}h1{font-size:23px}}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:11px
+}
+.table{
+  cursor:pointer;
+  border:2px solid var(--line);
+  background:#fafcff;
+  border-radius:15px;
+  min-height:115px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  flex-direction:column;
+  gap:7px;
+  color:var(--navy);
+  font-weight:750;
+  font-size:16px
+}
+.table:hover{border-color:#a6bcf7}
+.table.active{
+  border-color:var(--blue);
+  background:#edf3ff
+}
+.table .symbol{font-size:25px}
+#chosen{
+  font-size:35px;
+  font-weight:850;
+  letter-spacing:-1.5px;
+  margin-bottom:17px
+}
+iframe{
+  display:block;
+  width:100%;
+  height:620px;
+  border:0;
+  border-radius:18px;
+  background:white
+}
+@media(max-width:750px){
+  .layout{grid-template-columns:1fr}
+  .panel{padding:16px}
+  .table{min-height:90px}
+  main{margin:20px auto}
+  h1{font-size:23px}
+}
 </style>
 </head>
 <body>
-<header><div>Akıllı Garson</div></header>
+
+<header>
+  <div>Akıllı Garson</div>
+</header>
+
 <main>
-<h1>Masa Hizmeti</h1>
-<div class="layout">
-  <section class="panel" aria-label="Masa seçimi">
-    <h2>Masanızı seçin</h2>
-    <div class="grid" id="tables"></div>
-  </section>
-  <section class="panel" aria-label="Masa işlemleri">
-    <div id="chosen">Masa 1</div>
-    <iframe id="customerFrame" title="Masa hizmet ekranı" referrerpolicy="no-referrer" loading="eager"></iframe>
-  </section>
-</div>
+  <h1>Masa Hizmeti</h1>
+
+  <div class="layout">
+
+    <section class="panel" aria-label="Masa seçimi">
+      <h2>Masanızı seçin</h2>
+      <div class="grid" id="tables"></div>
+    </section>
+
+    <section class="panel" aria-label="Masa işlemleri">
+      <div id="chosen">Masa 1</div>
+      <iframe
+        id="customerFrame"
+        title="Masa hizmet ekranı"
+        referrerpolicy="no-referrer"
+        loading="eager">
+      </iframe>
+    </section>
+
+  </div>
 </main>
+
 <script>
 'use strict';
-// Her masa, mevcut güvenli çağrı API'sinin gerçek masa tokenına bağlanır.
-const tokens={
+
+const tokens = {
   1:'978b011c945ca2678780a747b248592c6f5b0369d84cdc6f',
   2:'77ebfa47946206222a4383eb1dc5842274c70fece018b5b7',
   3:'4adabe3fe82c83bba91d9cef83ad26c63d82c4a28b4cf202',
   4:'2f2cd7b11b6156812a1ea79edbe31f1fbde9bbee5b6ae22d',
   5:'4d37a7e61042fd19339bf58aaf192f784926f4fea130bc83'
 };
-// Kullanıcının paylaştığı reklam/izleme parametrelerini görünür URL'den çıkar.
-if(location.search || location.hash){history.replaceState(null,'',location.pathname);}
-const container=document.getElementById('tables');
-const frame=document.getElementById('customerFrame');
-function selectTable(n){
-  document.getElementById('chosen').textContent='Masa '+n;
-  for(const b of container.querySelectorAll('button')){
-    const active=Number(b.dataset.table)===n;
-    b.classList.toggle('active',active);
-    b.setAttribute('aria-pressed',String(active));
-  }
-  frame.src='./?token='+tokens[n];
+
+const container = document.getElementById('tables');
+const frame = document.getElementById('customerFrame');
+const chosen = document.getElementById('chosen');
+
+// Gereksiz izleme parametrelerini sil.
+if (location.search || location.hash) {
+  history.replaceState(null, '', location.pathname);
 }
-for(let n=1;n<=5;n++){
-  const btn=document.createElement('button');
-  btn.type='button';btn.className='table';btn.dataset.table=String(n);
-  btn.innerHTML='<span class="symbol" aria-hidden="true">🍽️</span><span>Masa '+n+'</span>';
-  btn.addEventListener('click',()=>selectTable(n));
+
+// iframe içindeki eski demo alt yazısını kaldır.
+function removeDemoFooter() {
+  try {
+    const doc = frame.contentDocument;
+    if (!doc || !doc.body) return;
+
+    doc.querySelectorAll('footer, .footer').forEach(el => {
+      if (/akıllı garson\s*[•\-]\s*demo/i.test(el.textContent)) {
+        el.remove();
+      }
+    });
+
+    doc.querySelectorAll('div, p, span, small').forEach(el => {
+      if (
+        el.children.length === 0 &&
+        el.textContent.trim() === 'Akıllı Garson • Demo'
+      ) {
+        el.remove();
+      }
+    });
+  } catch (error) {
+    console.warn('Müşteri alt yazısı kontrol edilemedi.');
+  }
+}
+
+frame.addEventListener('load', removeDemoFooter);
+
+function selectTable(n) {
+  chosen.textContent = 'Masa ' + n;
+
+  for (const btn of container.querySelectorAll('button')) {
+    const active = Number(btn.dataset.table) === n;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', String(active));
+  }
+
+  // Mevcut masa bağlantısını kullan.
+  // Sürüm parametresi eski HTML önbelleğini önler.
+  const url = new URL('./', location.href);
+  url.searchParams.set('token', tokens[n]);
+  url.searchParams.set('v', '376');
+
+  frame.src = url.toString();
+}
+
+for (let n = 1; n <= 5; n++) {
+  const btn = document.createElement('button');
+
+  btn.type = 'button';
+  btn.className = 'table';
+  btn.dataset.table = String(n);
+
+  btn.innerHTML =
+    '<span class="symbol" aria-hidden="true">🍽️</span>' +
+    '<span>Masa ' + n + '</span>';
+
+  btn.addEventListener('click', () => selectTable(n));
+
   container.append(btn);
 }
+
 selectTable(1);
 </script>
+
 </body>
 </html>
