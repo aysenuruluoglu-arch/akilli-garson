@@ -1,0 +1,11 @@
+
+{
+  "id": "/akilli-garson/demo-masalar.html",
+  "name": "Akıllı Garson - Masalar",
+  "short_name": "Masalar",
+  "start_url": "/akilli-garson/demo-masalar.html",
+  "scope": "/akilli-garson/demo-masalar.html",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#13243a"
+}
