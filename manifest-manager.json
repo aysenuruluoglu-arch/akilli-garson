@@ -1,0 +1,11 @@
+
+{
+  "id": "/akilli-garson/manager.html",
+  "name": "Akıllı Garson - Yönetici",
+  "short_name": "Yönetici",
+  "start_url": "/akilli-garson/manager.html",
+  "scope": "/akilli-garson/manager.html",
+  "display": "standalone",
+  "background_color": "#f3f6fa",
+  "theme_color": "#13243a"
+}
