@@ -189,7 +189,13 @@ let lastLiveData=[];
 function stopLivePolling(){if(liveTimer!==null){clearInterval(liveTimer);liveTimer=null;}}
 function startLivePolling(){
  stopLivePolling();
- liveTimer=setInterval(()=>{if(session&&!document.hidden)loadLiveCalls();},LIVE_INTERVAL_MS);
+
+liveTimer = setInterval(() => {
+  if (session && !document.hidden) {
+    loadLiveCalls();
+    loadPerformance();
+  }
+}, LIVE_INTERVAL_MS);
 }
 function liveTime(value){
  const dt=new Date(value);
