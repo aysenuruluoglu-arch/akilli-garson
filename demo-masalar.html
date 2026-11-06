@@ -6,6 +6,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#13243a">
 <meta name="robots" content="noindex,nofollow">
+<link rel="manifest" href="./manifest-masalar.json">
 <title>Akıllı Garson | Masa Hizmeti</title>
 <style>
 :root{
@@ -100,21 +101,16 @@ iframe{
 </style>
 </head>
 <body>
-
 <header>
   <div>Akıllı Garson</div>
 </header>
-
 <main>
   <h1>Masa Hizmeti</h1>
-
   <div class="layout">
-
     <section class="panel" aria-label="Masa seçimi">
       <h2>Masanızı seçin</h2>
       <div class="grid" id="tables"></div>
     </section>
-
     <section class="panel" aria-label="Masa işlemleri">
       <div id="chosen">Masa 1</div>
       <iframe
@@ -124,13 +120,10 @@ iframe{
         loading="eager">
       </iframe>
     </section>
-
   </div>
 </main>
-
 <script>
 'use strict';
-
 const tokens = {
   1:'978b011c945ca2678780a747b248592c6f5b0369d84cdc6f',
   2:'77ebfa47946206222a4383eb1dc5842274c70fece018b5b7',
@@ -138,33 +131,25 @@ const tokens = {
   4:'2f2cd7b11b6156812a1ea79edbe31f1fbde9bbee5b6ae22d',
   5:'4d37a7e61042fd19339bf58aaf192f784926f4fea130bc83'
 };
-
 const container = document.getElementById('tables');
 const frame = document.getElementById('customerFrame');
 const chosen = document.getElementById('chosen');
-
 // Gereksiz izleme parametrelerini sil.
 if (location.search || location.hash) {
   history.replaceState(null, '', location.pathname);
 }
-
 // iframe içindeki eski demo alt yazısını kaldır.
 function removeDemoFooter() {
   try {
     const doc = frame.contentDocument;
     if (!doc || !doc.body) return;
-
     doc.querySelectorAll('footer, .footer').forEach(el => {
       if (/akıllı garson\s*[•\-]\s*demo/i.test(el.textContent)) {
         el.remove();
       }
     });
-
     doc.querySelectorAll('div, p, span, small').forEach(el => {
-      if (
-        el.children.length === 0 &&
-        el.textContent.trim() === 'Akıllı Garson • Demo'
-      ) {
+      if (el.children.length === 0 && el.textContent.trim() === 'Akıllı Garson • Demo') {
         el.remove();
       }
     });
@@ -172,45 +157,31 @@ function removeDemoFooter() {
     console.warn('Müşteri alt yazısı kontrol edilemedi.');
   }
 }
-
 frame.addEventListener('load', removeDemoFooter);
-
 function selectTable(n) {
   chosen.textContent = 'Masa ' + n;
-
   for (const btn of container.querySelectorAll('button')) {
     const active = Number(btn.dataset.table) === n;
     btn.classList.toggle('active', active);
     btn.setAttribute('aria-pressed', String(active));
   }
-
   // Mevcut masa bağlantısını kullan.
   // Sürüm parametresi eski HTML önbelleğini önler.
   const url = new URL('./', location.href);
   url.searchParams.set('token', tokens[n]);
   url.searchParams.set('v', '376');
-
   frame.src = url.toString();
 }
-
 for (let n = 1; n <= 5; n++) {
   const btn = document.createElement('button');
-
   btn.type = 'button';
   btn.className = 'table';
   btn.dataset.table = String(n);
-
-  btn.innerHTML =
-    '<span class="symbol" aria-hidden="true">🍽️</span>' +
-    '<span>Masa ' + n + '</span>';
-
+  btn.innerHTML = '<span class="symbol" aria-hidden="true">🍽️</span>' + '<span>Masa ' + n + '</span>';
   btn.addEventListener('click', () => selectTable(n));
-
   container.append(btn);
 }
-
 selectTable(1);
 </script>
-
 </body>
 </html>
